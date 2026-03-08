@@ -14,6 +14,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       I <strong>design, build, and consult on AI systems</strong> – specifically around LLM integration, data pipelines, and hybrid inference architectures. From architecture review to working implementation.
     </p>
     <p>
+      I work best with technically capable teams, in small units with short decision cycles – the kind of setup <strong>where things actually ship</strong>.
+    </p>
+    <p>
       If something on this site resonates with a problem you are working on, reach out:
     </p>
     <div class="contact-email">
@@ -32,7 +35,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       Switching between a local model and a remote one is a one-click decision in the frontend. Local inference runs through <strong>Ollama</strong>, remote inference through <strong>vLLM</strong> on a <strong>Scaleway</strong> GPU instance I provisioned and configured for this. The pipeline does not care which model is behind it – <strong>the model is a swappable component</strong>.
     </p>
     <p>
-      Everything else – extraction, normalization, chunking, structured output – lives in the pipeline around it. Classification is handled by the model, but even that step is wrapped in pipeline logic. That is where most of the engineering effort sits, and where most of it should sit.
+      Everything else – extraction, normalization, chunking, structured output – lives in the pipeline around it. That is where most of the engineering effort sits, and where most of it should sit.
     </p>
     <div class="note-tags" style="margin-top: var(--spacing-sm);">
       <span class="note-tag">Python</span>
@@ -64,10 +67,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <div class="system">
     <h3 class="system-name">Corporate Registry Intelligence</h3>
     <p>
-      A system that ingests Austrian business registry filings via SOAP API, transforms the raw XML into a normalized company model, and runs every entity through a <strong>deterministic scoring engine</strong> – ownership structure, financial health, behavioral signals. No ML involved in the scoring: every point traces back to data. The architecture is <strong>fully serverless</strong>, so it scales without infrastructure management.
+      A system that ingests Austrian business registry filings via SOAP API, transforms the raw XML into a normalized company model, and runs every entity through a <strong>deterministic scoring engine</strong> – ownership structure, financial health, behavioral signals. No ML involved in the scoring – every rule is explicit, every score is explainable. The architecture is <strong>fully serverless</strong>, so it scales without infrastructure management.
     </p>
     <p>
-      The architecture is fully serverless and event-driven: each processing stage writes to Cosmos DB, which triggers the next stage automatically. The result is a dataset that surfaces <strong>acquisition and succession signals</strong> for PE firms and M&amp;A advisors.
+      The architecture is <strong>event-driven</strong>: each processing stage writes to Cosmos DB, which triggers the next stage automatically. The result is a dataset that surfaces <strong>acquisition and succession signals</strong> for PE firms and M&amp;A advisors.
     </p>
     <div class="note-tags" style="margin-top: var(--spacing-sm);">
       <span class="note-tag">Python</span>
