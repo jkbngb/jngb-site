@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Let's Talk - Jakob Neugebauer"
+  description="Available for AI system design, architecture reviews, and implementation. Selected projects and how to get in touch."
+  activePage="lets-talk"
+>
+  <h1>Let's Talk</h1>
+
+  <div class="letstalk-intro">
+    <p>
+      I <strong>design, build, and consult on AI systems</strong> – specifically around LLM integration, data pipelines, and hybrid inference architectures. From architecture review to working implementation.
+    </p>
+    <p>
+      If something on this site resonates with a problem you are working on, reach out:
+    </p>
+    <div class="contact-email">
+      <a href="mailto:office@jngb.online">office@jngb.online</a>
+    </div>
+  </div>
+
+  <h2>Selected Projects</h2>
+
+  <div class="system">
+    <h3 class="system-name">Contract Analysis Engine</h3>
+    <p>
+      A system that takes a legal contract as a PDF and returns structured data – parties, clauses, obligations, risks. The interesting part is not what it extracts but <strong>where it runs</strong>: the same pipeline works with an 8B model on a MacBook Air and with a 54B legal-domain model on a high-end cloud GPU.
+    </p>
+    <p>
+      Switching between a local model and a remote one is a one-click decision in the frontend. Local inference runs through <strong>Ollama</strong>, remote inference through <strong>vLLM</strong> on a <strong>Scaleway</strong> GPU instance I provisioned and configured for this. The pipeline does not care which model is behind it – <strong>the model is a swappable component</strong>.
+    </p>
+    <p>
+      Everything else – extraction, normalization, chunking, structured output – lives in the pipeline around it. Classification is handled by the model, but even that step is wrapped in pipeline logic. That is where most of the engineering effort sits, and where most of it should sit.
+    </p>
+    <div class="note-tags" style="margin-top: var(--spacing-sm);">
+      <span class="note-tag">Python</span>
+      <span class="note-tag">Ollama</span>
+      <span class="note-tag">vLLM</span>
+      <span class="note-tag">Scaleway</span>
+      <span class="note-tag">Hybrid Inference</span>
+    </div>
+  </div>
+
+  <div class="system">
+    <h3 class="system-name">Business Discovery Platform</h3>
+    <p>
+      A system that aggregates businesses for sale across 6+ European marketplaces, <strong>normalizes the messy, multilingual listings into a unified schema</strong>, and enriches them using the OpenAI API for classification and summarization. The interesting part is the pipeline: a 5-layer <strong>event-driven ETL architecture</strong> where each stage triggers the next automatically via change feeds – no orchestrator, no manual intervention.
+    </p>
+    <p>
+      The enriched data feeds into a <strong>semantic search layer</strong> with vector indexing and reranking, so users can <strong>query in natural language</strong> instead of filtering through forms. Three separate frontends serve different user personas.
+    </p>
+    <div class="note-tags" style="margin-top: var(--spacing-sm);">
+      <span class="note-tag">Python</span>
+      <span class="note-tag">Serverless Functions</span>
+      <span class="note-tag">OpenAI API</span>
+      <span class="note-tag">Azure AI Search</span>
+      <span class="note-tag">Event-Driven</span>
+      <span class="note-tag">Docker</span>
+    </div>
+  </div>
+
+  <div class="system">
+    <h3 class="system-name">Corporate Registry Intelligence</h3>
+    <p>
+      A system that ingests Austrian business registry filings via SOAP API, transforms the raw XML into a normalized company model, and runs every entity through a <strong>deterministic scoring engine</strong> – ownership structure, financial health, behavioral signals. No ML involved in the scoring: every point traces back to data. The architecture is <strong>fully serverless</strong>, so it scales without infrastructure management.
+    </p>
+    <p>
+      The architecture is fully serverless and event-driven: each processing stage writes to Cosmos DB, which triggers the next stage automatically. The result is a dataset that surfaces <strong>acquisition and succession signals</strong> for PE firms and M&amp;A advisors.
+    </p>
+    <div class="note-tags" style="margin-top: var(--spacing-sm);">
+      <span class="note-tag">Python</span>
+      <span class="note-tag">Azure Functions</span>
+      <span class="note-tag">Cosmos DB</span>
+      <span class="note-tag">SOAP API</span>
+      <span class="note-tag">Event-Driven</span>
+    </div>
+  </div>
+
+  <div class="prior-experience">
+    <p>
+      Before working independently, I worked across corporate (critical infrastructure), consulting, and startup environments. For more, see my <a href="/">About page</a>.
+    </p>
+  </div>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+interface Props {
+  activePage?: string;
+}
+
+const { activePage = '' } = Astro.props;
+
+const links = [
+  { href: '/', label: 'About', id: 'home' },
+  { href: '/notes', label: 'Notes', id: 'notes' },
+  { href: '/lets-talk', label: "Let's Talk", id: 'lets-talk' },
+];
+---
+
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="site-name">Jakob Neugebauer</a>
+    <nav>
+      <ul class="site-nav">
+        {links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class={activePage === link.id ? 'active' : ''}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>

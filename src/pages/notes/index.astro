@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes')).sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+---
+
+<BaseLayout
+  title="Technical Notes - Jakob Neugebauer"
+  description="Architecture decisions, system design patterns, and technical findings."
+  activePage="notes"
+>
+  <h1>Technical Notes</h1>
+  <p class="muted" style="margin-bottom: var(--spacing-xl);">
+    Experiments, system design explorations, and technical observations
+    from building AI systems.
+  </p>
+
+  {notes.length === 0 ? (
+    <p class="muted">No notes published yet.</p>
+  ) : (
+    <ul class="notes-list">
+      {notes.map((note) => (
+        <li class="note-item">
+          <h2 class="note-title" style="margin-top: 0;">
+            <a href={`/notes/${note.slug}`}>{note.data.title}</a>
+          </h2>
+          <p class="note-date">{note.data.date}</p>
+          <p class="note-summary" set:html={note.data.summary} />
+          <a href={`/notes/${note.slug}`} class="note-read-more">&rarr; Read full note</a>
+          {note.data.stack && (
+            <div class="note-tags" style="margin-top: var(--spacing-sm);">
+              {note.data.stack.map((item: string) => (
+                <span class="note-tag">{item}</span>
+              ))}
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>
