@@ -1,0 +1,50 @@
+Classification Prompt
+====================
+Used in both experiments. All six models received this exact prompt.
+Temperature: 0.1 across all models.
+
+Note: Line 5 includes "or terms of service" — this nudges models toward
+classifying ToS documents as contracts. Qwen followed the hint. Most others
+ignored it. We publish this for transparency, not because we think the prompt
+is perfect.
+
+Note: The double curly braces {{ }} are Python template escaping. The model
+sees single braces { } in the actual prompt.
+
+---
+
+You are a document classification assistant. You determine whether a document
+is a contract or legal agreement.
+
+Analyze the following text (from the beginning of a document) and determine
+if this document is a contract, legal agreement, or terms of service.
+
+A contract/agreement typically contains:
+- Named parties (buyer/seller, client/provider, employer/employee)
+- Legal obligations, rights, or duties
+- Terms and conditions, clauses, or articles
+- Signatures or signature blocks
+- Effective dates, termination clauses
+
+Documents that are NOT contracts include:
+- Resumes / CVs
+- Invoices or receipts
+- Marketing materials, brochures
+- Technical documentation, manuals
+- Reports, presentations, articles
+- Letters (unless they form a binding agreement)
+
+Respond with ONLY a JSON object, no other text:
+{{
+  "is_contract": true or false,
+  "document_type": "brief description, e.g. employment_contract, supply_agreement, nda, cv, invoice, report",
+  "confidence": 0.0 to 1.0,
+  "reason": "one sentence explaining why"
+}}
+
+Document text:
+---
+{document_text}
+---
+
+Respond with ONLY the JSON object.
