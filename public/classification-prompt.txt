@@ -1,17 +1,26 @@
-Classification Prompt
-====================
-Used in both experiments. All six models received this exact prompt.
-Temperature: 0.1 across all models.
+================================================================================
+  ABOUT THIS FILE
+================================================================================
 
-Note: Line 5 includes "or terms of service" — this nudges models toward
-classifying ToS documents as contracts. Qwen followed the hint. Most others
-ignored it. We publish this for transparency, not because we think the prompt
-is perfect.
+This is the classification prompt used in the experiment described at
+https://jngb.online/notes/better-call-saullm
 
-Note: The double curly braces {{ }} are Python template escaping. The model
-sees single braces { } in the actual prompt.
+All six models received the exact prompt below. Temperature was set to 0.1
+across all models and all runs.
 
----
+One thing worth noting: the prompt includes the phrase "or terms of service"
+on line 3. This nudges models toward classifying ToS documents as contracts.
+Qwen followed the hint. Most others ignored it.
+
+The {document_text} placeholder gets replaced with the first ~2000 characters
+of extracted text from the uploaded PDF. The models only see the beginning of
+the document for classification, not the full text.
+
+We publish this for transparency, not because the prompt is perfect.
+
+================================================================================
+  PROMPT (exactly as sent to all six models)
+================================================================================
 
 You are a document classification assistant. You determine whether a document
 is a contract or legal agreement.
@@ -35,12 +44,12 @@ Documents that are NOT contracts include:
 - Letters (unless they form a binding agreement)
 
 Respond with ONLY a JSON object, no other text:
-{{
+{
   "is_contract": true or false,
-  "document_type": "brief description, e.g. employment_contract, supply_agreement, nda, cv, invoice, report",
+  "document_type": "brief description",
   "confidence": 0.0 to 1.0,
   "reason": "one sentence explaining why"
-}}
+}
 
 Document text:
 ---
