@@ -29,6 +29,8 @@ Under the hood, the system is mostly a pipeline. The model itself only appears h
 ![Pipeline: from PDF upload to structured output](/images/pipeline-diagram.svg)
 *Most of the steps have nothing to do with AI.*
 
+The document passes through text extraction, scan detection, normalization – stripping repeated headers, collapsing whitespace, marking page boundaries – and chunking before the model sees a single character. Nine steps. The model shows up at step five.
+
 Three open-source models were evaluated:
 
 - <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>
@@ -82,39 +84,20 @@ At this point the models behaved a bit like lawyers: they disagreed.
 
 This suggests that model behavior remains relatively stable for clearly defined document types, but becomes less reliable once categories are legally or semantically ambiguous – which, conveniently, remains a fairly common situation in law.
 
-## Key Findings
+|  | CV | NDA | GPL v3 |
+|---|---|---|---|
+| **Llama 3.1 (8B)** | ❌ Not a contract | ✅ Contract | ✅ Contract |
+| **Mistral Nemo (12B)** | ❌ Not a contract | ✅ Contract | ❌ Not a contract |
+| **Qwen 2.5 (14B)** | ❌ Not a contract | ✅ Contract | ❌ Not a contract |
 
-1. **Local execution of the models was possible on modest hardware, but processing times were substantial.** Even relatively small documents required several minutes of processing, with full extraction taking up to 13 minutes on a standard, off-the-shelve laptop.
-2. **Model agreement remained high for clearly defined document types.** Once the category became legally or semantically ambiguous, however, the models began to diverge.
-3. **This turns model disagreement into a system design problem.** Without fine-tuning or additional guardrails, model outputs may vary significantly on ambiguous inputs.
+*Unanimous on the easy cases. A 2–1 split on the hard one.*
 
-## Implications
+## So What?
 
-Local LLM inference already appears viable for privacy-sensitive pre-processing tasks such as:
+Local inference works for privacy-sensitive preprocessing. Classification, detection, extraction – all fine. It is just not fast. Multi-minute runtimes mean batch workflows, not interactive applications. On current consumer hardware, this is a triage tool, not a real-time one.
 
-- document classification
-- contract detection
-- metadata extraction
+The more interesting problem is the disagreement. When the task is unambiguous, the models converge. When it is not, they diverge – and they do so with full confidence. No model said *"I'm not sure."* They each committed to a position and moved on. This is exactly the kind of behavior that makes local-only deployment risky for anything legally significant.
 
-However, processing time remains a meaningful constraint. Multi-minute runtimes make fully local pipelines better suited to batch-style workflows than interactive applications.
+In practice, a production system would need to be hybrid: local models for triage, stronger models in a controlled environment for the hard cases. And when even the stronger models disagree – perhaps an actual lawyer.
 
-In practice, deploying such systems would likely require a **hybrid architecture**.
-
-Local models handle initial classification and preprocessing, while ambiguous or complex cases escalate to stronger models running in a controlled VPC environment.
-
-Additional safeguards would also be necessary:
-
-- more capable hardware to reduce processing time
-- domain-specific fine-tuning to improve classification consistency
-- validation layers to detect ambiguous or unreliable outputs
-
-## Next Steps
-
-Two directions appear particularly promising.
-
-1. **Improving runtime performance and reliability.** This could involve smaller domain-tuned models or more efficient preprocessing pipelines to reduce the overall workload before inference.
-2. **Hybrid architecture.** Adopting a hybrid setup. In such a system, local models handle initial document classification and preprocessing, while ambiguous or complex cases escalate to stronger models running in a controlled VPC environment.
-
-This kind of hybrid pipeline may offer a practical balance between data privacy, performance, and model capability.
-
-In other words: local models for triage, stronger models for judgment.
+Which raises the obvious next question: if you give the stronger models the same ambiguous document, do they agree? Or do they just disagree more eloquently?

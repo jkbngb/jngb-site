@@ -52,7 +52,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       A system that aggregates businesses for sale across 6+ European marketplaces, <strong>normalizes the messy, multilingual listings into a unified schema</strong>, and enriches them using the OpenAI API for classification and summarization. The interesting part is the pipeline: a 5-layer <strong>event-driven ETL architecture</strong> where each stage triggers the next automatically via change feeds – no orchestrator, no manual intervention.
     </p>
     <p>
-      The enriched data feeds into a <strong>semantic search layer</strong> with vector indexing and reranking, so users can <strong>query in natural language</strong> instead of filtering through forms. Three separate frontends serve different user personas.
+      The collection <strong>runs fully autonomously</strong> – scheduled containers ingest new listings several times a day, detect changes to existing ones, and flag removals. The enriched data feeds into a <strong>semantic search layer</strong> with vector indexing and reranking, so users can <strong>query in natural language</strong> instead of filtering through forms. Three separate frontends serve different user personas.
     </p>
     <div class="note-tags" style="margin-top: var(--spacing-sm);">
       <span class="note-tag">Python</span>
