@@ -10,7 +10,7 @@ stack: ["Python", "Ollama", "llama3.1:8b", "mistral-nemo:12b", "qwen2.5:14b"]
 
 - **Experiment**: evaluation of whether legal contract analysis can run entirely on a local laptop using open-source LLMs.
 - **Why it matters**: many organizations are reluctant to send sensitive documents (contracts, financial records, internal agreements) to AI systems outside their organization.
-- **Key insight**: the model itself is only a small part of the system. Most of the work happens in the surrounding pipeline – and ambiguous documents can still make different models disagree.
+- **Key insight**: the model itself is only a small part of the system. Most of the work happens in the surrounding pipeline, and ambiguous documents can still make different models disagree.
 
 ## Context
 
@@ -29,7 +29,7 @@ Under the hood, the system is mostly a pipeline. The model itself only appears h
 ![Pipeline: from PDF upload to structured output](/images/pipeline-diagram.svg)
 *Most of the steps have nothing to do with AI.*
 
-The document passes through text extraction, scan detection, normalization – stripping repeated headers, collapsing whitespace, marking page boundaries – and chunking before the model sees a single character. Nine steps. The model shows up at step five.
+The document passes through text extraction, normalization (stripping repeated headers, collapsing whitespace, marking page boundaries), and chunking before the model sees a single character. The first LLM call is step four of eight.
 
 Three open-source models were evaluated:
 
@@ -82,7 +82,7 @@ At this point the models behaved a bit like lawyers: they disagreed.
 ![Contract Engine: Llama 3.1 structured extraction from the GNU GPL v3](/images/contract-engine-analysis.png)
 *Once the model decides the document is a contract, the analysis proceeds with confidence.*
 
-This suggests that model behavior remains relatively stable for clearly defined document types, but becomes less reliable once categories are legally or semantically ambiguous – which, conveniently, remains a fairly common situation in law.
+This suggests that model behavior remains relatively stable for clearly defined document types, but becomes less reliable once categories are legally or semantically ambiguous. Which, conveniently, remains a fairly common situation in law.
 
 |  | CV | NDA | GPL v3 |
 |---|---|---|---|
@@ -94,10 +94,10 @@ This suggests that model behavior remains relatively stable for clearly defined 
 
 ## So What?
 
-Local inference works for privacy-sensitive preprocessing. Classification, detection, extraction – all fine. It is just not fast. Multi-minute runtimes mean batch workflows, not interactive applications. On current consumer hardware, this is a triage tool, not a real-time one.
+Local inference works for privacy-sensitive preprocessing. Classification, detection, extraction. All fine. It is just not fast. **Multi-minute runtimes mean batch workflows, not interactive applications.** On current consumer hardware, this is a triage tool, not a real-time one.
 
-The more interesting problem is the disagreement. When the task is unambiguous, the models converge. When it is not, they diverge – and they do so with full confidence. No model said *"I'm not sure."* They each committed to a position and moved on. This is exactly the kind of behavior that makes local-only deployment risky for anything legally significant.
+The more interesting problem is the disagreement. When the task is unambiguous, the models converge. When it is not, they diverge. And they do so with full confidence. No model said *"I'm not sure."* They each committed to a position and moved on. **This is exactly the kind of behavior that makes local-only deployment risky for anything legally significant.**
 
-In practice, a production system would need to be hybrid: local models for triage, stronger models in a controlled environment for the hard cases. And when even the stronger models disagree – perhaps an actual lawyer.
+In practice, a production system would need to be hybrid: **local models for triage, stronger models in a controlled environment for the hard cases.** And when even the stronger models disagree, perhaps an actual lawyer.
 
 Which raises the obvious next question: if you give the stronger models the same ambiguous document, do they agree? Or do they just disagree more eloquently?
