@@ -3,7 +3,7 @@ title: "Better Call Saul(LM): Six Models, Four Documents, Zero Consensus"
 summary: "In <a href='/notes/privacy-first-contract-analysis'>Part 1</a>, three small models disagreed on whether the GPL is a contract. Fair enough. Small models on a laptop.<br><br>So we appealed to higher authority. Bigger models. An Nvidia H100. A legal-specialist LLM trained on court rulings.<br><br>The bigger models did not agree more. They <strong>disagreed differently</strong>. Llama 70B classified every single document as a contract. Its 8B sibling had said no to most of them. Same family. Same prompt. Same temperature.<br><br>Six models, four documents, <strong>zero consensus</strong>."
 date: "2026-03"
 tags: ["local-llm", "cloud-gpu", "document-processing", "model-disagreement"]
-stack: ["Scaleway", "vLLM", "SaulLM-54B", "Qwen2.5-72B", "Llama-3.1-70B"]
+stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 ---
 
 ## Quick Brief

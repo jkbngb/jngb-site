@@ -20,6 +20,9 @@ const { Content } = await note.render();
   activePage="notes"
 >
   <article>
+    <div class="note-back note-back-top">
+      <a href="/notes">&larr; All notes</a>
+    </div>
     <header>
       <h1>{note.data.title}</h1>
       <p class="note-date">{note.data.date}</p>
