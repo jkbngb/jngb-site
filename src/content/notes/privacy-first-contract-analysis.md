@@ -39,7 +39,7 @@ Three open-source models were evaluated:
 
 All models ran locally using Ollama.
 
-The hardware was intentionally modest: Apple MacBook Air (M3) with 16GB RAM. The goal was not peak performance but to evaluate whether local inference is practical for structured document workflows.
+The hardware was intentionally modest: **Apple MacBook Air (M3) with 16GB RAM**. The goal was not peak performance but to evaluate whether local inference is practical for structured document workflows.
 
 Test documents were chosen to represent both clear and ambiguous document categories.
 
@@ -52,7 +52,7 @@ A few patterns appeared fairly quickly during testing.
 The models ran successfully on modest hardware. They were just not in a hurry.
 
 Simple classification tasks required roughly 20-30 seconds.
-Full contract extraction on longer documents could take more than 13 minutes.
+Full contract extraction on longer documents could take **more than 13 minutes**.
 
 So while the pipeline works, it is not particularly fast.
 
@@ -77,7 +77,7 @@ At this point the models behaved a bit like lawyers: they disagreed.
 
 - **Mistral** classified the document as not a contract. Its reasoning: *"The document is a GNU General Public License, which grants permissions and sets conditions for using, modifying, and distributing software."*
 - **Qwen** reached the same conclusion and stopped further processing. Its reasoning: *"The text is a license agreement, specifically the GNU General Public License version 3, which outlines permissions and conditions for software distribution but does not contain named parties or specific legal obligations typical of a contract."*
-- **Llama 3.1** reached the opposite conclusion. It classified the document as a contract and continued with full information extraction. Once it did, the system produced structured output: 33 clauses, 24 obligations, and 3 identified risks. Among the extracted risks were a termination trigger rated as high risk (*"automatically terminate your rights under this License…"*) and an unlimited liability clause.
+- **Llama 3.1** reached the opposite conclusion. It classified the document as a contract and continued with full information extraction. Once it did, the system produced structured output: **33 clauses, 24 obligations, and 3 identified risks**. Among the extracted risks were a termination trigger rated as high risk (*"automatically terminate your rights under this License…"*) and an unlimited liability clause.
 
 ![Contract Engine: Llama 3.1 structured extraction from the GNU GPL v3](/images/contract-engine-analysis.png)
 *Once the model decides the document is a contract, the analysis proceeds with confidence.*
