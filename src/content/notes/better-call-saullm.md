@@ -10,13 +10,13 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 - **Experiment**: six open-source LLMs classify four ambiguous legal documents. Three small models on a laptop, three larger models on an Nvidia H100 in a European data center. One of them a legal specialist.
 - **Why it matters**: if you use an LLM as a classification gate in a document pipeline, you need to know how stable that gate actually is.
-- **Key insight**: temperature 0.1 is supposed to be near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. Scaling up did not help, but **domain fine-tuning outperformed raw parameter count**.
+- **Key insight**: temperature 0.1 is supposed to be near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. Scaling up did not help, but domain fine-tuning outperformed raw parameter count.
 
 ## Context
 
 A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> tested whether contract classification could run entirely on a local laptop using open-source LLMs. Three small models agreed on the easy documents and **disagreed on the hard ones**. Which raised the obvious follow-up: **do bigger, more capable models resolve the disagreement?**
 
-Short answer: they just disagree more eloquently. The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (wrong) conditions.
+Short answer: they just disagree more eloquently. The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (i.e. wrong) conditions.
 
 ## The Experiment
 
@@ -33,13 +33,11 @@ One disclosure about that prompt: it includes the phrase *"contract, legal agree
 | <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Sample Terms of Service</a> | The classification prompt literally mentions "terms of service." Does the model take the bait? |
 | <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not legally binding in the traditional sense, but structurally looks exactly like a contract. |
 
-**Six open-source LLMs** evaluated these documents. On the local side, the same three small models from the <a href="/notes/privacy-first-contract-analysis">previous experiment</a> ran on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>.
-
 ## The Local Court
 
-Before bringing in the bigger models, a sanity check: run the same three local models on the four new documents. Same pipeline, same prompt, same temperature. Do they at least agree with themselves?
+**Six open-source LLMs** evaluated these documents. The first three were the same small models from a <a href="/notes/privacy-first-contract-analysis">previous experiment</a>, running on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>. Before bringing in the bigger models, a sanity check was in order: run the same three local models on the four new documents. Same pipeline, same prompt, same temperature. At the very least, the models should agree with themselves.
 
-They did not pass the sanity check.
+They did not.
 
 On the very first run, Llama 3.1 (8B) classified the GPL v3 as NOT CONTRACT. 90% confidence. Its reasoning: the document *"grants permissions rather than establishes contractual relationships."* This was consistent with what was observed in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>.
 
