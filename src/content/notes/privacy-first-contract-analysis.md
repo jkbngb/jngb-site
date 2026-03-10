@@ -85,10 +85,12 @@ At this point the models behaved a bit like lawyers: they disagreed.
 This suggests that model behavior remains relatively stable for clearly defined document types, but becomes less reliable once categories are legally or semantically ambiguous. Which, conveniently, remains a fairly common situation in law.
 
 |  | CV | NDA | GPL v3 |
-|---|---|---|---|
-| **Llama 3.1 (8B)** | ❌ Not a contract | ✅ Contract | ✅ Contract |
-| **Mistral Nemo (12B)** | ❌ Not a contract | ✅ Contract | ❌ Not a contract |
-| **Qwen 2.5 (14B)** | ❌ Not a contract | ✅ Contract | ❌ Not a contract |
+|---|:---:|:---:|:---:|
+| **Llama 3.1 (8B)** | ❌ | ✅ | ✅ |
+| **Mistral Nemo (12B)** | ❌ | ✅ | ❌ |
+| **Qwen 2.5 (14B)** | ❌ | ✅ | ❌ |
+
+<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
 
 *Unanimous on the easy cases. A 2–1 split on the hard one.*
 
