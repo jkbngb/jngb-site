@@ -37,7 +37,7 @@ One disclosure about that prompt: it includes the phrase *"contract, legal agree
 | <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Sample Terms of Service</a> | The classification prompt literally mentions "terms of service." Does the model take the bait? |
 | <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not legally binding in the traditional sense, but structurally looks exactly like a contract. |
 
-For the record: the author does not have a law degree and makes no claim to understanding what actually constitutes a contract. The models, as it turned out, didn't either.
+For the record: the author does not have a law degree and makes no claim to understand what actually constitutes a contract. The models, as it turned out, didn't either.
 
 ## The Local Court
 
