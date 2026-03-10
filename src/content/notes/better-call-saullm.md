@@ -66,10 +66,10 @@ All four documents went through the pipeline. The results:
 
 | Document | Llama 8B | Mistral 12B | Qwen 14B |
 |----------|:--------:|:-----------:|:--------:|
-| GPL v3 | 🤷‍♂️ | ❌ | ❌ |
-| CC BY-SA 4.0 | ❌ | ❌ | ❌ |
-| Terms of Service | ❌ | ❌ | ✅ |
-| MoU | ✅ | ❌ | ✅ |
+| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a> | 🤷‍♂️ | ❌ | ❌ |
+| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a> | ❌ | ❌ | ❌ |
+| <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Terms of Service</a> | ❌ | ❌ | ✅ |
+| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a> | ✅ | ❌ | ✅ |
 
 <p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
 
@@ -103,10 +103,10 @@ SaulLM looked at the four documents and delivered its opinion with the quiet con
 
 | Document | SaulLM 54B |
 |----------|:----------:|
-| GPL v3 | ❌ |
-| CC BY-SA 4.0 | ❌ |
-| Terms of Service | ❌ |
-| MoU | ✅ |
+| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a> | ❌ |
+| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a> | ❌ |
+| <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Terms of Service</a> | ❌ |
+| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a> | ✅ |
 
 <p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
 
@@ -135,10 +135,10 @@ With all twenty-four classifications complete, the combined picture looked like 
 
 | Document | <span style="color:#4285f4">Llama 8B</span> | <span style="color:#e8710a">Mistral 12B</span> | <span style="color:#22c55e">Qwen 14B</span> | | <span style="color:#4285f4">Llama 70B</span> | <span style="color:#22c55e">Qwen 72B</span> | <span style="color:#e8710a">SaulLM 54B</span> |
 |----------|:--------:|:-----------:|:--------:|---|:---------:|:--------:|:----------:|
-| GPL v3 | 🤷‍♂️ | ❌ | ❌ | | ✅ | ❌ | ❌ |
-| CC BY-SA 4.0 | ❌ | ❌ | ❌ | | ✅ | ✅ | ❌ |
-| ToS | ❌ | ❌ | ✅ | | ✅ | ✅ | ❌ |
-| MoU | ✅ | ❌ | ✅ | | ✅ | ✅ | ✅ |
+| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a> | 🤷‍♂️ | ❌ | ❌ | | ✅ | ❌ | ❌ |
+| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a> | ❌ | ❌ | ❌ | | ✅ | ✅ | ❌ |
+| <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">ToS</a> | ❌ | ❌ | ✅ | | ✅ | ✅ | ❌ |
+| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a> | ✅ | ❌ | ✅ | | ✅ | ✅ | ✅ |
 
 <p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract<br><span style="color:#4285f4">●</span> Meta &emsp; <span style="color:#e8710a">●</span> Mistral &emsp; <span style="color:#22c55e">●</span> Alibaba</p>
 
