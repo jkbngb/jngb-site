@@ -39,7 +39,7 @@ For the record: the author does not have a law degree and makes no claim to unde
 
 ## The Local Court
 
-**Six open-source LLMs** evaluated these documents. The first three were the same small models from a <a href="/notes/privacy-first-contract-analysis">previous experiment</a>, running on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>.
+**Six open-source LLMs** evaluated these documents. The first three were the same small models from the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>, running on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>.
 
 Before running the new documents, a sanity check. In the previous experiment, Llama 3.1 (8B) had classified the <a href="/notes/privacy-first-contract-analysis">GPL v3 as a contract</a>. Same model, same document, same prompt, same hardware, same temperature. If nothing else, that result should be reproducible.
 
