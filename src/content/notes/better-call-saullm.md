@@ -129,13 +129,14 @@ The H100 managed 9.7 tokens per second on the MoU analysis. The MacBook did 16.4
 
 With all twenty-four classifications complete, the combined picture looked like this:
 
-| Document | Llama 8B | Mistral 12B | Qwen 14B | | Llama 70B | Qwen 72B | SaulLM 54B |
+| Document | <span style="color:#4285f4">Llama 8B</span> | <span style="color:#e8710a">Mistral 12B</span> | <span style="color:#22c55e">Qwen 14B</span> | | <span style="color:#4285f4">Llama 70B</span> | <span style="color:#22c55e">Qwen 72B</span> | <span style="color:#e8710a">SaulLM 54B</span> |
 |----------|:--------:|:-----------:|:--------:|---|:---------:|:--------:|:----------:|
-| | *Meta* | *Mistral* | *Alibaba* | | *Meta* | *Alibaba* | *Mistral* |
 | GPL v3 | 🤷‍♂️ | ❌ | ❌ | | ✅ | ❌ | ❌ |
 | CC BY-SA 4.0 | ❌ | ❌ | ❌ | | ✅ | ✅ | ❌ |
 | ToS | ❌ | ❌ | ✅ | | ✅ | ✅ | ❌ |
 | MoU | ✅ | ❌ | ✅ | | ✅ | ✅ | ✅ |
+
+<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;"><span style="color:#4285f4">●</span> Meta &emsp; <span style="color:#e8710a">●</span> Mistral &emsp; <span style="color:#22c55e">●</span> Alibaba</p>
 
 *The verdict of what actually constitutes a contract is in. It is... confusing.*
 
