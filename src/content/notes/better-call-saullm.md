@@ -133,14 +133,64 @@ The H100 managed 9.7 tokens per second on the MoU analysis. The MacBook did 16.4
 
 With all twenty-four classifications complete, the combined picture looked like this:
 
-| Document | <span style="color:#4285f4">Llama 8B</span> | <span style="color:#e8710a">Mistral 12B</span> | <span style="color:#22c55e">Qwen 14B</span> | | <span style="color:#4285f4">Llama 70B</span> | <span style="color:#22c55e">Qwen 72B</span> | <span style="color:#e8710a">SaulLM 54B</span> |
-|----------|:--------:|:-----------:|:--------:|---|:---------:|:--------:|:----------:|
-| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a> | 🤷‍♂️ | ❌ | ❌ | | ✅ | ❌ | ❌ |
-| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a> | ❌ | ❌ | ❌ | | ✅ | ✅ | ❌ |
-| <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">ToS</a> | ❌ | ❌ | ✅ | | ✅ | ✅ | ❌ |
-| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a> | ✅ | ❌ | ✅ | | ✅ | ✅ | ✅ |
+<table style="width:100%; border-collapse:collapse; text-align:center;">
+  <thead>
+    <tr>
+      <th style="text-align:left;">Document</th>
+      <th style="background:#dbeafe;">Llama 8B</th>
+      <th style="background:#ffedd5;">Mistral 12B</th>
+      <th style="background:#dcfce7;">Qwen 14B</th>
+      <th style="width:0.5em; border:none;"></th>
+      <th style="background:#dbeafe;">Llama 70B</th>
+      <th style="background:#dcfce7;">Qwen 72B</th>
+      <th style="background:#ffedd5;">SaulLM 54B</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left;"><a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a></td>
+      <td style="background:#dbeafe;">🤷‍♂️</td>
+      <td style="background:#ffedd5;">❌</td>
+      <td style="background:#dcfce7;">❌</td>
+      <td style="border:none;"></td>
+      <td style="background:#dbeafe;">✅</td>
+      <td style="background:#dcfce7;">❌</td>
+      <td style="background:#ffedd5;">❌</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a></td>
+      <td style="background:#dbeafe;">❌</td>
+      <td style="background:#ffedd5;">❌</td>
+      <td style="background:#dcfce7;">❌</td>
+      <td style="border:none;"></td>
+      <td style="background:#dbeafe;">✅</td>
+      <td style="background:#dcfce7;">✅</td>
+      <td style="background:#ffedd5;">❌</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">ToS</a></td>
+      <td style="background:#dbeafe;">❌</td>
+      <td style="background:#ffedd5;">❌</td>
+      <td style="background:#dcfce7;">✅</td>
+      <td style="border:none;"></td>
+      <td style="background:#dbeafe;">✅</td>
+      <td style="background:#dcfce7;">✅</td>
+      <td style="background:#ffedd5;">❌</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a></td>
+      <td style="background:#dbeafe;">✅</td>
+      <td style="background:#ffedd5;">❌</td>
+      <td style="background:#dcfce7;">✅</td>
+      <td style="border:none;"></td>
+      <td style="background:#dbeafe;">✅</td>
+      <td style="background:#dcfce7;">✅</td>
+      <td style="background:#ffedd5;">✅</td>
+    </tr>
+  </tbody>
+</table>
 
-<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract<br><span style="color:#4285f4">●</span> Meta &emsp; <span style="color:#e8710a">●</span> Mistral &emsp; <span style="color:#22c55e">●</span> Alibaba</p>
+<p style="text-align:center; font-size:0.9em; margin-top:0.5em;">✅ contract &emsp; ❌ not contract<br><span style="background:#dbeafe; padding:2px 8px;">Meta</span> &emsp; <span style="background:#ffedd5; padding:2px 8px;">Mistral</span> &emsp; <span style="background:#dcfce7; padding:2px 8px;">Alibaba</span></p>
 
 *The verdict of what actually constitutes a contract is in. It is... confusing.*
 
