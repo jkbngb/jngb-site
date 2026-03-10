@@ -18,7 +18,7 @@ A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> teste
 
 Short answer: they just disagree more eloquently.
 
-The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (i.e. wrong) conditions.
+The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (i.e., wrong) conditions.
 
 ## The Experiment
 
