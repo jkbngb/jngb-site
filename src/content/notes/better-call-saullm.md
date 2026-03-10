@@ -64,12 +64,42 @@ All four documents went through the pipeline. The results:
 - **Qwen was the most prompt-compliant.** The classification prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
 - **Every model reported 90 to 100% confidence.** On every document. Including the ones they disagreed on. Including the one where Llama disagreed with itself. Confidence scores, on ambiguous legal documents, are noise.
 
-| Document | Llama 8B | Mistral 12B | Qwen 14B |
-|----------|:--------:|:-----------:|:--------:|
-| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a> | 🤷‍♂️ | ❌ | ❌ |
-| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a> | ❌ | ❌ | ❌ |
-| <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Terms of Service</a> | ❌ | ❌ | ✅ |
-| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a> | ✅ | ❌ | ✅ |
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th style="text-align:left;">Document</th>
+      <th style="text-align:center;">Llama 8B</th>
+      <th style="text-align:center;">Mistral 12B</th>
+      <th style="text-align:center;">Qwen 14B</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align:left;"><a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a></td>
+      <td style="text-align:center;">🤷‍♂️</td>
+      <td style="text-align:center;">❌</td>
+      <td style="text-align:center;">❌</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a></td>
+      <td style="text-align:center;">❌</td>
+      <td style="text-align:center;">❌</td>
+      <td style="text-align:center;">❌</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Terms of Service</a></td>
+      <td style="text-align:center;">❌</td>
+      <td style="text-align:center;">❌</td>
+      <td style="text-align:center;">✅</td>
+    </tr>
+    <tr>
+      <td style="text-align:left;"><a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a></td>
+      <td style="text-align:center;">✅</td>
+      <td style="text-align:center;">❌</td>
+      <td style="text-align:center;">✅</td>
+    </tr>
+  </tbody>
+</table>
 
 <p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
 
@@ -99,18 +129,7 @@ SaulLM 54B is a legal-domain LLM, fine-tuned on court rulings, legislative docum
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
 
-SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. Classification in under two seconds. This is what you expect when an H100 meets a model that doesn't waste compute.
-
-| Document | SaulLM 54B |
-|----------|:----------:|
-| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a> | ❌ |
-| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a> | ❌ |
-| <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Terms of Service</a> | ❌ |
-| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a> | ✅ |
-
-<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
-
-*Three out of four: not a contract. On the MoU, a confident yes.*
+SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. Classification in under two seconds. This is what you expect when an H100 meets a model that doesn't waste compute. Three out of four: not a contract. Only the MoU got a confident yes.
 
 But in the interest of judicial transparency, a potential conflict of interest must be disclosed.
 
@@ -137,55 +156,55 @@ With all twenty-four classifications complete, the combined picture looked like 
   <thead>
     <tr>
       <th style="text-align:left;">Document</th>
-      <th style="background:#dbeafe;">Llama 8B</th>
-      <th style="background:#ffedd5;">Mistral 12B</th>
-      <th style="background:#dcfce7;">Qwen 14B</th>
+      <th style="text-align:center; background:#dbeafe;">Llama 8B</th>
+      <th style="text-align:center; background:#ffedd5;">Mistral 12B</th>
+      <th style="text-align:center; background:#dcfce7;">Qwen 14B</th>
       <th style="width:0.5em; border:none;"></th>
-      <th style="background:#dbeafe;">Llama 70B</th>
-      <th style="background:#dcfce7;">Qwen 72B</th>
-      <th style="background:#ffedd5;">SaulLM 54B</th>
+      <th style="text-align:center; background:#dbeafe;">Llama 70B</th>
+      <th style="text-align:center; background:#dcfce7;">Qwen 72B</th>
+      <th style="text-align:center; background:#ffedd5;">SaulLM 54B</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align:left;"><a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GPL v3</a></td>
-      <td style="background:#dbeafe;">🤷‍♂️</td>
-      <td style="background:#ffedd5;">❌</td>
-      <td style="background:#dcfce7;">❌</td>
+      <td style="text-align:center; background:#dbeafe;">🤷‍♂️</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">❌</td>
       <td style="border:none;"></td>
-      <td style="background:#dbeafe;">✅</td>
-      <td style="background:#dcfce7;">❌</td>
-      <td style="background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dbeafe;">✅</td>
+      <td style="text-align:center; background:#dcfce7;">❌</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
     </tr>
     <tr>
       <td style="text-align:left;"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a></td>
-      <td style="background:#dbeafe;">❌</td>
-      <td style="background:#ffedd5;">❌</td>
-      <td style="background:#dcfce7;">❌</td>
+      <td style="text-align:center; background:#dbeafe;">❌</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">❌</td>
       <td style="border:none;"></td>
-      <td style="background:#dbeafe;">✅</td>
-      <td style="background:#dcfce7;">✅</td>
-      <td style="background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dbeafe;">✅</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
     </tr>
     <tr>
       <td style="text-align:left;"><a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">ToS</a></td>
-      <td style="background:#dbeafe;">❌</td>
-      <td style="background:#ffedd5;">❌</td>
-      <td style="background:#dcfce7;">✅</td>
+      <td style="text-align:center; background:#dbeafe;">❌</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="border:none;"></td>
-      <td style="background:#dbeafe;">✅</td>
-      <td style="background:#dcfce7;">✅</td>
-      <td style="background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dbeafe;">✅</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
     </tr>
     <tr>
       <td style="text-align:left;"><a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a></td>
-      <td style="background:#dbeafe;">✅</td>
-      <td style="background:#ffedd5;">❌</td>
-      <td style="background:#dcfce7;">✅</td>
+      <td style="text-align:center; background:#dbeafe;">✅</td>
+      <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="border:none;"></td>
-      <td style="background:#dbeafe;">✅</td>
-      <td style="background:#dcfce7;">✅</td>
-      <td style="background:#ffedd5;">✅</td>
+      <td style="text-align:center; background:#dbeafe;">✅</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
+      <td style="text-align:center; background:#ffedd5;">✅</td>
     </tr>
   </tbody>
 </table>
