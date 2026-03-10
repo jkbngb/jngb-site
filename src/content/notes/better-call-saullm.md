@@ -54,7 +54,15 @@ Temperature 0.1 is supposed to be near-deterministic. But it seems not determini
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
 
-The remaining local runs were more stable, but no more predictable.
+The remaining local runs were more stable and confirmed their previous judgements. Time to see how the three models would classify the other ambiguous documents.
+
+All four documents went through the pipeline. The results:
+
+**No two documents produced the same coalition.** Every document split the court differently:
+
+- **Mistral was the hanging judge.** Four documents, four times NOT CONTRACT. Its reasoning was consistently structural: no named parties, no signatures, no deal.
+- **Qwen was the most prompt-compliant.** The classification prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
+- **Every model reported 90 to 100% confidence.** On every document. Including the ones they disagreed on. Including the one where Llama disagreed with itself. Confidence scores, on ambiguous legal documents, are noise.
 
 | Document | Llama 8B | Mistral 12B | Qwen 14B |
 |----------|:--------:|:-----------:|:--------:|
@@ -64,12 +72,6 @@ The remaining local runs were more stable, but no more predictable.
 | MoU | ✅ | ❌ | ✅ |
 
 *The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
-
-**No two documents produced the same coalition.** Every document split the court differently:
-
-- **Mistral was the hanging judge.** Four documents, four times NOT CONTRACT. Its reasoning was consistently structural: no named parties, no signatures, no deal.
-- **Qwen was the most prompt-compliant.** The classification prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
-- **Every model reported 90 to 100% confidence.** On every document. Including the ones they disagreed on. Including the one where Llama disagreed with itself. Confidence scores, on ambiguous legal documents, are noise.
 
 The small models couldn't agree on what constitutes a contract. So what would a lawyer do? Exactly. Appeal to a higher court.
 
