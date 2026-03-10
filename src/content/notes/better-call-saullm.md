@@ -94,7 +94,7 @@ The question was straightforward: does scale resolve the disagreement? Does lega
 
 The first model to take the bench was not a bigger generalist. It was a specialist.
 
-<a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">SaulLM 54B</a> is a legal-domain LLM, fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
+SaulLM 54B is a legal-domain LLM, fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
