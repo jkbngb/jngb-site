@@ -22,7 +22,9 @@ The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and
 
 ## The Experiment
 
-The pipeline processes uploaded PDFs through eight steps: extraction, normalization, whitespace collapsing, classification, chunking, analysis, and structured output. The LLM only appears at step four, where it receives the beginning of the document and a <a href="/classification-prompt.txt" target="_blank">classification prompt</a> asking it to decide: contract or not? Temperature 0.1 across every run, meaning the model picks the most likely next token 90% of the time, with just a sliver of randomness left.
+The pipeline processes uploaded PDFs through eight steps: extraction, normalization, whitespace collapsing, classification, chunking, analysis, and structured output. The LLM only appears at step four, where it receives the beginning of the document and a <a href="/classification-prompt.txt" target="_blank">classification prompt</a> asking it to decide: contract or not?
+
+Temperature 0.1 across every run, meaning the model picks the most likely next token 90% of the time, with just a sliver of randomness left.
 
 One disclosure about that prompt: it includes the phrase *"contract, legal agreement, or terms of service."* That phrasing nudges the model toward classifying a Terms of Service as a contract. Some models followed the hint. Others ignored it entirely.
 
