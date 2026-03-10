@@ -1,7 +1,7 @@
 ---
 title: "When LLMs Disagree: Testing Local Models on Contract Classification"
 summary: "The nice thing about document classification is that it sounds simple.<br><br>The less nice thing is that it becomes considerably less simple the moment you hand the same legal document to three different <strong>open-source LLMs running on a laptop</strong> – and get two different answers back.<br><br>All three models were confident. One said yes, two said no.<br><br>The interesting part isn't which one was right. It's <strong>what this kind of disagreement tells you about how AI systems actually need to be built</strong>."
-date: "2026-02"
+date: "February 2026"
 tags: ["local-llm", "privacy", "document-processing", "pipeline-architecture"]
 stack: ["Python", "Ollama", "llama3.1:8b", "mistral-nemo:12b", "qwen2.5:14b"]
 ---
