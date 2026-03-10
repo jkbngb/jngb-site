@@ -157,7 +157,7 @@ With all twenty-four classifications complete, the combined picture looked like 
     <tr>
       <th></th>
       <th colspan="3" style="text-align:center; border:none; font-weight:normal; font-size:0.85em; color:#888; padding-bottom:0;">Local</th>
-      <th colspan="3" style="text-align:center; border:none; border-left:2px solid #ccc; font-weight:normal; font-size:0.85em; color:#888; padding-bottom:0;">Cloud</th>
+      <th colspan="3" style="text-align:center; border:none; border-left:2px solid #ccc; font-weight:normal; font-size:0.85em; color:#888; padding-bottom:0;">Remote</th>
     </tr>
     <tr>
       <th style="text-align:left;">Document</th>
@@ -165,8 +165,8 @@ With all twenty-four classifications complete, the combined picture looked like 
       <th style="text-align:center; background:#ffedd5;">Mistral 12B</th>
       <th style="text-align:center; background:#dcfce7;">Qwen 14B</th>
       <th style="text-align:center; background:#dbeafe; border-left:2px solid #ccc;">Llama 70B</th>
-      <th style="text-align:center; background:#dcfce7;">Qwen 72B</th>
       <th style="text-align:center; background:#ffedd5;">SaulLM 54B</th>
+      <th style="text-align:center; background:#dcfce7;">Qwen 72B</th>
     </tr>
   </thead>
   <tbody>
@@ -176,8 +176,8 @@ With all twenty-four classifications complete, the combined picture looked like 
       <td style="text-align:center; background:#ffedd5;">❌</td>
       <td style="text-align:center; background:#dcfce7;">❌</td>
       <td style="text-align:center; background:#dbeafe; border-left:2px solid #ccc;">✅</td>
-      <td style="text-align:center; background:#dcfce7;">❌</td>
       <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">❌</td>
     </tr>
     <tr>
       <td style="text-align:left;"><a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">CC BY-SA 4.0</a></td>
@@ -185,8 +185,8 @@ With all twenty-four classifications complete, the combined picture looked like 
       <td style="text-align:center; background:#ffedd5;">❌</td>
       <td style="text-align:center; background:#dcfce7;">❌</td>
       <td style="text-align:center; background:#dbeafe; border-left:2px solid #ccc;">✅</td>
-      <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
     </tr>
     <tr>
       <td style="text-align:left;"><a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">ToS</a></td>
@@ -194,8 +194,8 @@ With all twenty-four classifications complete, the combined picture looked like 
       <td style="text-align:center; background:#ffedd5;">❌</td>
       <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="text-align:center; background:#dbeafe; border-left:2px solid #ccc;">✅</td>
-      <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="text-align:center; background:#ffedd5;">❌</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
     </tr>
     <tr>
       <td style="text-align:left;"><a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">MoU</a></td>
@@ -203,8 +203,8 @@ With all twenty-four classifications complete, the combined picture looked like 
       <td style="text-align:center; background:#ffedd5;">❌</td>
       <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="text-align:center; background:#dbeafe; border-left:2px solid #ccc;">✅</td>
-      <td style="text-align:center; background:#dcfce7;">✅</td>
       <td style="text-align:center; background:#ffedd5;">✅</td>
+      <td style="text-align:center; background:#dcfce7;">✅</td>
     </tr>
   </tbody>
 </table>
