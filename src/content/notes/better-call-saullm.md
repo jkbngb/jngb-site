@@ -113,10 +113,12 @@ The small models couldn't agree on what constitutes a contract. So what would a 
 
 A proper appeal needs proper hardware. The compute runs on <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a>, a European cloud provider, which in the current geopolitical climate might be reassuring to some. Scaleway offers GPU instances in Paris and Warsaw. Paris was fully booked, so the court convened in Warsaw. The cost of this appeal: **€2.73 per hour**, billed per minute.
 
+Once the hardware was running, <a href="https://docs.vllm.ai/" target="_blank">vLLM</a> was installed as the inference server.
+
 ![H100 server specs](/images/h100-neofetch.png)
 *AMD EPYC, 240 GB system memory, Nvidia H100 PCIe with 80 GB VRAM. The bench is ready.*
 
-Three larger models took the stand. Same documents. Same prompt. Same temperature:
+Three larger models were downloaded from Hugging Face and took the stand. Same documents. Same prompt. Same temperature:
 
 - <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">**Llama 3.1 (70B)**</a> – the bigger sibling of the 8B that couldn't agree with itself
 - <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen 2.5 (72B)**</a> – the bigger sibling of the 14B that was the lone dissenter on Terms of Service
