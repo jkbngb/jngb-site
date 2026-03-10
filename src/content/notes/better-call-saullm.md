@@ -71,7 +71,7 @@ All four documents went through the pipeline. The results:
 | Terms of Service | ❌ | ❌ | ✅ |
 | MoU | ✅ | ❌ | ✅ |
 
-<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract &emsp; 🤷‍♂️ flipped between runs</p>
+<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
 
 *The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
 
@@ -138,7 +138,7 @@ With all twenty-four classifications complete, the combined picture looked like 
 | ToS | ❌ | ❌ | ✅ | | ✅ | ✅ | ❌ |
 | MoU | ✅ | ❌ | ✅ | | ✅ | ✅ | ✅ |
 
-<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract &emsp; 🤷‍♂️ flipped between runs<br><span style="color:#4285f4">●</span> Meta &emsp; <span style="color:#e8710a">●</span> Mistral &emsp; <span style="color:#22c55e">●</span> Alibaba</p>
+<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract<br><span style="color:#4285f4">●</span> Meta &emsp; <span style="color:#e8710a">●</span> Mistral &emsp; <span style="color:#22c55e">●</span> Alibaba</p>
 
 *The verdict of what actually constitutes a contract is in. It is... confusing.*
 
