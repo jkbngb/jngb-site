@@ -108,6 +108,8 @@ SaulLM looked at the four documents and delivered its opinion with the quiet con
 | Terms of Service | ❌ |
 | MoU | ✅ |
 
+<p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
+
 *Three out of four: not a contract. On the MoU, a confident yes.*
 
 But in the interest of judicial transparency, a potential conflict of interest must be disclosed.
