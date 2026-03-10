@@ -1,5 +1,5 @@
 ---
-title: "Better Call Saul(LM): Six Models, Four Documents, Zero Consensus"
+title: "Better Call Saul(LM): Do Bigger Models Actually Agree on Ambiguous Documents?"
 summary: "Six open-source LLMs were asked to classify four ambiguous legal documents as contract or not contract. Same prompt. Same temperature. Same documents.<br><br>One model <strong>disagreed with itself</strong> on successive runs. The bigger models did not agree more. They disagreed differently.<br><br>Scaling up did not resolve the disagreement, but <strong>a legal-specialist model came closest to getting it right</strong>."
 date: "2026-03"
 tags: ["local-llm", "cloud-gpu", "document-processing", "model-disagreement"]
@@ -14,9 +14,11 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 ## Context
 
-A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> tested whether contract classification could run entirely on a local laptop using open-source LLMs. Three small models agreed on the easy documents and **disagreed on the hard ones**. Which raised the obvious follow-up: **do bigger, more capable models resolve the disagreement?**
+A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> tested whether contract classification could run entirely on a local laptop using open-source LLMs. Three small models agreed on the easy documents and **disagreed on the hard one**. Which raised the obvious follow-up: **do bigger, more capable models resolve the disagreement?**
 
-Short answer: they just disagree more eloquently. The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (i.e. wrong) conditions.
+Short answer: they just disagree more eloquently.
+
+The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (i.e. wrong) conditions.
 
 ## The Experiment
 
@@ -33,24 +35,26 @@ One disclosure about that prompt: it includes the phrase *"contract, legal agree
 | <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Sample Terms of Service</a> | The classification prompt literally mentions "terms of service." Does the model take the bait? |
 | <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not legally binding in the traditional sense, but structurally looks exactly like a contract. |
 
+For the record: the author does not have a law degree and makes no claim to understanding what actually constitutes a contract. The models, as it turned out, didn't either.
+
 ## The Local Court
 
-**Six open-source LLMs** evaluated these documents. The first three were the same small models from a <a href="/notes/privacy-first-contract-analysis">previous experiment</a>, running on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>. Before bringing in the bigger models, a sanity check was in order: run the same three local models on the four new documents. Same pipeline, same prompt, same temperature. At the very least, the models should agree with themselves.
+**Six open-source LLMs** evaluated these documents. The first three were the same small models from a <a href="/notes/privacy-first-contract-analysis">previous experiment</a>, running on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>.
 
-They did not.
+Before running the new documents, a sanity check. In the previous experiment, Llama 3.1 (8B) had classified the <a href="/notes/privacy-first-contract-analysis">GPL v3 as a contract</a>. Same model, same document, same prompt, same hardware, same temperature. If nothing else, that result should be reproducible.
 
-On the very first run, Llama 3.1 (8B) classified the GPL v3 as NOT CONTRACT. 90% confidence. Its reasoning: the document *"grants permissions rather than establishes contractual relationships."* This was consistent with what was observed in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>.
+It was not. Llama classified the GPL v3 as NOT CONTRACT. 90% confidence. Its reasoning this time: the document *"grants permissions rather than establishes contractual relationships."*
 
-**Same model. Same document. Same prompt. Same hardware. Same temperature. Different result.**
+**The experiment could not even be reproduced before it had properly started.**
 
-On the second run, Llama classified the GPL as CONTRACT. 90% confidence. 25 minutes of full contract analysis followed. This time the reasoning was that the document *"contains a preamble, terms and conditions, and obligations for developers and users."* Both arguments are defensible. That is the problem.
+So we ran it again, just to be sure. This time: CONTRACT. 90% confidence. 25 minutes of full contract analysis followed. The reasoning was that the document *"contains a preamble, terms and conditions, and obligations for developers and users."* Both arguments are defensible. That is the problem.
 
 Temperature 0.1 is supposed to be near-deterministic. But it seems not deterministic enough. On a document like the GPL, the model sits right on a decision boundary, and a tiny amount of sampling noise is enough to flip the verdict.
 
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
-*The bottom row: NOT CONTRACT (8.1 seconds, done). The top row, minutes later: CONTRACT (25 minutes of full analysis). Llama 3.1 can't make up its mind. Temperature 0.1.*
+*Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
 
-The remaining local runs were more stable. The patterns they revealed, however, were no less uncomfortable.
+The remaining local runs were more stable, but no more predictable.
 
 | Document | Llama 8B | Mistral 12B | Qwen 14B |
 |----------|:--------:|:-----------:|:--------:|
@@ -59,13 +63,15 @@ The remaining local runs were more stable. The patterns they revealed, however, 
 | Terms of Service | ❌ | ❌ | ✅ |
 | MoU | ✅ | ❌ | ✅ |
 
+*The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
+
 **No two documents produced the same coalition.** Every document split the court differently:
 
 - **Mistral was the hanging judge.** Four documents, four times NOT CONTRACT. Its reasoning was consistently structural: no named parties, no signatures, no deal.
 - **Qwen was the most prompt-compliant.** The classification prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
 - **Every model reported 90 to 100% confidence.** On every document. Including the ones they disagreed on. Including the one where Llama disagreed with itself. Confidence scores, on ambiguous legal documents, are noise.
 
-The small models couldn't agree. So what would a lawyer do? Exactly. Appeal to a higher court.
+The small models couldn't agree on what constitutes a contract. So what would a lawyer do? Exactly. Appeal to a higher court.
 
 ## Oyez! Oyez! Oyez!
 
@@ -84,7 +90,7 @@ The question was straightforward: does scale resolve the disagreement? Does lega
 
 The first model to take the bench was not a bigger generalist. It was a specialist.
 
-<a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">SaulLM 54B</a> is a legal-domain LLM, fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree.
+<a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">SaulLM 54B</a> is a legal-domain LLM, fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
@@ -98,7 +104,7 @@ SaulLM looked at the four documents and delivered its opinion with the quiet con
 | Terms of Service | ❌ |
 | MoU | ✅ |
 
-Three out of four: not a contract. On the MoU, a confident yes.
+*Three out of four: not a contract. On the MoU, a confident yes.*
 
 But in the interest of judicial transparency, a potential conflict of interest must be disclosed.
 
@@ -110,7 +116,7 @@ The MoU is where legal training made the difference. Mistral 12B rejected it (no
 
 **Legal training didn't make the model more permissive. It made it more precise.** It still rejected the licenses and the ToS despite the prompt nudge, but it identified the MoU as what it structurally is: an agreement between named parties with defined obligations. Legal school didn't lower the bar. It taught the model where the bar actually stands.
 
-The two remaining cloud models told a different story entirely.
+The two remaining cloud models were the larger siblings of the local models, and we wanted to test whether verdicts run along family lines, the way ideology runs along party lines on the US Supreme Court.
 
 - <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">**Llama 3.1 70B**</a> classified all four documents as CONTRACT. Every single one. Its 8B version was cautious, mostly saying no. Its 70B version said yes to everything. Scale didn't stabilize the decision boundary. It moved it entirely to the other side.
 - <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen 2.5 72B**</a> classified three out of four as CONTRACT. It agreed with its 14B sibling on the GPL (no), ToS (yes), and MoU (yes), but flipped on CC BY-SA. The smaller model said no. The bigger model decided a Creative Commons license qualifies as a "legal agreement." A more generous reading, not necessarily a better one.
@@ -123,12 +129,13 @@ With all twenty-four classifications complete, the combined picture looked like 
 
 | Document | Llama 8B | Mistral 12B | Qwen 14B | | Llama 70B | Qwen 72B | SaulLM 54B |
 |----------|:--------:|:-----------:|:--------:|---|:---------:|:--------:|:----------:|
+| | *Meta* | *Mistral* | *Alibaba* | | *Meta* | *Alibaba* | *Mistral* |
 | GPL v3 | 🤷‍♂️ | ❌ | ❌ | | ✅ | ❌ | ❌ |
 | CC BY-SA 4.0 | ❌ | ❌ | ❌ | | ✅ | ✅ | ❌ |
 | ToS | ❌ | ❌ | ✅ | | ✅ | ✅ | ❌ |
 | MoU | ✅ | ❌ | ✅ | | ✅ | ✅ | ✅ |
 
-*The verdict is in. It is... confusing.*
+*The verdict of what actually constitutes a contract is in. It is... confusing.*
 
 Six models. Four documents. **No stable coalition.** The Mistral family (Mistral 12B and its legal derivative SaulLM) was the strictest, rejecting almost everything.
 
@@ -140,12 +147,12 @@ The only near-consensus was the MoU: five of six models classified it as a contr
 
 ## So What?
 
-This experiment was never about finding the "right" answer. The GPL v3 is genuinely ambiguous. Reasonable lawyers disagree about whether open-source licenses are contracts. Reasonable models do the same.
+This experiment was never about finding the "right" answer. The GPL v3 is genuinely ambiguous. Reasonable lawyers disagree about whether open-source licenses are contracts (or so the author is told, being neither a lawyer nor anything remotely adjacent to one). Reasonable models do the same.
 
 **A single model is not enough for classification gates on ambiguous documents.** Temperature 0.1 can still produce different results on successive runs. Confidence scores read 90 to 100% even when the model is contradicting itself.
 
 And scaling up does not converge on truth: Llama 70B's 4/4 YES is not more correct than Llama 8B's mostly NO. It is a different bias, not a better one.
 
-The most defensible set of decisions came from SaulLM, the legal specialist. It didn't need the most parameters. It needed the right training data. **If you are choosing between a bigger generalist and a smaller specialist for a domain-specific classification task, this experiment suggests the specialist is worth a serious look.**
+The most defensible set of decisions came from SaulLM, the legal specialist. It didn't need the most parameters. It needed the right training data. If you are choosing between a bigger generalist and a smaller specialist for a domain-specific classification task, this experiment suggests the specialist is worth a serious look.
 
 In practice, a production system probably needs multiple models, a voting mechanism, and a human in the loop for the cases where the models split. **When they disagree, that is not a failure. That is information.** The mistake is building a system that pretends ambiguity doesn't exist.
