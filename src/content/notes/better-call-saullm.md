@@ -18,7 +18,7 @@ A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> asked
 
 That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?**
 
-Short answer: no, they just disagree more eloquently.
+The short answer is, that they just disagree more eloquently.
 
 The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the mildly awkward discovery that a MacBook Air can outpace a data center GPU under the right (i.e., wrong) conditions.
 
