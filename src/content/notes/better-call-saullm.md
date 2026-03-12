@@ -70,15 +70,11 @@ That finding matters more than it first seems. If a classification gate can swit
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
 
-The remaining local runs were more stable and confirmed their previous judgements. Time to see how the three models would classify the other ambiguous documents.
+The remaining local runs were more consistent. Across all four documents, three observations stood out.
 
-All four documents went through the pipeline. The results:
-
-**No two documents produced the same coalition.** Every document split the court differently:
-
-- **Mistral was the hanging judge.** Four documents, four times NOT CONTRACT. Its reasoning was consistently structural: no named parties, no signatures, no deal.
-- **Qwen was the most prompt-compliant.** The classification prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
-- **Every model reported 90 to 100% confidence.** On every document. Including the ones they disagreed on. Including the one where Llama disagreed with itself. Confidence scores, on ambiguous legal documents, are noise.
+- **First, Mistral was the strictest model.** It rejected all four documents. Its reasoning was consistently structural: no named parties, no signatures, no traditional deal.
+- **Second, Qwen was the most prompt-sensitive.** The prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
+- **Third, confidence was not informative.** Every model reported 90–100% confidence, including on the cases where they disagreed with each other and the case where Llama disagreed with itself. On ambiguous legal documents, those confidence scores are better read as style than signal.
 
 <table style="width:100%; border-collapse:collapse;">
   <thead>
@@ -121,9 +117,11 @@ All four documents went through the pipeline. The results:
 
 *The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
 
-The small models couldn't agree on what constitutes a contract. So what would a lawyer do? Exactly. Appeal to a higher court.
+So the small models did not converge. On the easy cases they could be useful; on the ambiguous ones they exposed the boundary problem rather neatly.
 
-## Oyez! Oyez! Oyez!
+So what would a lawyer do? Exactly. Appeal to a higher court.
+
+## Round Two: The Remote Models
 
 A proper appeal needs proper hardware. The compute runs on <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a>, a European cloud provider, which in the current geopolitical climate might be reassuring to some. Scaleway offers GPU instances in Paris and Warsaw. Paris was fully booked, so the court convened in Warsaw. The cost of this appeal: **€2.73 per hour**, billed per minute.
 
@@ -138,11 +136,14 @@ Three larger models were downloaded from Hugging Face and took the stand. Same d
 - <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen 2.5 (72B)**</a> – the bigger sibling of the 14B that was the lone dissenter on Terms of Service
 - <a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">**SaulLM 54B**</a> – a Mistral derivative fine-tuned on US and European legal texts, court rulings, and legislative documents
 
-The question was straightforward: does scale resolve the disagreement? Does legal specialization?
+This created two useful comparisons at once:
 
-The first model to take the bench was not a bigger generalist. It was a specialist.
+- Scale within a model family: Llama 8B vs 70B, Qwen 14B vs 72B
+- Generalist vs specialist: Mistral-family generalist vs SaulLM legal specialist
 
-SaulLM 54B is a legal-domain LLM, fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
+SaulLM was the most interesting model in the set, because it tested a different thesis entirely. Not "does bigger help?" but "does domain training help?"
+
+The first model to take the bench was not a bigger generalist. It was a specialist: SaulLM 54B, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
@@ -167,6 +168,8 @@ The two remaining cloud models were the larger siblings of the local models, and
 There was one unplanned finding about speed. Qwen 72B on the H100 actually ran slower than Qwen 14B on the MacBook Air. A quantization kernel incompatibility meant the €2.73-per-hour GPU was being outpaced by a laptop on a kitchen table.
 
 The H100 managed 9.7 tokens per second on the MoU analysis. The MacBook did 16.4. <a href="https://www.youtube.com/watch?v=OF_5EKNX0Eg" target="_blank">This is not a commentary on Nvidia's hardware.</a> It is what happens when a software layer between the model and the silicon isn't optimized for the GPU's architecture. **Infrastructure matters as much as the model itself.**
+
+## Oyez! Oyez! Oyez!
 
 With all twenty-four classifications complete, the combined picture looked like this:
 
