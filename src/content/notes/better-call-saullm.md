@@ -10,13 +10,13 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 - **Experiment**: Six open-source LLMs classified four legally ambiguous documents. Three small models ran locally on a MacBook Air; three larger models ran remotely on an Nvidia H100 in a European data centre. One of the six was a legal-domain specialist.
 - **Why it matters**: If an LLM is being used as a classification gate in a document pipeline, the important question is not just whether it works on easy cases, but how stable it is on borderline ones.
-- **Key finding**: Temperature 0.1 is often treated as near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. Scaling up does not necessarily resolve the disagreement but domain fine-tuning can help more than raw parameter count.
+- **Key finding**: Temperature 0.1 is often treated as near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. More parameters didn't buy agreement. Legal training did.
 
 ## Context
 
 A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> asked a practical question: can contract classification run entirely on a local laptop using open-source models? On straightforward documents, the answer was broadly yes. On the harder ones, the models split.
 
-That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up help? Do larger, more capable models converge on a more stable answer?**
+That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?**
 
 Short answer: they just disagree more eloquently.
 
@@ -28,7 +28,7 @@ The broader pipeline processes uploaded PDFs through a series of steps: text ext
 
 All runs used temperature 0.1. In theory that should make the output close to deterministic: mostly greedy, with a small amount of sampling noise left in the system.
 
-One caveat should be stated upfront. The prompt includes the phrase *"contract, legal agreement, or terms of service."* That wording likely nudges models toward classifying a Terms of Service document as a contract. Some models followed the hint. Others ignored it entirely.
+One caveat should be stated upfront. The <a href="/classification-prompt.txt" target="_blank">prompt</a> includes the phrase *"contract, legal agreement, or terms of service."* That wording should nudge models toward classifying a Terms of Service document as a contract. Some models followed the hint. Others ignored it entirely.
 
 The following **four documents** were chosen because they sit in the grey zone between "clearly a contract" and "clearly not":
 
