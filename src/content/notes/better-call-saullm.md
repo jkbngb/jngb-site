@@ -65,12 +65,12 @@ Both readings are defensible. That is precisely the issue.
 
 Temperature 0.1 is supposed to reduce randomness to a negligible level. But on a document sitting near the decision boundary, even a very small amount of sampling noise appears capable of flipping the verdict.
 
-That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, the relevant property is not "accuracy." It is instability.
+That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, the relevant property is not "accuracy." It is stability.
 
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
 
-The remaining local runs were more consistent. Across all four documents, three observations stood out.
+The remaining local runs were more consistent. Mistral and Qwen both confirmed their earlier GPL classifications without hesitation. With that settled, all three models were given the remaining three ambiguous documents. Across the full set, three observations stood out.
 
 - **First, Mistral was the strictest model.** It rejected all four documents. Its reasoning was consistently structural: no named parties, no signatures, no traditional deal.
 - **Second, Qwen was the most prompt-sensitive.** The prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
@@ -117,13 +117,13 @@ The remaining local runs were more consistent. Across all four documents, three 
 
 *The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
 
-So the small models did not converge. On the easy cases they could be useful; on the ambiguous ones they exposed the boundary problem rather neatly.
+So the small models did not converge. On the easy cases they could be useful; on the ambiguous ones they **exposed the boundary problem** rather neatly.
 
 So what would a lawyer do? Exactly. Appeal to a higher court.
 
 ## Round Two: The Remote Models
 
-A proper appeal needs proper hardware. The compute runs on <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a>, a European cloud provider, which in the current geopolitical climate might be reassuring to some. Scaleway offers GPU instances in Paris and Warsaw. Paris was fully booked, so the court convened in Warsaw. The cost of this appeal: **€2.73 per hour**, billed per minute.
+A proper appeal needs proper hardware. The compute runs on <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a>, a European cloud provider, which in the current geopolitical climate might be reassuring to some. Scaleway offers GPU instances in Paris and Warsaw. Paris was fully booked, so the court convened in Warsaw. The cost of this appeal: €2.73 per hour, billed per minute.
 
 Once the hardware was running, <a href="https://docs.vllm.ai/" target="_blank">vLLM</a> was installed as the inference server.
 
