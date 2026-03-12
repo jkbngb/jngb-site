@@ -14,7 +14,7 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 ## Context
 
-A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> asked a practical question: can contract classification run entirely on a local laptop using open-source models? On straightforward documents, the answer was broadly yes. On the harder ones, the models split.
+A <a href="/notes/privacy-first-contract-analysis" target="_blank">previous experiment</a> asked a practical question: can contract classification run entirely on a local laptop using open-source models? On straightforward documents, the answer was broadly yes. On the harder ones, the models split.
 
 That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?**
 
@@ -39,23 +39,23 @@ The following **four documents** were chosen because they sit in the grey zone b
 | <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Sample Terms of Service</a> | The classification prompt literally mentions "terms of service." Does the model take the bait? |
 | <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not always legally binding in the strict sense, but structurally very close to a contract. |
 
-For the record: the author does not have a law degree and makes no claim to understand what actually constitutes a contract. The models, as it turned out, didn't either.
+For the record: the author does not have a <a href="https://www.linkedin.com/in/jakob-neugebauer/" target="_blank">law degree</a> and makes no claim to understand what actually constitutes a contract. The models, as it turned out, didn't either.
 
 ## Round One: The Local Court
 
-The first three models were the same small open-source models used in the <a href="/notes/privacy-first-contract-analysis">earlier laptop experiment</a>, all running locally via Ollama on an Apple MacBook Air (M3, 16 GB RAM):
+The first three models were the same small open-source models used in the <a href="/notes/privacy-first-contract-analysis" target="_blank">earlier laptop experiment</a>, all running locally via Ollama on an Apple MacBook Air (M3, 16 GB RAM):
 
 - <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama3.1:8B</a>
 - <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral-NeMo:12B</a>
 - <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen2.5:14B</a>
 
-Before testing the new documents, there was an obvious sanity check. In the previous experiment, Llama 3.1 8B had classified the <a href="/notes/privacy-first-contract-analysis">GPL v3 as a contract</a>. Same model, same document, same prompt, same machine, same temperature: that result should at least be reproducible.
+Before testing the new documents, there was an obvious sanity check. In the previous experiment, Llama3.1:8B had classified the <a href="/notes/privacy-first-contract-analysis" target="_blank">GPL v3 as a contract</a>. Same model, same document, same prompt, same machine, same temperature: that result should at least be reproducible.
 
 It was not.
 
 On the first rerun, Llama classified the GPL as NOT CONTRACT, with 90% confidence. Its reasoning this time was that the document *"grants permissions rather than establishing a contractual relationship."*
 
-**The experiment could not even be reproduced before it had properly started.**
+**The experiment could not even be reproduced before it had properly started!**
 
 So the run was repeated.
 
@@ -111,7 +111,7 @@ The remaining local runs were more consistent. Mistral and Qwen both confirmed t
 
 <p style="text-align:center; font-size:0.9em; margin-top:-0.5em;">✅ contract &emsp; ❌ not contract</p>
 
-*The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
+*The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis" target="_blank">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
 
 Across the full set, three observations stood out.
 
@@ -121,7 +121,7 @@ Across the full set, three observations stood out.
 
 So the small models did not converge. On the easy cases they could be useful; on the ambiguous ones they **exposed the boundary problem** rather neatly.
 
-So what would a lawyer do? Exactly. Appeal to a higher court.
+So what would a real lawyer do? Exactly. Appeal to a higher court.
 
 ## Round Two: The Remote Models
 
@@ -153,7 +153,7 @@ It classified three of the four documents as NOT CONTRACT, with only the MoU rec
 
 But in the interest of judicial transparency, a potential conflict of interest must be disclosed.
 
-**SaulLM is built on Mixtral.** Same model family as Mistral Nemo, the hanging judge from the local court who voted NO on every single document. The legal specialist and the generalist share the same DNA, but their verdicts do not fully reflect it: SaulLM matched Mistral's vote on three out of four documents.
+**SaulLM is built on Mixtral.** Same model family as Mistral NeMo, the hanging judge from the local court who voted NO on every single document. The legal specialist and the generalist share the same DNA, but their verdicts do not fully reflect it: SaulLM matched Mistral's vote on three out of four documents.
 
 But not on the fourth.
 
@@ -163,9 +163,9 @@ Mistral 12B rejected the MoU. SaulLM accepted it. The specialist appears to have
 
 The remaining two remote models were the larger siblings of the local ones, as we wanted to test whether verdicts run along family lines, the way ideology runs along party lines on the US Supreme Court.
 
-<a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">Llama 3.1 70B</a> classified all four documents as CONTRACT. That is not a slight shift from its 8B counterpart. It is a complete reversal in disposition. The smaller Llama was cautious and inconsistent. The larger one was permissive and absolute. Scale did not stabilise the boundary; it moved it.
+<a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">Llama3.1:70B</a> classified all four documents as CONTRACT. That is not a slight shift from its 8B counterpart. It is a complete reversal in disposition. The smaller Llama was cautious and inconsistent. The larger one was permissive and absolute. Scale did not stabilise the boundary; it moved it.
 
-<a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">Qwen 2.5 72B</a> classified three of four as contract. It agreed with its 14B sibling on GPL v3, Terms of Service, and the MoU, but flipped on CC BY-SA 4.0, deciding that the Creative Commons licence counted as a legal agreement.
+<a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">Qwen2.5:72B</a> classified three of four as contract. It agreed with its 14B sibling on GPL v3, Terms of Service, and the MoU, but flipped on CC BY-SA 4.0, deciding that the Creative Commons licence counted as a legal agreement.
 
 Again, the larger version was not obviously more precise. It was simply more willing to classify borderline documents as contracts.
 
@@ -238,9 +238,9 @@ No stable coalition emerged. The only near-consensus document was the MoU, which
 
 There was also an unplanned infrastructure lesson.
 
-On one MoU analysis run, Qwen 72B on the H100 was slower than Qwen 14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4.
+On one MoU analysis run, Qwen2.5:72B on the H100 was slower than Qwen2.5:14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4.
 
-<a href="https://www.youtube.com/watch?v=OF_5EKNX0Eg" target="_blank">This was not a referendum on Nvidia hardware.</a> It was a software stack problem: a quantisation kernel incompatibility prevented the GPU run from benefiting properly from the hardware underneath it.
+This was not a referendum on Nvidia hardware. It was a software stack problem: a quantisation kernel incompatibility prevented the GPU run from benefiting properly from the hardware underneath it.
 
 Still, the optics were good in the wrong sort of way. The expensive machine lost a sprint to a laptop on a kitchen table.
 
@@ -250,13 +250,13 @@ That is worth mentioning because it is exactly the sort of thing benchmark logic
 
 A few conclusions seem reasonably safe.
 
-**1. Borderline classification is not a one-model problem.** If the input documents are genuinely ambiguous, a single model verdict is a fragile thing to build a workflow on. Even at low temperature, the classification boundary can wobble.
+**Borderline classification is not a one-model problem.** If the input documents are genuinely ambiguous, a single model verdict is a fragile thing to build a workflow on. Even at low temperature, the classification boundary can wobble.
 
-**2. Confidence scores are not enough.** The models were consistently confident, including when they contradicted one another and when one contradicted itself. Confidence here does not measure correctness. It mostly measures rhetorical commitment.
+**Confidence scores are not enough.** The models were consistently confident, including when they contradicted one another and when one contradicted itself. Confidence here does not measure correctness. It mostly measures rhetorical commitment.
 
-**3. Bigger is not the same as better.** The larger models did not converge on a more reliable answer. In both the Llama and Qwen families, scaling up mostly made the models more permissive. That may or may not be desirable, but it should not be confused with improved judgement.
+**Bigger is not the same as better.** The larger models did not converge on a more reliable answer. In both the Llama and Qwen families, scaling up mostly made the models more permissive. That may or may not be desirable, but it should not be confused with improved judgement.
 
-**4. Specialisation mattered more than scale.** SaulLM was not the largest model in the experiment, but it produced the most plausible pattern of decisions. That suggests that for domain-specific classification, training data and task fit may matter more than sheer parameter count.
+**Specialisation mattered more than scale.** SaulLM was not the largest model in the experiment, but it produced the most plausible pattern of decisions. That suggests that for domain-specific classification, training data and task fit may matter more than sheer parameter count.
 
 ## Limits of the experiment
 
@@ -283,5 +283,3 @@ That leads to a fairly unglamorous conclusion. A robust system probably needs so
 That is not a failure of the model. It is a recognition that the category itself is fuzzy.
 
 **When they disagree, that is not a failure. That is information.** The mistake is building a system that pretends ambiguity doesn't exist.
-
-The more relevant takeaway may be that the most convincing behaviour came not from the largest generalist, but from the legal specialist. It did not need more parameters. It needed more relevant training data. For domain-specific classification tasks, that distinction is worth taking seriously — and is likely a more productive debate than the usual parameter-count arms race.

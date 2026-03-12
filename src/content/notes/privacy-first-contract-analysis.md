@@ -34,7 +34,7 @@ The document passes through text extraction, normalization (stripping repeated h
 Three open-source models were evaluated:
 
 - <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>
-- <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>
+- <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral NeMo (12B)</a>
 - <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen2.5 (14B)</a>
 
 All models ran locally using Ollama.
@@ -84,7 +84,7 @@ At this point the models behaved a bit like lawyers: they disagreed.
 
 This suggests that model behavior remains relatively stable for clearly defined document types, but becomes less reliable once categories are legally or semantically ambiguous. Which, conveniently, remains a fairly common situation in law.
 
-|  | Llama 3.1 (8B) | Mistral Nemo (12B) | Qwen 2.5 (14B) |
+|  | Llama 3.1 (8B) | Mistral NeMo (12B) | Qwen 2.5 (14B) |
 |---|:---:|:---:|:---:|
 | **CV** | ❌ | ❌ | ❌ |
 | **NDA** | ✅ | ✅ | ✅ |
