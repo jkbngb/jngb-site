@@ -16,7 +16,7 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 A <a href="/notes/privacy-first-contract-analysis" target="_blank">previous experiment</a> asked a practical question: can contract classification run entirely on a local laptop using open-source models? On straightforward documents, the answer was broadly yes. On the harder ones, the models split.
 
-That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?**
+That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?** Or do they simply arrive at different forms of certainty, expensively?
 
 The short answer is, that they just disagree more eloquently.
 
@@ -39,7 +39,7 @@ The following **four documents** were chosen because they sit in the grey zone b
 | <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Sample Terms of Service</a> | The classification prompt literally mentions "terms of service." Does the model take the bait? |
 | <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not always legally binding in the strict sense, but structurally very close to a contract. |
 
-For the record: the author does not have a <a href="https://www.linkedin.com/in/jakob-neugebauer/" target="_blank">law degree</a> and makes no claim to understand what actually constitutes a contract. The models, as it turned out, didn't either.
+For the record: <a href="https://www.linkedin.com/in/jakob-neugebauer/" target="_blank">the author does not have a law degree</a> and makes no claim to understand what actually constitutes a contract. The models, as it turned out, didn't either.
 
 ## Round One: The Local Court
 
@@ -70,7 +70,7 @@ That finding matters more than it first seems. If a classification gate can swit
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *A useful feature of near-determinism is that it occasionally is not. On an earlier run, the same document (GPL) came back NOT CONTRACT. Minutes later, with the same setup, Llama decided otherwise.*
 
-The remaining local runs were more consistent. Mistral and Qwen both confirmed their earlier GPL classifications without hesitation. With that settled, all three models were given the remaining three ambiguous documents.
+The remaining local runs were more stable. Mistral and Qwen both confirmed their earlier GPL classifications without visible drama. With that settled, all three models were given the remaining three ambiguous documents.
 
 <table style="width:100%; border-collapse:collapse;">
   <thead>
@@ -115,13 +115,13 @@ The remaining local runs were more consistent. Mistral and Qwen both confirmed t
 
 Across the full set, three observations stood out.
 
-- **First, Mistral was the strictest model.** It rejected all four documents. Its reasoning was consistently structural: no named parties, no signatures, no traditional deal.
-- **Second, Qwen was the most prompt-sensitive.** The prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
-- **Third, confidence was not informative.** Every model reported 90–100% confidence, including on the cases where they disagreed with each other and the case where Llama disagreed with itself. On ambiguous legal documents, those confidence scores are better read as style than signal.
+- **First, Mistral was the hanging judge.** It rejected all four documents. Its reasoning was consistently structural: no named parties, no signatures, no traditional deal.
+- **Second, Qwen was the most prompt-sensitive.** The prompt mentioned "terms of service", and Qwen appears to have taken that as relevant guidance. The other two models ignored it and did their own structural assessment.
+- **Third, confidence was useless.** Every model reported 90–100% confidence, including on the cases where they disagreed with each other and the case where Llama disagreed with itself. On ambiguous legal documents, those confidence scores are better read as style than signal.
 
 So the small models did not converge. On the easy cases they could be useful; on the ambiguous ones they **exposed the boundary problem** rather neatly.
 
-So what would a real lawyer do? Exactly. Appeal to a higher court.
+At which point the obvious next step presented itself. If the lower court is divided, appeal.
 
 ## Round Two: The Remote Models
 
