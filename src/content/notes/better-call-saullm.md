@@ -68,7 +68,7 @@ Temperature 0.1 is supposed to reduce randomness to a negligible level. But on a
 That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, **the relevant property is not "accuracy." It is stability.**
 
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
-*Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
+*A useful feature of near-determinism is that it occasionally is not. On an earlier run, the same document (GPL) came back NOT CONTRACT. Minutes later, with the same setup, Llama decided otherwise.*
 
 The remaining local runs were more consistent. Mistral and Qwen both confirmed their earlier GPL classifications without hesitation. With that settled, all three models were given the remaining three ambiguous documents.
 
@@ -140,7 +140,9 @@ Three larger models were downloaded from Hugging Face and took the stand. Same d
 
 This created two useful comparisons at once: scale within a model family (Llama 8B vs 70B, Qwen 14B vs 72B) and generalist versus specialist (Mistral-family generalist vs SaulLM, its legal derivative).
 
-SaulLM was the most interesting model in the set, because it tested a different thesis entirely. Not "does bigger help?" but "does domain training help?" So the first model to take the bench was the specialist: SaulLM 54B, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
+SaulLM was the most interesting model in the set, because it tested a different thesis entirely. Not "does bigger help?" but "does domain training help?"
+
+So the first model to take the bench was the specialist: SaulLM 54B, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
@@ -159,7 +161,13 @@ Mistral 12B rejected the MoU. SaulLM accepted it. The specialist appears to have
 
 ## The Larger Generalists: Oyez! Oyez! Oyez!
 
-The remaining two remote models were the larger siblings of the local ones, as we wanted to test whether verdicts run along family lines, the way ideology runs along party lines on the US Supreme Court. <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">Llama 3.1 70B</a> classified all four documents as CONTRACT. That is not a slight shift from its 8B counterpart. It is a complete reversal in disposition. The smaller Llama was cautious and inconsistent. The larger one was permissive and absolute. Scale did not stabilise the boundary; it moved it. <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">Qwen 2.5 72B</a> classified three of four as contract. It agreed with its 14B sibling on GPL v3, Terms of Service, and the MoU, but flipped on CC BY-SA 4.0, deciding that the Creative Commons licence counted as a legal agreement. Again, the larger version was not obviously more precise. It was simply more willing to classify borderline documents as contracts.
+The remaining two remote models were the larger siblings of the local ones, as we wanted to test whether verdicts run along family lines, the way ideology runs along party lines on the US Supreme Court.
+
+<a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">Llama 3.1 70B</a> classified all four documents as CONTRACT. That is not a slight shift from its 8B counterpart. It is a complete reversal in disposition. The smaller Llama was cautious and inconsistent. The larger one was permissive and absolute. Scale did not stabilise the boundary; it moved it.
+
+<a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">Qwen 2.5 72B</a> classified three of four as contract. It agreed with its 14B sibling on GPL v3, Terms of Service, and the MoU, but flipped on CC BY-SA 4.0, deciding that the Creative Commons licence counted as a legal agreement.
+
+Again, the larger version was not obviously more precise. It was simply more willing to classify borderline documents as contracts.
 
 With all twenty-four classifications complete, the combined picture looked like this:
 
@@ -224,26 +232,56 @@ With all twenty-four classifications complete, the combined picture looked like 
 
 *The verdict of what actually constitutes a contract is in. It is... confusing.*
 
-Six models. Four documents. **No stable coalition.** The Mistral family (Mistral 12B and its legal derivative SaulLM) was the strictest, rejecting almost everything.
+No stable coalition emerged. The only near-consensus document was the MoU, which five of the six models classified as a contract. Everything else produced splits.
 
-The Llama family was the most chaotic: the 8B mostly said no, the 70B always said yes. Same architecture, same training lineage, completely opposite behavior at different scales.
+## Some disappointing news from the capital expenditure front
 
-And both Qwen and Llama got more permissive at scale, not more precise. Bigger models said yes more often. That is not the same as being right more often.
+There was also an unplanned infrastructure lesson.
 
-The only near-consensus was the MoU: five of six models classified it as a contract. On everything else, the court was split.
+On one MoU analysis run, Qwen 72B on the H100 was slower than Qwen 14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4.
 
-There was one unplanned finding about speed. Qwen 72B on the H100 actually ran slower than Qwen 14B on the MacBook Air. A quantization kernel incompatibility meant the €2.73-per-hour GPU was being outpaced by a laptop on a kitchen table.
+<a href="https://www.youtube.com/watch?v=OF_5EKNX0Eg" target="_blank">This was not a referendum on Nvidia hardware.</a> It was a software stack problem: a quantisation kernel incompatibility prevented the GPU run from benefiting properly from the hardware underneath it.
 
-The H100 managed 9.7 tokens per second on the MoU analysis. The MacBook did 16.4. <a href="https://www.youtube.com/watch?v=OF_5EKNX0Eg" target="_blank">This is not a commentary on Nvidia's hardware.</a> It is what happens when a software layer between the model and the silicon isn't optimized for the GPU's architecture. **Infrastructure matters as much as the model itself.**
+Still, the optics were good in the wrong sort of way. The expensive machine lost a sprint to a laptop on a kitchen table.
+
+That is worth mentioning because it is exactly the sort of thing benchmark logic tends to omit. Infrastructure choices, runtime support, and model-serving details can matter as much as the model itself.
+
+## What this suggests
+
+A few conclusions seem reasonably safe.
+
+**1. Borderline classification is not a one-model problem.** If the input documents are genuinely ambiguous, a single model verdict is a fragile thing to build a workflow on. Even at low temperature, the classification boundary can wobble.
+
+**2. Confidence scores are not enough.** The models were consistently confident, including when they contradicted one another and when one contradicted itself. Confidence here does not measure correctness. It mostly measures rhetorical commitment.
+
+**3. Bigger is not the same as better.** The larger models did not converge on a more reliable answer. In both the Llama and Qwen families, scaling up mostly made the models more permissive. That may or may not be desirable, but it should not be confused with improved judgement.
+
+**4. Specialisation mattered more than scale.** SaulLM was not the largest model in the experiment, but it produced the most plausible pattern of decisions. That suggests that for domain-specific classification, training data and task fit may matter more than sheer parameter count.
+
+## Limits of the experiment
+
+A few caveats are worth making explicit.
+
+This was a small exploratory test, not a benchmark. The sample size is tiny: four documents, six models, one prompt family. The prompt itself likely biased at least one document category. And the repeated-run instability was observed most clearly on one model and one document, not exhaustively measured across the entire matrix.
+
+So the claim here is not that larger models are "worse," nor that SaulLM is "right." The claim is narrower and more useful: on ambiguous classification tasks, scale did not reliably buy stability, and domain specialisation looked more promising than raw size.
 
 ## So What?
 
 This experiment was never about finding the "right" answer. The GPL v3 is genuinely ambiguous. Reasonable lawyers disagree about whether open-source licenses are contracts (or so the author is told, being neither a lawyer nor anything remotely adjacent to one). Reasonable models do the same.
 
-**A single model is not enough for classification gates on ambiguous documents.** Temperature 0.1 can still produce different results on successive runs. Confidence scores read 90 to 100% even when the model is contradicting itself.
+This is not really a story about contracts. It is a story about classification gates.
 
-And scaling up does not converge on truth: Llama 70B's 4/4 YES is not more correct than Llama 8B's mostly NO. It is a different bias, not a better one.
+In production pipelines, those gates are often treated as simple. They are not simple. On easy documents, many models will look competent. On ambiguous ones, the disagreement is the signal.
 
-The most defensible set of decisions came from SaulLM, the legal specialist. It didn't need the most parameters. It needed the right training data. If you are choosing between a bigger generalist and a smaller specialist for a domain-specific classification task, this experiment suggests the specialist is worth a serious look.
+That leads to a fairly unglamorous conclusion. A robust system probably needs some combination of:
 
-In practice, a production system probably needs multiple models, a voting mechanism, and a human in the loop for the cases where the models split. **When they disagree, that is not a failure. That is information.** The mistake is building a system that pretends ambiguity doesn't exist.
+* multiple models
+* a disagreement or escalation path
+* and a human in the loop for the cases that sit near the boundary
+
+That is not a failure of the model. It is a recognition that the category itself is fuzzy.
+
+**When they disagree, that is not a failure. That is information.** The mistake is building a system that pretends ambiguity doesn't exist.
+
+The more relevant takeaway may be that the most convincing behaviour came not from the largest generalist, but from the legal specialist. It did not need more parameters. It needed more relevant training data. For domain-specific classification tasks, that distinction is worth taking seriously — and is likely a more productive debate than the usual parameter-count arms race.
