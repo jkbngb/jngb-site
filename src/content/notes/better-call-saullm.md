@@ -65,7 +65,7 @@ Both readings are defensible. That is precisely the issue.
 
 Temperature 0.1 is supposed to reduce randomness to a negligible level. But on a document sitting near the decision boundary, even a very small amount of sampling noise appears capable of flipping the verdict.
 
-That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, the relevant property is not "accuracy." It is stability.
+That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, **the relevant property is not "accuracy." It is stability.**
 
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
@@ -136,19 +136,16 @@ Three larger models were downloaded from Hugging Face and took the stand. Same d
 - <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen 2.5 (72B)**</a> – the bigger sibling of the 14B that was the lone dissenter on Terms of Service
 - <a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">**SaulLM 54B**</a> – a Mistral derivative fine-tuned on US and European legal texts, court rulings, and legislative documents
 
-This created two useful comparisons at once:
+This created two useful comparisons at once: scale within a model family (Llama 8B vs 70B, Qwen 14B vs 72B) and generalist versus specialist (Mistral-family generalist vs SaulLM, its legal derivative).
 
-- Scale within a model family: Llama 8B vs 70B, Qwen 14B vs 72B
-- Generalist vs specialist: Mistral-family generalist vs SaulLM legal specialist
-
-SaulLM was the most interesting model in the set, because it tested a different thesis entirely. Not "does bigger help?" but "does domain training help?"
-
-The first model to take the bench was not a bigger generalist. It was a specialist: SaulLM 54B, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
+SaulLM was the most interesting model in the set, because it tested a different thesis entirely. Not "does bigger help?" but "does domain training help?" So the first model to take the bench was the specialist: SaulLM 54B, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
 
-SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. Classification in under two seconds. This is what you expect when an H100 meets a model that doesn't waste compute. Three out of four: not a contract. Only the MoU got a confident yes.
+SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. Classification in under two seconds. This is what you expect when an H100 meets a model that doesn't waste compute.
+
+It classified three of the four documents as NOT CONTRACT, with only the MoU receiving a clear CONTRACT verdict. That already put it closer to a defensible legal-structural reading than the larger generalists.
 
 But in the interest of judicial transparency, a potential conflict of interest must be disclosed.
 
@@ -156,20 +153,11 @@ But in the interest of judicial transparency, a potential conflict of interest m
 
 But not on the fourth.
 
-The MoU is where legal training made the difference. Mistral 12B rejected it (no binding language, not a real contract). SaulLM accepted it (named parties, legal obligations, signature block). The legal specialist recognized the contractual structure that its generalist parent dismissed.
+Mistral 12B rejected the MoU. SaulLM accepted it. The specialist appears to have recognised what the smaller generalist did not: named parties, explicit obligations, and contractual structure matter, even if the document sits in a legally fuzzier category. That is a more useful kind of improvement than simply saying "yes" more often.
 
-**Legal training didn't make the model more permissive. It made it more precise.** It still rejected the licenses and the ToS despite the prompt nudge, but it identified the MoU as what it structurally is: an agreement between named parties with defined obligations. Legal school didn't lower the bar. It taught the model where the bar actually stands.
+## The Larger Generalists: Oyez! Oyez! Oyez!
 
-The two remaining cloud models were the larger siblings of the local models, and we wanted to test whether verdicts run along family lines, the way ideology runs along party lines on the US Supreme Court.
-
-- <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">**Llama 3.1 70B**</a> classified all four documents as CONTRACT. Every single one. Its 8B version was cautious, mostly saying no. Its 70B version said yes to everything. Scale didn't stabilize the decision boundary. It moved it entirely to the other side.
-- <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen 2.5 72B**</a> classified three out of four as CONTRACT. It agreed with its 14B sibling on the GPL (no), ToS (yes), and MoU (yes), but flipped on CC BY-SA. The smaller model said no. The bigger model decided a Creative Commons license qualifies as a "legal agreement." A more generous reading, not necessarily a better one.
-
-There was one unplanned finding about speed. Qwen 72B on the H100 actually ran slower than Qwen 14B on the MacBook Air. A quantization kernel incompatibility meant the €2.73-per-hour GPU was being outpaced by a laptop on a kitchen table.
-
-The H100 managed 9.7 tokens per second on the MoU analysis. The MacBook did 16.4. <a href="https://www.youtube.com/watch?v=OF_5EKNX0Eg" target="_blank">This is not a commentary on Nvidia's hardware.</a> It is what happens when a software layer between the model and the silicon isn't optimized for the GPU's architecture. **Infrastructure matters as much as the model itself.**
-
-## Oyez! Oyez! Oyez!
+The remaining two remote models were the larger siblings of the local ones, as we wanted to test whether verdicts run along family lines, the way ideology runs along party lines on the US Supreme Court. <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">Llama 3.1 70B</a> classified all four documents as CONTRACT. That is not a slight shift from its 8B counterpart. It is a complete reversal in disposition. The smaller Llama was cautious and inconsistent. The larger one was permissive and absolute. Scale did not stabilise the boundary; it moved it. <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">Qwen 2.5 72B</a> classified three of four as contract. It agreed with its 14B sibling on GPL v3, Terms of Service, and the MoU, but flipped on CC BY-SA 4.0, deciding that the Creative Commons licence counted as a legal agreement. Again, the larger version was not obviously more precise. It was simply more willing to classify borderline documents as contracts.
 
 With all twenty-four classifications complete, the combined picture looked like this:
 
@@ -241,6 +229,10 @@ The Llama family was the most chaotic: the 8B mostly said no, the 70B always sai
 And both Qwen and Llama got more permissive at scale, not more precise. Bigger models said yes more often. That is not the same as being right more often.
 
 The only near-consensus was the MoU: five of six models classified it as a contract. On everything else, the court was split.
+
+There was one unplanned finding about speed. Qwen 72B on the H100 actually ran slower than Qwen 14B on the MacBook Air. A quantization kernel incompatibility meant the €2.73-per-hour GPU was being outpaced by a laptop on a kitchen table.
+
+The H100 managed 9.7 tokens per second on the MoU analysis. The MacBook did 16.4. <a href="https://www.youtube.com/watch?v=OF_5EKNX0Eg" target="_blank">This is not a commentary on Nvidia's hardware.</a> It is what happens when a software layer between the model and the silicon isn't optimized for the GPU's architecture. **Infrastructure matters as much as the model itself.**
 
 ## So What?
 
