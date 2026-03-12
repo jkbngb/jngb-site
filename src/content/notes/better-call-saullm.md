@@ -142,7 +142,7 @@ This created two useful comparisons at once: scale within a model family (Llama 
 
 SaulLM was the most interesting model in the set, because it tested a different thesis entirely. Not "does bigger help?" but "does domain training help?"
 
-So the first model to take the bench was the specialist: SaulLM 54B, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
+So the first model to take the bench was the specialist: <a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">SaulLM:54B</a>, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
