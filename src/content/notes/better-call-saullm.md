@@ -8,50 +8,64 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 ## Quick Brief
 
-- **Experiment**: six open-source LLMs classify four ambiguous legal documents. Three small models on a laptop, three larger models on an Nvidia H100 in a European data center. One of them a legal specialist.
-- **Why it matters**: if you use an LLM as a classification gate in a document pipeline, you need to know how stable that gate actually is.
-- **Key insight**: temperature 0.1 is supposed to be near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. Scaling up did not help, but domain fine-tuning outperformed raw parameter count.
+- **Experiment**: Six open-source LLMs classified four legally ambiguous documents. Three small models ran locally on a MacBook Air; three larger models ran remotely on an Nvidia H100 in a European data centre. One of the six was a legal-domain specialist.
+- **Why it matters**: If an LLM is being used as a classification gate in a document pipeline, the important question is not just whether it works on easy cases, but how stable it is on borderline ones.
+- **Key finding**: Temperature 0.1 is often treated as near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. Scaling up does not necessarily resolve the disagreement but domain fine-tuning can help more than raw parameter count.
 
 ## Context
 
-A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> tested whether contract classification could run entirely on a local laptop using open-source LLMs. Three small models agreed on the easy documents and **disagreed on the hard one**. Which raised the obvious follow-up: **do bigger, more capable models resolve the disagreement?**
+A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> asked a practical question: can contract classification run entirely on a local laptop using open-source models? On straightforward documents, the answer was broadly yes. On the harder ones, the models split.
+
+That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up help? Do larger, more capable models converge on a more stable answer?**
 
 Short answer: they just disagree more eloquently.
 
-The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the discovery that a MacBook Air can outpace a data center GPU under the right (i.e., wrong) conditions.
+The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the mildly awkward discovery that a MacBook Air can outpace a data center GPU under the right (i.e., wrong) conditions.
 
-## The Experiment
+## The Setup
 
-The pipeline processes uploaded PDFs through eight steps: extraction, normalization, whitespace collapsing, classification, chunking, analysis, and structured output. The LLM only appears at step four, where it receives the beginning of the document and a <a href="/classification-prompt.txt" target="_blank">classification prompt</a> asking it to decide: contract or not?
+The broader pipeline processes uploaded PDFs through a series of steps: text extraction, normalisation, whitespace cleanup, classification, chunking, analysis, and structured output. The LLM only appears at the classification stage. It sees the beginning of the document and is asked a narrow question: is this a contract or not?
 
-Temperature 0.1 across every run, meaning the model picks the most likely next token 90% of the time, with just a sliver of randomness left.
+All runs used temperature 0.1. In theory that should make the output close to deterministic: mostly greedy, with a small amount of sampling noise left in the system.
 
-One disclosure about that prompt: it includes the phrase *"contract, legal agreement, or terms of service."* That phrasing nudges the model toward classifying a Terms of Service as a contract. Some models followed the hint. Others ignored it entirely.
+One caveat should be stated upfront. The prompt includes the phrase *"contract, legal agreement, or terms of service."* That wording likely nudges models toward classifying a Terms of Service document as a contract. Some models followed the hint. Others ignored it entirely.
 
-**Four documents** were chosen because they sit in the grey zone between "clearly a contract" and "clearly not":
+The following **four documents** were chosen because they sit in the grey zone between "clearly a contract" and "clearly not":
 
 | Document | Why it is ambiguous |
 |----------|---------------------|
-| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU GPL v3</a> | A license with obligations, conditions, and restrictions. No named parties. No signatures. |
-| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">Creative Commons BY-SA 4.0</a> | Rights and conditions, but permissive. More of a permission slip than a binding agreement. |
+| <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">GNU GPL v3</a> | A licence with obligations, conditions, and restrictions, but no named parties or signatures. |
+| <a href="https://creativecommons.org/licenses/by-sa/4.0/legalcode.en" target="_blank">Creative Commons BY-SA 4.0</a> | Rights and conditions are present, but in a permissive licensing form rather than a conventional bilateral agreement. |
 | <a href="https://www.termsfeed.com/public/uploads/2021/12/sample-terms-of-service-template.pdf" target="_blank">Sample Terms of Service</a> | The classification prompt literally mentions "terms of service." Does the model take the bait? |
-| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not legally binding in the traditional sense, but structurally looks exactly like a contract. |
+| <a href="https://www.justice.gov/sites/default/files/ovw/legacy/2008/10/21/sample-mou.pdf" target="_blank">Sample MoU</a> | Not always legally binding in the strict sense, but structurally very close to a contract. |
 
 For the record: the author does not have a law degree and makes no claim to understand what actually constitutes a contract. The models, as it turned out, didn't either.
 
-## The Local Court
+## Round One: The Local Court
 
-**Six open-source LLMs** evaluated these documents. The first three were the same small models from the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>, running on an Apple MacBook Air (M3, 16 GB RAM) via Ollama: <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 (8B)</a>, <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo (12B)</a>, and <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 (14B)</a>.
+The first three models were the same small open-source models used in the <a href="/notes/privacy-first-contract-analysis">earlier laptop experiment</a>, all running locally via Ollama on an Apple MacBook Air (M3, 16 GB RAM):
 
-Before running the new documents, a sanity check. In the previous experiment, Llama 3.1 (8B) had classified the <a href="/notes/privacy-first-contract-analysis">GPL v3 as a contract</a>. Same model, same document, same prompt, same hardware, same temperature. If nothing else, that result should be reproducible.
+- <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 8B</a>
+- <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo 12B</a>
+- <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 14B</a>
 
-It was not. Llama classified the GPL v3 as NOT CONTRACT. 90% confidence. Its reasoning this time: the document *"grants permissions rather than establishes contractual relationships."*
+Before testing the new documents, there was an obvious sanity check. In the previous experiment, Llama 3.1 8B had classified the <a href="/notes/privacy-first-contract-analysis">GPL v3 as a contract</a>. Same model, same document, same prompt, same machine, same temperature: that result should at least be reproducible.
+
+It was not.
+
+On the first rerun, Llama classified the GPL as NOT CONTRACT, with 90% confidence. Its reasoning this time was that the document *"grants permissions rather than establishing a contractual relationship."*
 
 **The experiment could not even be reproduced before it had properly started.**
 
-So we ran it again, just to be sure. This time: CONTRACT. 90% confidence. 25 minutes of full contract analysis followed. The reasoning was that the document *"contains a preamble, terms and conditions, and obligations for developers and users."* Both arguments are defensible. That is the problem.
+So the run was repeated.
 
-Temperature 0.1 is supposed to be near-deterministic. But it seems not deterministic enough. On a document like the GPL, the model sits right on a decision boundary, and a tiny amount of sampling noise is enough to flip the verdict.
+On the second attempt, the same model classified the same document as CONTRACT, again with 90% confidence, and went on to produce a full contract analysis. This time the reasoning leaned on the existence of *"terms, conditions, and obligations."*
+
+Both readings are defensible. That is precisely the issue.
+
+Temperature 0.1 is supposed to reduce randomness to a negligible level. But on a document sitting near the decision boundary, even a very small amount of sampling noise appears capable of flipping the verdict.
+
+That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, the relevant property is not "accuracy." It is instability.
 
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
