@@ -45,9 +45,9 @@ For the record: the author does not have a law degree and makes no claim to unde
 
 The first three models were the same small open-source models used in the <a href="/notes/privacy-first-contract-analysis">earlier laptop experiment</a>, all running locally via Ollama on an Apple MacBook Air (M3, 16 GB RAM):
 
-- <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama 3.1 8B</a>
-- <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral Nemo 12B</a>
-- <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen 2.5 14B</a>
+- <a href="https://ollama.com/library/llama3.1:8b" target="_blank">Llama3.1:8B</a>
+- <a href="https://mistral.ai/news/mistral-nemo" target="_blank">Mistral-NeMo:12B</a>
+- <a href="https://huggingface.co/Qwen/Qwen2.5-14B" target="_blank">Qwen2.5:14B</a>
 
 Before testing the new documents, there was an obvious sanity check. In the previous experiment, Llama 3.1 8B had classified the <a href="/notes/privacy-first-contract-analysis">GPL v3 as a contract</a>. Same model, same document, same prompt, same machine, same temperature: that result should at least be reproducible.
 
@@ -70,11 +70,7 @@ That finding matters more than it first seems. If a classification gate can swit
 ![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
 *Caught in the act: Llama disagrees with itself. Bottom row: NOT CONTRACT. Top row, minutes later: CONTRACT. A re-run confirmed the original result from the previous experiment.*
 
-The remaining local runs were more consistent. Mistral and Qwen both confirmed their earlier GPL classifications without hesitation. With that settled, all three models were given the remaining three ambiguous documents. Across the full set, three observations stood out.
-
-- **First, Mistral was the strictest model.** It rejected all four documents. Its reasoning was consistently structural: no named parties, no signatures, no traditional deal.
-- **Second, Qwen was the most prompt-sensitive.** The prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
-- **Third, confidence was not informative.** Every model reported 90–100% confidence, including on the cases where they disagreed with each other and the case where Llama disagreed with itself. On ambiguous legal documents, those confidence scores are better read as style than signal.
+The remaining local runs were more consistent. Mistral and Qwen both confirmed their earlier GPL classifications without hesitation. With that settled, all three models were given the remaining three ambiguous documents.
 
 <table style="width:100%; border-collapse:collapse;">
   <thead>
@@ -117,6 +113,12 @@ The remaining local runs were more consistent. Mistral and Qwen both confirmed t
 
 *The GPL v3 was already tested in the <a href="/notes/privacy-first-contract-analysis">previous experiment</a>. Llama had classified it as a contract then. This time, it simply switched sides.*
 
+Across the full set, three observations stood out.
+
+- **First, Mistral was the strictest model.** It rejected all four documents. Its reasoning was consistently structural: no named parties, no signatures, no traditional deal.
+- **Second, Qwen was the most prompt-sensitive.** The prompt mentions "terms of service," and Qwen took the hint. The other two models ignored it and did their own structural assessment.
+- **Third, confidence was not informative.** Every model reported 90–100% confidence, including on the cases where they disagreed with each other and the case where Llama disagreed with itself. On ambiguous legal documents, those confidence scores are better read as style than signal.
+
 So the small models did not converge. On the easy cases they could be useful; on the ambiguous ones they **exposed the boundary problem** rather neatly.
 
 So what would a lawyer do? Exactly. Appeal to a higher court.
@@ -132,9 +134,9 @@ Once the hardware was running, <a href="https://docs.vllm.ai/" target="_blank">v
 
 Three larger models were downloaded from Hugging Face and took the stand. Same documents. Same prompt. Same temperature:
 
-- <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">**Llama 3.1 (70B)**</a> – the bigger sibling of the 8B that couldn't agree with itself
-- <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen 2.5 (72B)**</a> – the bigger sibling of the 14B that was the lone dissenter on Terms of Service
-- <a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">**SaulLM 54B**</a> – a Mistral derivative fine-tuned on US and European legal texts, court rulings, and legislative documents
+- <a href="https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct" target="_blank">**Llama-3.1:70B**</a> – the bigger sibling of the 8B that couldn't agree with itself
+- <a href="https://huggingface.co/Qwen/Qwen2.5-72B-Instruct" target="_blank">**Qwen2.5:72B**</a> – the bigger sibling of the 14B that was the lone dissenter on Terms of Service
+- <a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">**SaulLM:54B**</a> – a Mistral derivative fine-tuned on US and European legal texts, court rulings, and legislative documents
 
 This created two useful comparisons at once: scale within a model family (Llama 8B vs 70B, Qwen 14B vs 72B) and generalist versus specialist (Mistral-family generalist vs SaulLM, its legal derivative).
 
