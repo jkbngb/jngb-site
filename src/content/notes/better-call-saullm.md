@@ -10,7 +10,7 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 - **Experiment**: Six open-source LLMs classified four legally ambiguous documents. Three small models ran locally on a MacBook Air; three larger models ran remotely on an Nvidia H100 in a European data centre. One of the six was a legal-domain specialist.
 - **Why it matters**: If an LLM is being used as a classification gate in a document pipeline, the important question is not just whether it works on easy cases, but how stable it is on borderline ones.
-- **Key finding**: Temperature 0.1 is often treated as near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. More parameters didn't buy agreement. Legal training did.
+- **Key finding**: Temperature 0.1 is often treated as near-deterministic. That didn't stop one model from classifying the same document as both CONTRACT and NOT CONTRACT on successive runs. Scaling up shifted the bias without resolving it. The one legal specialist in the set produced the most structurally precise reasoning.
 
 ## Context
 
@@ -18,7 +18,7 @@ A <a href="/notes/privacy-first-contract-analysis">previous experiment</a> asked
 
 That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?**
 
-Short answer: they just disagree more eloquently.
+Short answer: no, they just disagree more eloquently.
 
 The longer answer involves a legal-specialist LLM, an Nvidia H100 in Warsaw, and the mildly awkward discovery that a MacBook Air can outpace a data center GPU under the right (i.e., wrong) conditions.
 
