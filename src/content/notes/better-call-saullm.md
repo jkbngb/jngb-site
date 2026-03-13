@@ -238,7 +238,7 @@ No stable coalition emerged. The only near-consensus document was the MoU, which
 
 There was also an unplanned infrastructure lesson.
 
-On one MoU analysis run, Qwen2.5:72B on the H100 was slower than Qwen2.5:14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4.
+On one MoU analysis run, Qwen2.5:72B on the H100 was slower than Qwen2.5:14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4. For comparison, the honourable SaulLM on the same H100 managed 300 tokens/sec on the same document.
 
 This was not a referendum on Nvidia hardware. It was a software stack problem: a quantisation kernel incompatibility prevented the GPU run from benefiting properly from the hardware underneath it.
 
