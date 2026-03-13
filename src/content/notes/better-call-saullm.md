@@ -147,7 +147,7 @@ So the first model to take the bench was the specialist: <a href="https://huggin
 ![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
 
-SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. Classification in under two seconds. This is what you expect when an H100 meets a model that doesn't waste compute.
+SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. 820 to 1,400 tokens per second on the three documents it rejected – under two seconds to a verdict. This is what happens when an H100 meets a model that doesn't waste compute.
 
 It classified three of the four documents as NOT CONTRACT, with only the MoU receiving a clear CONTRACT verdict. That already put it closer to a defensible legal-structural reading than the larger generalists.
 
@@ -238,7 +238,7 @@ No stable coalition emerged. The only near-consensus document was the MoU, which
 
 There was also an unplanned infrastructure lesson.
 
-On one MoU analysis run, Qwen2.5:72B on the H100 was slower than Qwen2.5:14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4. For comparison, the honourable SaulLM on the same H100 managed 300 tokens/sec on the same document.
+On the MoU – which all three remote models classified as CONTRACT, triggering a full contract analysis rather than a short rejection – Qwen2.5:72B on the H100 was slower than Qwen2.5:14B on the MacBook Air. The H100 managed 9.7 tokens/sec. The MacBook managed 16.4. For comparison, the honourable SaulLM on the same H100 and the same document managed 300 tokens/sec.
 
 This was not a referendum on Nvidia hardware. It was a software stack problem: a quantisation kernel incompatibility prevented the GPU run from benefiting properly from the hardware underneath it.
 
