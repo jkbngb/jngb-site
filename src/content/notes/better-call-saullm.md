@@ -16,7 +16,7 @@ stack: ["Scaleway", "vLLM", "SaulLM-54B", "Llama-3.1-70B", "Qwen2.5-72B"]
 
 A <a href="/notes/privacy-first-contract-analysis" target="_blank">previous experiment</a> asked a practical question: can contract classification run entirely on a local laptop using open-source models? On straightforward documents, the answer was broadly yes. On the harder ones, the models split.
 
-That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?** Or do they simply arrive at different forms of certainty, expensively?
+That raised the more interesting follow-up. **If the problem is ambiguity, does scaling up push models toward consensus?** Or do they just arrive at different forms of certainty, for more money?
 
 The short answer is, that they just disagree more eloquently.
 
