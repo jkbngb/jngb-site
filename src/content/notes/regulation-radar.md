@@ -82,7 +82,7 @@ At €23 per hour, the clock was ticking from the moment the instance booted. Th
 
 Three models, run sequentially:
 
-<a href="https://huggingface.co/utter-project/EuroLLM-22B-Instruct" target="_blank">**EuroLLM-22B**</a> – yes, the EU funded the training of its own language model. Trained on all 24 official EU languages as part of the <a href="https://eurollm.eu/" target="_blank">EuroLLM project</a>, a consortium of European research institutions. This is the institutional candidate: the EU's model reading the EU's regulations.
+<a href="https://huggingface.co/blog/eurollm-team/eurollm-22b" target="_blank">**EuroLLM-22B**</a> – yes, the EU funded the training of its own language model. Trained on all 24 official EU languages as part of the <a href="https://eurollm.eu/" target="_blank">EuroLLM project</a>, a consortium of European research institutions. This is the institutional candidate: the EU's model reading the EU's regulations.
 
 <a href="https://huggingface.co/Equall/SaulLM-141B-Instruct" target="_blank">**SaulLM-141B**</a> – the big sibling of the laptop model. Same legal training data, twenty times the parameters. The expectation was straightforward: bigger model, same specialisation, better results.
 
