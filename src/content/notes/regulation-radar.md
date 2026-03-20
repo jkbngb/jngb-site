@@ -1,6 +1,6 @@
 ---
 title: "Regulation Radar: What Four LLMs Made of 890 EU Laws"
-summary: "Four LLMs read 890 EU regulations and classified them by domain and impact – one on a MacBook Air, three on eight Nvidia H100 GPUs. Results were checked against EuroVoc, the EU's own classification system maintained by professional librarians since 1995.<br><br>A reasoning model half the size of a legal specialist produced better classifications. On most regulations, the models agreed on the core subject – but <strong>not a single one was classified identically by all four</strong>.<br><br>When they did agree, accuracy against the human baseline went up. When they didn't, you needed a person."
+summary: "The EU published 890 regulations in six months. Five million words. Professional librarians have been classifying them since 1995. We pointed four language models at the same pile – one running on a MacBook Air, three on eight Nvidia H100 GPUs – and checked their homework against the humans.<br><br><strong>Not a single regulation was classified the same way by all four models.</strong> But a 70B reasoning model that pauses to think before answering outperformed a 141B legal specialist trained specifically on law.<br><br>The biggest model was not the best. The most confident were not the most correct. And when the models did agree, they were usually right."
 date: "March 2026"
 published: 2026-03-20
 tags: ["eu-regulation", "cloud-gpu", "document-classification", "model-disagreement", "reasoning-models"]
