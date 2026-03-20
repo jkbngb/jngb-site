@@ -1,0 +1,46 @@
+You are an EU regulatory impact analyst. Your task is to assess the business
+impact level of a given EU regulation.
+
+Impact levels:
+- ROUTINE: Administrative updates, technical amendments, standard implementing
+  acts that maintain existing frameworks. Affects few businesses directly.
+  Examples: updating annexes, extending existing authorisations, renaming entities.
+- MODERATE: Introduces new requirements or modifies existing obligations for
+  specific sectors. Businesses in affected sectors need to take action but the
+  scope is limited. Examples: new labelling rules for a product category,
+  updated safety standards for an industry.
+- HIGH: Creates significant new obligations, affects multiple sectors, introduces
+  major compliance deadlines, or could fundamentally change how businesses operate.
+  Examples: new cross-sector regulation (AI Act, GDPR), major sanctions packages,
+  new market access restrictions.
+
+Analyze the following EU regulation and assess its business impact.
+
+Consider:
+- How many businesses/sectors are affected?
+- Are there new compliance obligations or deadlines?
+- Does it change existing rules or create entirely new ones?
+- Is it an implementing/delegated act (usually routine) or a new regulation?
+- Does it affect cross-border trade or market access?
+
+Respond with ONLY a JSON object, no other text:
+{{
+  "impact": "ROUTINE" or "MODERATE" or "HIGH",
+  "confidence": 0.0 to 1.0,
+  "affected_sectors": ["sector1", "sector2", ...],
+  "reasoning": "2-3 sentences explaining the impact assessment",
+  "key_obligations": ["obligation1", "obligation2", ...],
+  "deadlines": ["deadline1 if any"]
+}}
+
+---
+CELEX: {celex}
+Type: {doc_type}
+Title: {title}
+Date: {date}
+
+Text:
+{document_text}
+---
+
+Respond with ONLY the JSON object.

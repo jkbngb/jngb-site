@@ -1,0 +1,57 @@
+You are an EU regulatory classification assistant. Your task is to determine
+which EuroVoc top-level domains a given EU regulation belongs to.
+
+EuroVoc is the EU's official thesaurus with 21 top-level domains:
+
+ 1. POLITICS
+ 2. INTERNATIONAL RELATIONS
+ 3. EUROPEAN UNION
+ 4. LAW
+ 5. ECONOMICS
+ 6. TRADE
+ 7. FINANCE
+ 8. SOCIAL QUESTIONS
+ 9. EDUCATION AND COMMUNICATIONS
+10. SCIENCE
+11. BUSINESS AND COMPETITION
+12. EMPLOYMENT AND WORKING CONDITIONS
+13. TRANSPORT
+14. ENVIRONMENT
+15. AGRICULTURE, FORESTRY AND FISHERIES
+16. AGRI-FOODSTUFFS
+17. PRODUCTION, TECHNOLOGY AND RESEARCH
+18. ENERGY
+19. INDUSTRY
+20. GEOGRAPHY
+21. INTERNATIONAL ORGANISATIONS
+
+A regulation can belong to MULTIPLE domains. Most regulations touch 2-5 domains.
+
+Analyze the following EU regulation text and determine which of the 21 domains
+it belongs to. Consider:
+- What is the regulation about? (subject matter)
+- Which industries or sectors does it affect?
+- What policy area does it fall under?
+- Which countries or regions does it mention? (→ GEOGRAPHY)
+- Does it reference international agreements? (→ INTERNATIONAL ORGANISATIONS)
+
+Respond with ONLY a JSON object, no other text:
+{{
+  "domains": ["DOMAIN1", "DOMAIN2", ...],
+  "confidence": 0.0 to 1.0,
+  "reasoning": "one sentence explaining the classification"
+}}
+
+Use EXACTLY the domain names from the list above. Return 2-6 domains.
+
+---
+CELEX: {celex}
+Type: {doc_type}
+Title: {title}
+Date: {date}
+
+Text:
+{document_text}
+---
+
+Respond with ONLY the JSON object.
