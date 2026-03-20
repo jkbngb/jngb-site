@@ -37,6 +37,9 @@ It is not a perfect answer key. The librarians assign granular concept descripto
 
 Before any model reads anything, the data needs to arrive. The pipeline works in stages.
 
+![Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to Claude, evaluate](/images/regulation-radar-pipeline.svg)
+*The pipeline from query to classified corpus. The model is a swappable component – same pipeline, different model, different results.*
+
 **Stage 1: Fetch.** A SPARQL query hits the EUR-Lex endpoint and retrieves all secondary legislation published in the last six months – 890 documents. For each: the CELEX identifier, title, date, document type, and the EuroVoc descriptors assigned by the human librarians. This is the ground truth we will grade against.
 
 **Stage 2: Download.** The CELLAR API delivers the full text of each regulation. For classification, the full text is overkill – a 400,000-word implementing regulation about carbon border adjustments does not need to be read in its entirety to know it belongs under "Energy" and "Trade". The pipeline extracts the **preamble**: title, recitals, and the opening articles. Typically 1,000–3,000 tokens – enough to understand what the regulation does, without drowning the model in annexes.
@@ -44,9 +47,6 @@ Before any model reads anything, the data needs to arrive. The pipeline works in
 **Stage 3: Classify.** Each regulation gets **two prompts.** The <a href="/classify-sectors.txt" target="_blank">first</a> asks the model to assign the document to one or more of the 21 EuroVoc domains – the thematic "what is this about?" question. The <a href="/classify-impact.txt" target="_blank">second</a> asks for an **impact assessment**: is this ROUTINE (an administrative amendment nobody outside a specific agency will notice), MODERATE (new requirements for a specific sector), or HIGH (significant new obligations across multiple sectors, major compliance deadlines – on the scale of an AI Act or GDPR)?
 
 **Stage 4: Route.** A deliberate system design choice. If a regulation is classified as **HIGH impact**, the pipeline does not just log it and move on. For the genuinely important regulations – the ones a compliance team would actually need to read – you want the best available model writing the briefing, not the cheapest one. So the system immediately routes that regulation to **Claude Sonnet** via the Anthropic API for a detailed editorial summary: what the regulation does, who is affected, what the deadlines are, and what the worst-case consequence looks like. (Claude Sonnet's exact parameter count and infrastructure are not public – it is a frontier model running on Anthropic's hardware, not something you replicate on a rented GPU cluster.) The cheap open-source model does triage on all 890 documents. The expensive frontier model only sees the ~15 that matter. **95% cost savings** versus routing everything through Claude.
-
-![Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to Claude, evaluate](/images/regulation-radar-pipeline.svg)
-*The pipeline from query to classified corpus. The model is a swappable component – same pipeline, different model, different results.*
 
 The experiment: run this pipeline with **four different models** at the classification stage. Same 890 regulations, same two prompts, same routing logic. Then compare – with the humans, and with each other.
 
