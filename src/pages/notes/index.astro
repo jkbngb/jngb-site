@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const notes = (await getCollection('notes')).sort(
-  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+  (a, b) => new Date(b.data.published ?? b.data.date).valueOf() - new Date(a.data.published ?? a.data.date).valueOf()
 );
 ---
 

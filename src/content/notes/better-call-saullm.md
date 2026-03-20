@@ -2,6 +2,7 @@
 title: "Better Call Saul(LM): Do Bigger Models Actually Agree on Ambiguous Documents?"
 summary: "Six open-source LLMs were asked to classify four ambiguous legal documents as contract or not contract. Same prompt. Same temperature. Same documents.<br><br>One model <strong>disagreed with itself</strong> on successive runs. The bigger models did not agree more. They disagreed differently.<br><br>Scaling up did not resolve the disagreement, but <strong>a legal-specialist model came closest to getting it right</strong>."
 date: "March 2026"
+published: 2026-03-05
 tags: ["local-llm", "cloud-gpu", "document-processing", "model-disagreement"]
 stack: ["Scaleway", "vLLM", "SaulLM:54B", "Llama-3.1:70B", "Qwen2.5:72B"]
 ---
