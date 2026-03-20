@@ -1,35 +1,38 @@
 ---
 title: "Regulation Radar: What Four LLMs Made of 890 EU Laws"
-summary: "The EU published 890 regulations in six months. Five million words. Professional librarians have been classifying them since 1995. We pointed four language models at the same pile – one running on a MacBook Air, three on eight Nvidia H100 GPUs – and checked their homework against the humans.<br><br><strong>Not a single regulation was classified the same way by all four models.</strong> But a 70B reasoning model that pauses to think before answering outperformed a 141B legal specialist trained specifically on law.<br><br>The biggest model was not the best. The most confident were not the most correct. And when the models did agree, they were usually right."
+summary: "The EU published 890 pieces of binding legislation in six months – over five million words of regulations, decisions, and directives. We pointed four language models at the pile and checked their classifications against the human librarians who have been tagging EU law since 1995.<br><br>Not one regulation was classified identically by all four models. A 70B reasoning model that pauses to think before answering outperformed a 141B legal specialist trained specifically on law. <strong>The biggest model was not the best, and the most confident were not the most correct.</strong><br><br>But when the models did agree with each other, they tended to <strong>agree with the humans too</strong> – which turned out to be the more interesting finding."
 date: "March 2026"
 published: 2026-03-20
 tags: ["eu-regulation", "cloud-gpu", "document-classification", "model-disagreement", "reasoning-models"]
-stack: ["Anthropic API", "EuroLLM-22B", "SaulLM-7B", "SaulLM-141B", "DeepSeek-R1:671B"]
+stack: ["EUR-Lex", "Anthropic API", "EuroLLM:22B", "SaulLM:141B", "DeepSeek-R1:671B"]
 ---
 
 ## Quick Brief
 
 - **Experiment:** Four open-source LLMs read 890 EU regulations and classified them by thematic domain and regulatory impact – one on a MacBook Air, three on eight Nvidia H100 GPUs on a rented machine in Paris, no external API involved. Where possible, results were compared against EuroVoc, the EU's own classification system.
-- **Why it matters:** LLMs can read regulation. That was never really in question. What actually matters is whether their output is consistent enough to act on, and what happens when you check it against human judgement.
-- **Key finding:** A reasoning model half the size of a legal specialist produced better classifications. On most regulations, the models agreed on the core subject – but not one was classified identically by all four. When they did agree, their accuracy against the human baseline went up. When they didn't, you needed a person.
+- **Why it matters:** The fact that LLMs can read regulation was never really in question. What actually matters is whether their output is consistent enough to act on – and what happens when you check it against human judgement.
+- **Key finding:** A 70B reasoning model that pauses to think before answering outperformed a 141B legal specialist trained specifically on law. On most regulations, the models agreed on the core subject – but not one was classified identically by all four. When they did agree, accuracy against the human baseline went up. When they didn't, a human in the loop becomes advisable.
 
 ## Context
 
 The neat thing about bureaucracies is that they produce vast amounts of structured text. Which, in theory, should make them ground zero for language models.
 
-In the six months to March 2026, the European Union published **890 pieces of binding legislation.** Over five million words of regulations, decisions, and directives – roughly ten times the length of *War and Peace*, published in six months.
+In the six months to March 2026 (17 September to 17 March, to be precise), the European Union published **890 pieces of binding legislation.** Over five million words of regulations, decisions, and directives – roughly ten times the length of *War and Peace*, published in half a year.
 
 Somebody has to read all of that.
 
-Every one of these 890 regulations is publicly available through <a href="https://eur-lex.europa.eu/content/welcome/about.html" target="_blank">EUR-Lex</a> – well-known to EU legal practitioners and largely invisible to everyone else. A <a href="https://publications.europa.eu/webapi/rdf/sparql" target="_blank">SPARQL endpoint</a> lets you query legislation like a database. A bulk download API called <a href="https://op.europa.eu/en/web/cellar" target="_blank">CELLAR</a> delivers full texts programmatically, in all 24 official EU languages, with structured metadata attached. It is, essentially, a very well-organised government filing cabinet with an API.
+All EU legislation is publicly available through <a href="https://eur-lex.europa.eu/content/welcome/about.html" target="_blank">EUR-Lex</a> – well-known to EU legal practitioners and largely invisible to everyone else. A <a href="https://publications.europa.eu/webapi/rdf/sparql" target="_blank">SPARQL endpoint</a> lets you query legislation like a database. A bulk download API called <a href="https://op.europa.eu/en/web/cellar" target="_blank">CELLAR</a> delivers full texts programmatically, in all 24 official EU languages, with structured metadata attached. A very well-organised government filing cabinet with an API.
 
-But a filing cabinet is only useful if you know what is in it. The EU doesn't just publish legislation – it **tags** it. Every regulation gets classified using <a href="https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://eurovoc.europa.eu/100141" target="_blank">EuroVoc</a>, a controlled vocabulary of roughly 7,000 terms organised into **21 top-level thematic domains** – "Agriculture", "Trade", "Finance", "Energy", and so on. The tagging is done by professional librarians at the Publications Office, and has been running since 1995.
+![The EU's SPARQL endpoint – a query interface for legislation](/images/regulation-radar-sparql.png)
+*The filing cabinet. With an API.*
 
-A <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> asked six models to classify ambiguous legal documents. They disagreed extensively – but there was no ground truth to grade against. This time, the librarians provided one. Sort of. EuroVoc classifications are derived – granular descriptors rolled up to 21 top-level domains – so the mapping is not always clean. But it is structured, consistent, and publicly available. Considerably better than no benchmark at all.
+But a filing cabinet is only useful if you know what is in it. Therefore, the EU doesn't just publish legislation – it **tags** it. Every regulation gets classified using <a href="https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://eurovoc.europa.eu/100141" target="_blank">EuroVoc</a>, a controlled vocabulary of roughly 7,000 terms organised into **21 top-level thematic domains** – "Agriculture", "Trade", "Finance", "Energy", and so on. The tagging is done by professional librarians at the Publications Office, and has been running since 1995.
 
-890 regulations, a public taxonomy, and a human baseline to grade against. The conventional approach to regulatory monitoring is to give the documents to a junior associate, who reads them, highlights the important bits, and has ChatGPT open in a second tab. The unconventional approach is to notice that **the filing cabinet already has an API** – and that language models can read. You do not put a steam engine on a horse. You build a railway.
+A <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> asked six models to classify ambiguous legal documents. They disagreed extensively – but there was no ground truth to grade against. This time, the librarians provided one, sort of – they tag each regulation with specific terms from EuroVoc's ~7,000 concept vocabulary, and those terms sit within a fixed hierarchy that maps them to the 21 top-level domains. The models were asked to pick domains directly. So the comparison is not quite apples to apples, but it is structured, consistent, and publicly available, which is considerably better than no benchmark at all.
 
-## The Pipeline
+The conventional approach to regulatory monitoring is to give the documents to a compliance officer, who reads them, asks ChatGPT which parts matter, and writes a summary (also with ChatGPT). The unconventional approach is to notice that **the filing cabinet already has an API** – and that language models can read. You do not put a steam engine on a horse. You build a railway.
+
+## The Railway
 
 Before any model reads anything, the data needs to arrive. The pipeline works in stages.
 
@@ -39,46 +42,47 @@ Before any model reads anything, the data needs to arrive. The pipeline works in
 
 **Stage 3: Classify.** Each regulation gets **two prompts.** The <a href="/classify-sectors.txt" target="_blank">first</a> asks the model to assign the document to one or more of the 21 EuroVoc domains – the thematic "what is this about?" question. The <a href="/classify-impact.txt" target="_blank">second</a> asks for an **impact assessment**: is this ROUTINE (an administrative amendment nobody outside a specific agency will notice), MODERATE (new requirements for a specific sector), or HIGH (significant new obligations across multiple sectors, major compliance deadlines – on the scale of an AI Act or GDPR)?
 
-**Stage 4: Route.** A deliberate system design choice. If a regulation is classified as **HIGH impact**, the pipeline does not just log it and move on. For the genuinely important regulations – the ones a compliance team would actually need to read – you want the best available model writing the briefing, not the cheapest one. So the system immediately routes that regulation to **Claude Sonnet** via the Anthropic API for a detailed editorial summary: what the regulation does, who is affected, what the deadlines are, and what the worst-case consequence looks like. (Claude Sonnet's exact parameter count and infrastructure are not public – it is a frontier model running on Anthropic's hardware, not something you replicate on a rented GPU cluster.) The cheap open-source model does triage on all 890 documents. The expensive frontier model only sees the ~15 that matter. **95% cost savings** versus routing everything through Claude.
+**Stage 4: Route.** If a regulation is classified as **HIGH impact**, the pipeline does not just log it and move on – it routes the document to **Claude Sonnet** via the Anthropic API for a detailed editorial summary: what the regulation does, who is affected, what the deadlines are, and what the worst-case consequence looks like. For the genuinely important regulations, you want the best available model writing the briefing, not the cheapest one. (We publish all hardware specs with utmost transparency. Anthropic does not.)
+
+In practice, the open-source models classified between 1 and 30 regulations as HIGH out of 890 – so roughly 1–3% of the corpus gets routed to the expensive model, with the cheap one handling the other 97–99%. The cost difference is not trivial.
 
 ![Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to Claude, evaluate](/images/regulation-radar-pipeline.svg)
-*The pipeline from query to classified corpus. The model is a swappable component – same pipeline, different model, different results.*
+*From SPARQL query to classified regulation. Swap the model, keep everything else.*
 
-The experiment: run this pipeline with **four different models** at the classification stage. Same 890 regulations, same two prompts, same routing logic. Then compare – with the humans, and with each other.
+The experiment: run this pipeline with **four different models** at the classification stage. Same 890 regulations, same two prompts, same temperature (0.1), same routing logic. Then compare – with the humans, and with each other.
 
 ## The Off-the-Shelf Option
 
-If you are going to build a system like this, the dream is running it in real time. A regulation gets published, the pipeline picks it up, and a classified, assessed, briefed result appears in seconds. No cloud costs, no data leaving the machine, no vendor dependency.
+Imagine this: a regulation gets published, and before you have finished your coffee, the pipeline has picked it up, classified it, assessed its impact, and produced a briefing – all on a laptop, no cloud costs, no data leaving the building.
 
-The constraints of a consumer machine make that dream distant. An Apple MacBook Air with **16 GB of unified memory** can realistically run models up to about 7 billion parameters in quantised form. That rules out anything above the small end of the model spectrum.
+That requires a model that actually fits on a laptop. An Apple MacBook Air with **16 GB of unified memory** can realistically run models up to about 7 billion parameters in quantised form, which rules out anything above the small end of the model spectrum. But small is still something.
 
-Since we are dealing with legal text, the choice fell on an old acquaintance: <a href="https://huggingface.co/papers/2403.03883" target="_blank">**SaulLM-7B**</a>, a legal-domain model fine-tuned on court rulings and legislative text. It is the smaller sibling of the 54B model from the <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> – the one that needed an H100 to run. This one fits on a laptop.
+Since we are dealing with legal text, the choice fell on an old acquaintance: <a href="https://huggingface.co/papers/2403.03883" target="_blank">**SaulLM-7B**</a>, a legal-domain model fine-tuned on court rulings and legislative text. It is the smaller sibling of the 54B model from the <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> – the one that needed an H100 to run. This one fits on a laptop. <a href="https://ollama.com/" target="_blank">**Ollama**</a> serves the model as a local API, using the M3's integrated GPU via Metal for inference.
 
-The local setup uses the same components as the previous experiments: <a href="https://ollama.com/" target="_blank">**Ollama**</a> handles model management and serves the model as a local API. On Apple Silicon, it uses **Metal** for GPU acceleration – the M3's integrated GPU, not just the CPU. The model is a swappable component in the pipeline: same code, same prompts, different model running underneath. The bottleneck is the model doing inference on the GPU, not RAM or CPU.
+![890 regulations downloaded and ready for classification](/images/regulation-radar-corpus.png)
+*890 regulations, downloaded and waiting. Each one gets two prompts – domain and impact.*
 
-It took **15 hours and 41 minutes.** Roughly one minute per regulation: read the preamble, classify by domain, assess impact, return a structured JSON response. 1,780 prompts total. Thirty watts.
+890 regulations, two prompts each, fed through a 7B model on a laptop. It took **15 hours and 41 minutes** to get through all 1,780 prompts – roughly one minute per regulation to read the preamble, classify by domain, assess impact, and return a structured JSON response. You start it before bed, and by morning the laptop has opinions about 890 pieces of EU legislation.
 
-That is slow enough that you would not want to sit and watch it, and fast enough that you can leave it running overnight and have results in the morning. But the real question is not speed – it is whether the results are any good. We will get to that shortly.
+Turns out, just because a MacBook Air *can* run a language model on EU legislation overnight does not mean it *should.*
 
-SaulLM-7B classified **30 regulations as HIGH impact** – more than any other model would. It rated 83% as MODERATE. Only 12% as ROUTINE. It produced 11 parse errors – documents where the model returned something other than valid JSON.
+Classifying hundreds of regulations at once – the actual use case for a regulatory monitoring system – requires something substantially more powerful than what fits in a laptop.
 
-The MacBook Air is a remarkable piece of engineering. But just because it *can* run a language model on EU legislation overnight does not mean it *should.*
+## "More Power!"
 
-The more interesting question is **when local hardware catches up.** Not just in intelligence – a 2028 model with 7B parameters will likely be smarter than a 2026 one, thanks to better distillation and training techniques. But more importantly, in **speed.** Apple's M-series chips have delivered roughly 3x the machine learning inference throughput from M1 to M4 in four years. If dedicated inference chips – something beyond Apple's Neural Engine – join CPUs and GPUs as standard laptop components, a specialised model before 2030 might process a regulation in a few seconds rather than a minute. That would bring the total from sixteen hours down to perhaps thirty minutes.
+The <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> ran on a single Nvidia H100. This time, the plan was to test SaulLM-141B – twenty times the size of the laptop model – which does not fit on a single GPU. So what is better than one Nvidia H100? The answer, naturally, is eight Nvidia H100s.
 
-Fast enough to run over a coffee break? Maybe. Fast enough for real-time monitoring of incoming legislation? Not yet. And for batch processing at scale – classifying hundreds of regulations at once – there will remain a need for something more powerful than what fits in a laptop. Which brings us to the rented hardware.
+A <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a> GPU instance with that kind of quota required a short phone call with Paris to request approval – and a promise not to block the machine too long. At €23 per hour, one might assume they would have every incentive to let you keep it running, but apparently not.
 
-## More Power
+Request granted: **eight H100 SXMs**, eighty gigabytes of VRAM each, 640 GB total, connected via NVLink – a setup that could comfortably run most open-source models in existence, with one notable exception.
 
-If consumer hardware is not ready, specialised hardware should be. The question is whether throwing significantly more compute at the problem produces significantly better results – or just the same mediocre output, faster.
+With the clock ticking, the first order of business was downloading 1.3 terabytes of model weights from <a href="https://huggingface.co/" target="_blank">Hugging Face</a> – 35 minutes of eight GPUs sitting completely idle. The inference server of choice was <a href="https://docs.vllm.ai/" target="_blank">**vLLM**</a> with **tensor parallelism**: the model's weights split across all eight GPUs so they work together as one, which is what makes 140-billion-parameter models possible on hardware with 80 GB per GPU.
 
-For the three remaining models, we rented a <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a> GPU instance in Paris. **Eight Nvidia H100 SXMs.** Eighty gigabytes of VRAM each, 640 GB total, connected via NVLink – a setup that could comfortably run most open-source models in existence (with one notable exception, as we would discover).
+The pipeline code is identical to the laptop setup – same prompts, same routing logic – with the model endpoint swapped from a local Ollama server to the remote vLLM instance. No third-party API, no data shared externally.
 
-At €23 per hour, the clock was ticking from the moment the instance booted. The inference server was <a href="https://docs.vllm.ai/" target="_blank">**vLLM**</a> with **tensor parallelism** – meaning the model's weights are split across all eight GPUs so they work together as one, rather than each card running its own copy. This is what makes 140-billion-parameter models possible on hardware that only has 80 GB per card. The same pipeline code runs as on the laptop, with the model endpoint swapped from a local Ollama server to the remote vLLM instance. No external API, no data leaving the machine – the models run on rented hardware under our full control.
+Three models, ran sequentially:
 
-Three models, run sequentially:
-
-<a href="https://huggingface.co/blog/eurollm-team/eurollm-22b" target="_blank">**EuroLLM-22B**</a> – yes, the EU funded the training of its own language model. Trained on all 24 official EU languages as part of the <a href="https://eurollm.eu/" target="_blank">EuroLLM project</a>, a consortium of European research institutions. This is the institutional candidate: the EU's model reading the EU's regulations.
+<a href="https://huggingface.co/blog/eurollm-team/eurollm-22b" target="_blank">**EuroLLM-22B**</a> – yes, the EU funded the training of its own language model. Trained on all 24 official EU languages as part of the <a href="https://eurollm.io/" target="_blank">EuroLLM project</a>, a consortium of European research institutions. This is the institutional candidate: the EU's model reading the EU's regulations.
 
 <a href="https://huggingface.co/Equall/SaulLM-141B-Instruct" target="_blank">**SaulLM-141B**</a> – the big sibling of the laptop model. Same legal training data, twenty times the parameters. The expectation was straightforward: bigger model, same specialisation, better results.
 
@@ -92,19 +96,24 @@ The cluster has 640 GB.
 
 Three attempts were made. Each produced an out-of-memory crash at the model-loading stage – before a single token of regulation was read. The weights themselves filled the GPUs to 98.7% capacity with zero bytes left for anything else. The model physically did not fit.
 
-The pivot was <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B" target="_blank">**DeepSeek-R1-Distill-Llama-70B**</a> – the largest distilled reasoning variant. Distillation works like this: DeepSeek ran their full 671B model on a large set of problems, collected all the step-by-step reasoning traces it produced, and then used those traces as training data to teach a smaller model to reason the same way. The "student" in this case is **Meta's Llama 3 70B** – an American base model that learned Chinese-style chain-of-thought reasoning. At ~140 GB, it loaded with room to spare.
+The pivot was <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B" target="_blank">**DeepSeek-R1-Distill-Llama-70B**</a> – the largest distilled reasoning variant. Distillation works like this: DeepSeek ran their full 671B model on a large set of problems, collected all the step-by-step reasoning traces it produced, and then used those traces as training data to teach a smaller model to reason the same way (<a href="https://arxiv.org/pdf/2501.12948" target="_blank">paper</a>). The "student" in this case is **Meta's Llama 3 70B** – an American base model that learned Chinese-style chain-of-thought reasoning. At ~140 GB, it loaded with room to spare.
 
 Why include a reasoning model at all? Most classification tasks do not require chain-of-thought. You read the text, you assign a label. But EU regulation is not always straightforward – a regulation about carbon border adjustments touches "Energy", "Trade", "Environment", and possibly "Industry" depending on how you read it. A model that **thinks through the ambiguity before committing to an answer** might handle those multi-domain cases better than one that just pattern-matches. This model produces visible `<think>` tokens – you can literally watch it reason, step by step, before it gives its final classification.
 
-## The Runs
-
 All three GPU models finished in about half an hour each.
 
-![Eight H100 GPUs completely idle – 0 MiB, 0%](/images/regulation-radar-gpu-idle.png)
-*Eight H100s sitting empty. 0 MiB VRAM, 0% utilisation, ~120 watts each.*
+<div class="gpu-slider" style="position:relative;max-width:100%;overflow:hidden;border:1px solid #ddd;border-radius:4px;user-select:none;">
+<img src="/images/regulation-radar-gpu-loaded.png" alt="After: 8 H100 GPUs at full load – 75 GB VRAM each" style="width:100%;display:block;" />
+<div class="gpu-slider-overlay" style="position:absolute;top:0;left:0;width:50%;height:100%;overflow:hidden;pointer-events:none;">
+<img src="/images/regulation-radar-gpu-idle.png" alt="Before: 8 H100 GPUs idle – 0 MiB VRAM" style="display:block;min-width:100%;width:100%;height:100%;object-fit:cover;" />
+</div>
+<div style="position:absolute;top:0;bottom:0;left:50%;width:3px;background:#8C6239;pointer-events:none;z-index:5;" class="gpu-slider-line"></div>
+<input type="range" min="0" max="100" value="50" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:ew-resize;z-index:10;margin:0;" />
+<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 8px;border-radius:3px;font-size:0.75rem;pointer-events:none;">Before</div>
+<div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 8px;border-radius:3px;font-size:0.75rem;pointer-events:none;">After</div>
+</div>
 
-![All 8 GPUs at 100% utilization, 75 GB VRAM each](/images/regulation-radar-gpu-loaded.png)
-*Model loaded. 75 GB per card, all eight at full utilisation. €23 per hour well spent.*
+*Drag to compare. Eight H100s idle versus eight H100s at full utilisation.*
 
 **EuroLLM-22B:** 30.7 minutes, zero errors across 1,780 prompts. It classified 79% of regulations as ROUTINE and flagged exactly **one** as HIGH impact.
 
@@ -114,18 +123,16 @@ All three GPU models finished in about half an hour each.
 
 ## Checking the Answer Key
 
-Before looking at how the models compare to each other, the first question is: **how do they compare to the humans?**
+Four models have now classified 890 regulations. They were fast, they were confident, and they all produced structured output. The question nobody has answered yet: **were any of them right?**
 
-Each regulation in the EU corpus is tagged with one or more of the 21 EuroVoc domains by professional librarians. Each model was asked to do the same thing. The overlap between a model's domain assignments and the human assignments gives us a score: 1.0 would mean perfect agreement with the librarians. 0.0 would mean no overlap at all.
+The librarians at the Publications Office have been tagging these regulations for thirty years. Their domain assignments are the closest thing to a ground truth we have – not perfect, since they tag at the granular level and we map to the 21 top-level domains, but structured, consistent, and considerably better than guessing. The overlap between a model's assignments and the librarians' gives us a score: 1.0 would mean perfect agreement. 0.0 would mean the model might as well have picked domains at random.
 
-A reminder: this ground truth is **derived**. The librarians assign granular concept descriptors from a ~7,000-term vocabulary, which get rolled up to the 21 top-level domains. It is a reasonable benchmark, not a perfect one.
-
-| Model | Params | Runtime | Overlap with humans |
-|---|:---:|:---:|:---:|
-| SaulLM-7B (MacBook) | 7B | 940 min | 0.33 |
-| EuroLLM-22B (H100 x8) | 22B | 30.7 min | 0.47 |
-| SaulLM-141B (H100 x8) | 141B | ~34 min | 0.50 |
-| **DeepSeek-R1-70B (H100 x8)** | **70B** | **~31 min** | **0.56** |
+| Model | Params | Hardware | Runtime | Overlap with humans |
+|:---:|:---:|:---:|:---:|:---:|
+| SaulLM-7B | 7B | MacBook Air M3 | 940 min | 0.33 |
+| EuroLLM-22B | 22B | H100 x8 | 30.7 min | 0.47 |
+| SaulLM-141B | 141B | H100 x8 | ~34 min | 0.50 |
+| **DeepSeek-R1-70B** | **70B** | **H100 x8** | **~31 min** | **0.56** |
 
 *Overlap with humans: how closely each model's domain assignments match the librarians' classifications. 1.0 = perfect match, 0.0 = no overlap. DeepSeek is bold because it won.*
 
@@ -133,7 +140,7 @@ A reminder: this ground truth is **derived**. The librarians assign granular con
 
 The size ordering would predict: 141B > 70B > 22B > 7B. The actual ordering is: **70B > 141B > 22B > 7B.** More parameters did not compensate for not thinking.
 
-But 0.56 is not exactly a ringing endorsement. The best model agrees with the human librarians just over half the time. That raises the question of *where* it agrees and where it doesn't.
+But 0.56 is not exactly a ringing endorsement. If the best model assigns five domains to a regulation, roughly two or three of them will match the librarians' choices – and the rest won't. Good enough to tell you what a regulation is broadly about. Not good enough to replace the person who reads it.
 
 ### Domain-level overlap with human classifications
 
@@ -167,27 +174,25 @@ But 0.56 is not exactly a ringing endorsement. The best model agrees with the hu
 <tr><td style="font-size:0.78rem;">Science</td><td style="text-align:center;color:#888;">24</td><td style="text-align:center;background:rgba(180,40,40,0.25);border-radius:2px;font-family:monospace;font-size:0.76rem;">12%</td><td style="text-align:center;background:rgba(180,40,40,0.25);border-radius:2px;font-family:monospace;font-size:0.76rem;">8%</td><td style="text-align:center;background:rgba(180,40,40,0.25);border-radius:2px;font-family:monospace;font-size:0.76rem;">8%</td><td style="text-align:center;background:rgba(180,40,40,0.25);border-radius:2px;font-family:monospace;font-size:0.76rem;">15%</td></tr>
 </tbody></table>
 
-*Each cell shows how well a model captures a specific domain compared to the human librarians. Darker = better overlap. Some domains ("Agriculture", "International Relations") are consistently well-captured. Others ("Science", "Education") are missed by everyone.*
+*Darker green = closer to the librarians. "Agriculture" and "International Relations" are easy. "Science" and "Education" are near-invisible to all four models.*
 
 ## Where They Agree
 
-Each regulation can belong to multiple domains at once – a regulation on agricultural trade subsidies might correctly belong to "Agriculture", "Trade", and "Economics" simultaneously. Each model assigns its own combination of 2 to 6 domains per regulation. The question is whether those combinations overlap.
+Here is the number that sounds worst: across all 890 regulations, **not a single one** was classified with the exact same set of domains by all four models. Zero. None.
 
-Across all 890 regulations, not a single one was classified with the *exact same* set of domains by all four models. That sounds like total disagreement. It is not.
+That sounds like total disagreement, but it is not. A regulation can belong to multiple domains at once – a regulation on agricultural trade subsidies might correctly belong to "Agriculture", "Trade", and "Economics" simultaneously. Each model picks its own combination of 2 to 6 domains. With 21 possible domains, the chances of four models independently landing on the exact same combination are vanishingly small. But that does not mean they disagree on what the regulation is *about*.
 
-Think of it this way: with 21 possible domains and each model picking a different number, the chances of four models independently landing on the exact same combination are vanishingly small. But that does not mean they disagree on what the regulation is *about*.
+On **57% of regulations, all four models agreed on at least one domain** – they all identified the same core subject. On **98%**, at least three out of four found common ground. The disagreement is about **breadth**, not about core subjects. A sanctions regulation gets tagged "International Relations" by everyone. The debate is whether it also gets "Trade", "Energy", "Politics", or all three.
 
-On **57% of regulations, all four models agreed on at least one domain** – they all identified the same core subject. On **98%, at least three out of four** agreed on at least one domain. On every single regulation without exception, at least two models found common ground. The disagreement is about **breadth**, not about core subjects. A sanctions regulation gets tagged "International Relations" by everyone. The debate is whether it also gets "Trade", "Energy", "Politics", or all three.
+Which brings us to the finding the experiment was built to test: on the documents where models substantially agreed, **accuracy against the human ground truth was 29% higher** than on the documents where they diverged. When all four models converge on a domain, that domain tends to match what the librarians assigned. When they split, the classifications drift.
 
-And here is the finding the experiment was built to test: on the documents where models substantially agreed, **accuracy against the human ground truth was 29% higher** than on the documents where they diverged. The sample is small – only 5 documents out of 826 crossed the high-agreement threshold. But the direction is consistent.
-
-**When the models agree, the agreement tends to mean something. When they don't, that is where you need a human.**
+In other words: multi-model agreement is a better predictor of correctness than any single model's confidence score. And when the models don't agree, that is exactly where you want a human looking at the document.
 
 ## The Impact Question
 
-So far, we have been comparing domain classifications against a human benchmark. The models overlap with the librarians roughly half the time – imperfect but structured. The next question has no answer key: **how do the models assess regulatory impact?**
+Everything above had an answer key – imperfect, derived, but real. The next question has none: **how do the models assess regulatory impact?**
 
-EuroVoc does not tag regulations as "high-impact" or "routine". There is no ground truth to grade against here. We can only compare the models to each other – and they do not agree.
+EuroVoc does not tag regulations as "high-impact" or "routine". There is no ground truth here. We can only compare the models to each other – and they do not agree.
 
 <table>
 <thead><tr><th></th><th style="text-align:center;">SaulLM-7B</th><th style="text-align:center;">EuroLLM-22B</th><th style="text-align:center;">SaulLM-141B</th><th style="text-align:center;">DeepSeek-R1 70B</th></tr></thead>
@@ -206,9 +211,9 @@ SaulLM-7B sees danger everywhere. EuroLLM sees almost none. A regulatory monitor
 
 **Reasoning beats size.** A 70B model with chain-of-thought outperformed a 141B legal specialist on every metric. The model that thinks before answering gives better answers. More parameters did not compensate for not thinking.
 
-**Agreement is rare but structured.** Zero exact-match agreement, but 57% convergence on core domains. When models converge, accuracy goes up. Multi-model agreement is a better signal than any single model's confidence score.
-
 **Confidence is decorative.** All four models reported confidence above 0.85 on virtually every classification – including the wrong ones, and including the ones where they flatly contradicted each other. On tasks of this complexity, self-reported confidence measures rhetorical commitment, not correctness. The <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> found the same thing: every model reported 90–100% confidence, including on the cases where they disagreed with each other.
+
+**Agreement is rare but structured.** Zero exact-match agreement, but 57% convergence on core domains. When models converge, accuracy goes up. Multi-model agreement is a better signal than any single model's confidence score.
 
 **Local hardware is not ready.** A 7B model on a MacBook takes sixteen hours and produces the worst results by a wide margin. The trajectory suggests a consumer laptop before 2030 could do meaningfully better. Whether it will be fast enough for real-time use remains to be seen.
 
@@ -221,12 +226,10 @@ A note on the electricity: the MacBook ran at 30 watts for sixteen hours. The GP
 
 ## So What
 
-EU regulation is an almost unreasonably good test case for language model classification. Clean documents, public ground truth, stable taxonomy, high volume. If LLMs are going to work anywhere in regulatory monitoring, they should work here.
+EU regulation is an almost unreasonably good test case for language model classification. Clean documents, public ground truth, stable taxonomy, high volume. If LLMs are going to work anywhere in regulatory monitoring, they should work here. Under those near-ideal conditions, the best model agreed with the human baseline just over half the time.
 
-Under those near-ideal conditions, the best model overlapped with the human baseline **just over half the time.** That is nowhere near replacing the professional librarians who maintain EuroVoc.
+Replacement is the wrong frame. The more useful question is whether LLM output, aggregated across multiple models, can tell you *where to look.* A regulation that all four models agree on probably does not need a human to review. A regulation where they split 2–2 probably does.
 
-But replacement is the wrong frame. The more useful question is whether LLM output, aggregated across multiple models, can tell you *where to look.* A regulation that all four models agree on probably does not need a human to review. A regulation where they split 2–2 probably does. And a system that flags the disagreements – rather than presenting a single model's confident verdict as fact – is more honest about what these models can and cannot do.
-
-890 regulations. Four models. Five million words. The ones on rented GPUs finished in under two hours; the one on a laptop took overnight. They are cheap relative to human review at scale. And their disagreements are structured enough to be useful – if you build around them rather than ignoring them.
+Four models processed five million words of regulation – the three on rented GPUs in under two hours, the one on a laptop overnight. Their disagreements are structured enough to be useful – if you build around them rather than ignoring them.
 
 Which, to be fair, is also true of most bureaucrats.

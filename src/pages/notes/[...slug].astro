@@ -43,4 +43,18 @@ const { Content } = await note.render();
       <a href="/notes">&larr; All notes</a>
     </div>
   </article>
+
+  <script>
+    document.querySelectorAll('.gpu-slider').forEach(slider => {
+      const overlay = slider.querySelector('.gpu-slider-overlay') as HTMLElement;
+      const line = slider.querySelector('.gpu-slider-line') as HTMLElement;
+      const range = slider.querySelector('input[type=range]') as HTMLInputElement;
+      if (overlay && range) {
+        range.addEventListener('input', () => {
+          overlay.style.width = range.value + '%';
+          if (line) line.style.left = range.value + '%';
+        });
+      }
+    });
+  </script>
 </BaseLayout>
