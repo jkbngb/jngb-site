@@ -15,7 +15,7 @@ stack: ["Anthropic API", "EuroLLM-22B", "SaulLM-7B", "SaulLM-141B", "DeepSeek-R1
 
 ## Context
 
-The neat thing about bureaucracies is that they produce extraordinary amounts of structured text. Which, in theory, should make them ground zero for language models.
+The neat thing about bureaucracies is that they produce vast amounts of structured text. Which, in theory, should make them ground zero for language models.
 
 In the six months to March 2026, the European Union published **890 pieces of binding legislation.** Over five million words of regulations, decisions, and directives – roughly ten times the length of *War and Peace*, published in six months.
 
