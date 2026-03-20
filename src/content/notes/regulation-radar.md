@@ -56,7 +56,7 @@ If you are going to build a system like this, the dream is running it in real ti
 
 The constraints of a consumer machine make that dream distant. An Apple MacBook Air with **16 GB of unified memory** can realistically run models up to about 7 billion parameters in quantised form. That rules out anything above the small end of the model spectrum.
 
-Since we are dealing with legal text, the choice fell on an old acquaintance: <a href="https://huggingface.co/Equall/SaulLM-7B-Instruct" target="_blank">**SaulLM-7B**</a>, a legal-domain model fine-tuned on court rulings and legislative text. It is the smaller sibling of the 54B model from the <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> – the one that needed an H100 to run. This one fits on a laptop.
+Since we are dealing with legal text, the choice fell on an old acquaintance: <a href="https://huggingface.co/papers/2403.03883" target="_blank">**SaulLM-7B**</a>, a legal-domain model fine-tuned on court rulings and legislative text. It is the smaller sibling of the 54B model from the <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> – the one that needed an H100 to run. This one fits on a laptop.
 
 The local setup uses the same components as the previous experiments: <a href="https://ollama.com/" target="_blank">**Ollama**</a> handles model management and serves the model as a local API. On Apple Silicon, it uses **Metal** for GPU acceleration – the M3's integrated GPU, not just the CPU. The model is a swappable component in the pipeline: same code, same prompts, different model running underneath. The bottleneck is the model doing inference on the GPU, not RAM or CPU.
 
