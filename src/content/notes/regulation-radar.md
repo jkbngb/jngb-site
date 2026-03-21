@@ -9,7 +9,7 @@ stack: ["EUR-Lex", "Anthropic API", "EuroLLM:22B", "SaulLM:141B", "DeepSeek-R1:6
 
 ## Quick Brief
 
-- **Experiment:** Four open-source LLMs read 890 EU regulations and classified them by thematic domain and regulatory impact – one on a MacBook Air, three on eight Nvidia H100 GPUs on a rented machine in Paris, no external API involved. Where possible, results were compared against EuroVoc, the EU's own classification system.
+- **Experiment:** Four open-source LLMs read 890 EU regulations and classified them by thematic domain and regulatory impact – one on a MacBook Air, the rest on rented H100s in Paris, no external API involved. Where possible, results were compared against EuroVoc, the EU's own classification system.
 - **Why it matters:** The fact that LLMs can read regulation was never really in question. What actually matters is whether their output is consistent enough to act on – and what happens when you check it against human judgement.
 - **Key finding:** A 70B reasoning model that pauses to think before answering outperformed a 141B legal specialist trained specifically on law. On most regulations, the models agreed on the core subject – but not one was classified identically by all four. When they did agree, accuracy against the human baseline went up. When they didn't, a human in the loop becomes advisable.
 
@@ -21,7 +21,7 @@ In the six months to March 2026 (17 September to 17 March, to be precise), the E
 
 Somebody has to read all of that.
 
-All EU legislation is publicly available through <a href="https://eur-lex.europa.eu/content/welcome/about.html" target="_blank">EUR-Lex</a> – well-known to EU legal practitioners and largely invisible to everyone else. A <a href="https://publications.europa.eu/webapi/rdf/sparql" target="_blank">SPARQL endpoint</a> lets you query legislation like a database. A bulk download API called <a href="https://op.europa.eu/en/web/cellar" target="_blank">CELLAR</a> delivers full texts programmatically, in all 24 official EU languages, with structured metadata attached. A very well-organised government filing cabinet with an API.
+All EU legislation is publicly available through <a href="https://eur-lex.europa.eu/content/welcome/about.html" target="_blank">EUR-Lex</a> – well-known to EU legal practitioners and arguably invisible to everyone else. A <a href="https://publications.europa.eu/webapi/rdf/sparql" target="_blank">SPARQL endpoint</a> lets you query legislation like a database. A bulk download API called <a href="https://op.europa.eu/en/web/cellar" target="_blank">CELLAR</a> delivers full texts programmatically, in all 24 official EU languages, with structured metadata attached. A very well-organised government filing cabinet with an API.
 
 ![The EU's SPARQL endpoint – a query interface for legislation](/images/regulation-radar-sparql.png)
 *The filing cabinet. With an API.*
@@ -38,7 +38,7 @@ Before any model reads anything, the data needs to arrive. The pipeline works in
 
 **Stage 1: Fetch.** A SPARQL query hits the EUR-Lex endpoint and retrieves all secondary legislation published in the last six months – 890 documents. For each: the CELEX identifier, title, date, document type, and the EuroVoc descriptors assigned by the human librarians. This is the ground truth we will grade against.
 
-**Stage 2: Download.** The CELLAR API delivers the full text of each regulation. For classification, the full text is overkill – a 400,000-word implementing regulation about carbon border adjustments does not need to be read in its entirety to know it belongs under "Energy" and "Trade". The pipeline extracts the **preamble**: title, recitals, and the opening articles. Typically 1,000–3,000 tokens – enough to understand what the regulation does, without drowning the model in annexes.
+**Stage 2: Download.** The CELLAR API delivers the full text of each regulation. For our classification, the full text is overkill – a 400,000-word implementing regulation about carbon border adjustments does not need to be read in its entirety to know it belongs under "Energy" and "Trade". The pipeline extracts the **preamble**: title, recitals, and the opening articles. Typically 1,000–3,000 tokens – enough to understand what the regulation does, without drowning the model in annexes.
 
 **Stage 3: Classify.** Each regulation gets **two prompts.** The <a href="/classify-sectors.txt" target="_blank">first</a> asks the model to assign the document to one or more of the 21 EuroVoc domains – the thematic "what is this about?" question. The <a href="/classify-impact.txt" target="_blank">second</a> asks for an **impact assessment**: is this ROUTINE (an administrative amendment nobody outside a specific agency will notice), MODERATE (new requirements for a specific sector), or HIGH (significant new obligations across multiple sectors, major compliance deadlines – on the scale of an AI Act or GDPR)?
 
@@ -53,7 +53,7 @@ The open-source models classified between 1 and 30 regulations as HIGH out of 89
 
 The experiment: run this pipeline with **four different models** at the classification stage. Same 890 regulations, same two prompts, same temperature (0.1), same routing logic. Then compare – with the humans, and with each other.
 
-For those who would rather skip the technical details and see what four language models think your business should be worried about: <a href="/radar/" target="_blank">all 890 regulations, classified and briefed, are browsable here</a>.
+For those who would rather skip the technical details and see what four language models think your business should be worried about: <a href="/reg-radar/" target="_blank">all 890 regulations, classified and briefed, are browsable here</a>.
 
 ## The Off-the-Shelf Option
 
@@ -117,7 +117,7 @@ All three GPU models finished in about half an hour each.
 <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 8px;border-radius:3px;font-size:0.75rem;pointer-events:none;">After</div>
 </div>
 
-*Drag to compare. Eight H100s idle versus eight H100s at full utilisation.*
+*Eight H100s before and after being put to work.*
 
 **EuroLLM-22B:** 30.7 minutes, zero errors across 1,780 prompts. It classified 79% of regulations as ROUTINE and flagged exactly **one** as HIGH impact.
 
