@@ -184,11 +184,11 @@ The overlap between a model's assignments and the librarians' gives us a score: 
 <tr><td>SaulLM-7B</td><td style="text-align:center;">7B</td><td style="text-align:center;">MacBook Air M3</td><td style="text-align:center;">940 min</td><td style="text-align:center;">0.33</td></tr>
 <tr><td>EuroLLM-22B</td><td style="text-align:center;">22B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">31 min</td><td style="text-align:center;">0.47</td></tr>
 <tr><td>SaulLM-141B</td><td style="text-align:center;">141B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">~34 min</td><td style="text-align:center;">0.50</td></tr>
-<tr style="font-weight:600;"><td>DeepSeek-R1-70B</td><td style="text-align:center;">70B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">~31 min</td><td style="text-align:center;">0.56</td></tr>
+<tr><td>DeepSeek-R1-70B</td><td style="text-align:center;">70B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">~31 min</td><td style="text-align:center;">0.56</td></tr>
 </tbody>
 </table>
 
-*Overlap with thirty years of librarian classifications. 1.0 = perfect match. Nobody got close. DeepSeek won with half the parameters and no legal training data.*
+*Overlap with thirty years of librarian classifications. 1.0 = perfect match. Nobody got close. DeepSeek won – with half the parameters and no legal training data.*
 
 **The reasoning model wins.** What does that mean concretely? When DeepSeek assigns domains to a regulation, those domains overlap with the human librarians' assignments **56% of the time.** SaulLM-141B – twice the size, trained specifically on legal text – manages 50%. The model that pauses and thinks before answering beats the model with more parameters and more legal training data.
 
