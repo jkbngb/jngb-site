@@ -42,14 +42,18 @@ Before any model reads anything, the data needs to arrive. The pipeline works in
 
 **Stage 3: Classify.** Each regulation gets **two prompts.** The <a href="/classify-sectors.txt" target="_blank">first</a> asks the model to assign the document to one or more of the 21 EuroVoc domains – the thematic "what is this about?" question. The <a href="/classify-impact.txt" target="_blank">second</a> asks for an **impact assessment**: is this ROUTINE (an administrative amendment nobody outside a specific agency will notice), MODERATE (new requirements for a specific sector), or HIGH (significant new obligations across multiple sectors, major compliance deadlines – on the scale of an AI Act or GDPR)?
 
-**Stage 4: Route.** If a regulation is classified as **HIGH impact**, the pipeline does not just log it and move on – it routes the document to **Claude Sonnet** via the Anthropic API for a detailed editorial summary: what the regulation does, who is affected, what the deadlines are, and what the worst-case consequence looks like. For the genuinely important regulations, you want the best available model writing the briefing, not the cheapest one. (We publish all hardware specs with utmost transparency. Anthropic does not.)
+**Stage 4: Route.** Regulations classified as **HIGH impact** get routed to a separate model for a detailed editorial briefing – what it does, who is affected, what the deadlines are, what the worst case looks like. Ideally, the full document goes in here, not just the preamble. This can run on the same infrastructure or a different machine entirely, depending on the model and the size of the legislation.
 
-In practice, the open-source models classified between 1 and 30 regulations as HIGH out of 890 – so roughly 1–3% of the corpus gets routed to the expensive model, with the cheap one handling the other 97–99%. The cost difference is not trivial.
-
-![Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to Claude, evaluate](/images/regulation-radar-pipeline.svg)
+![Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to briefing model, evaluate](/images/regulation-radar-pipeline.svg)
 *From SPARQL query to classified regulation. Swap the model, keep everything else.*
 
+In this experiment, the routing goes to **Claude Sonnet** via the Anthropic API. At this point we would typically publish the model and hardware specs with utmost transparency – unfortunately, Anthropic does not publish theirs. This is also the one step where data leaves the organisation's infrastructure, though it does not have to: the briefing model can run internally if the use case demands it.
+
+The open-source models classified between 1 and 30 regulations as HIGH out of 890 – roughly 1–3% of the corpus. Only those get sent to the expensive model. The other 97–99% never leave the building, which is where most of the cost savings come from.
+
 The experiment: run this pipeline with **four different models** at the classification stage. Same 890 regulations, same two prompts, same temperature (0.1), same routing logic. Then compare – with the humans, and with each other.
+
+For those who would rather skip the technical details and see what four language models think your business should be worried about: <a href="/radar/" target="_blank">all 890 regulations, classified and briefed, are browsable here</a>.
 
 ## The Off-the-Shelf Option
 

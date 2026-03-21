@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU Regulation Radar</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { overflow-x: hidden; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #fff1e5; color: #33302e; line-height: 1.5; overflow-x: hidden; }
+
+  header { background: #262a33; color: #fff1e5; padding: 1.2rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+  .logo span { color: #ff7043; }
+  .header-right { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.72rem; color: #9aa0a6; display: flex; gap: 1.5rem; }
+
+  .ticker { background: #262a33; border-top: 1px solid #3a3f4b; padding: 0.5rem 2rem; overflow: hidden; white-space: nowrap; }
+  .ticker-inner { display: inline-block; animation: scroll 60s linear infinite; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; color: #9aa0a6; }
+  .ticker-inner .hot { color: #ff5252; }
+  .ticker-inner .warn { color: #ffab40; }
+  .ticker-inner .ok { color: #69f0ae; }
+  .ticker-inner .sep { color: #3a3f4b; margin: 0 1rem; }
+  @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  .controls-bar { background: #f2dfce; border-bottom: 1px solid #e0cbb7; padding: 0.6rem 2rem; }
+  .controls-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .controls-left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .control-group { display: flex; align-items: center; gap: 0.35rem; }
+  .control-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8a7968; margin-right: 0.25rem; font-weight: 600; }
+  .f-btn { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 0.25rem 0.65rem; border-radius: 3px; border: 1px solid #cbb9a5; background: transparent; font-size: 0.72rem; cursor: pointer; color: #6d5d4b; transition: all 0.1s; user-select: none; }
+  .f-btn:hover { border-color: #33302e; color: #33302e; }
+  .f-btn.active { background: #33302e; color: #fff1e5; border-color: #33302e; }
+  .model-btn { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 0.25rem 0.55rem; border-radius: 3px; border: 1px solid #cbb9a5; background: transparent; font-size: 0.68rem; cursor: pointer; color: #6d5d4b; transition: all 0.1s; user-select: none; }
+  .model-btn:hover { border-color: #33302e; color: #33302e; }
+  .model-btn.active { background: #33302e; color: #fff1e5; border-color: #33302e; }
+  .search-box { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.78rem; padding: 0.3rem 0.6rem; border: 1px solid #cbb9a5; border-radius: 3px; background: #fff1e5; color: #33302e; width: 200px; outline: none; }
+  .search-box:focus { border-color: #33302e; }
+  .search-box::placeholder { color: #b5a393; }
+  .back-link { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.78rem; color: #8a7968; text-decoration: none; border-bottom: 1px solid #cbb9a5; padding-bottom: 1px; }
+  .back-link:hover { color: #33302e; border-color: #33302e; }
+  .reg-name a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; }
+  .reg-name a:hover { border-bottom-color: #33302e; }
+
+  main { max-width: 960px; margin: 1.5rem auto; padding: 0 1.5rem; }
+
+  .brief-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #cbb9a5; margin-bottom: 1.5rem; border: 1px solid #cbb9a5; }
+  .brief-cell { background: #fff1e5; padding: 0.8rem 1rem; text-align: center; }
+  .brief-num { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+  .brief-num.red { color: #c62828; }
+  .brief-num.amber { color: #e65100; }
+  .brief-num.green { color: #2e7d32; }
+  .brief-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8a7968; margin-top: 0.3rem; }
+
+  .loading { text-align: center; padding: 3rem; font-style: italic; color: #8a7968; }
+
+  .reg { background: white; border: 1px solid #e0cbb7; margin-bottom: 0.75rem; display: grid; grid-template-columns: 4px 1fr; overflow: hidden; }
+  .reg-stripe { width: 4px; }
+  .reg-stripe.high { background: #c62828; }
+  .reg-stripe.moderate { background: #e65100; }
+  .reg-stripe.routine { background: #2e7d32; }
+  .reg-stripe.unknown { background: #9aa0a6; }
+  .reg-stripe.mixed { background: linear-gradient(180deg, #c62828 0%, #e65100 50%, #2e7d32 100%); }
+  .reg-body { padding: 1rem 1.2rem; }
+
+  .reg-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.3rem; gap: 1rem; }
+  .reg-name { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
+  .reg-tag { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.65rem; color: #8a7968; white-space: nowrap; flex-shrink: 0; }
+
+  .reg-oneliner { font-size: 0.88rem; color: #6d5d4b; margin-bottom: 0.6rem; font-style: italic; }
+
+  .reg-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.75rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.78rem; min-width: 0; }
+  .reg-col { min-width: 0; overflow-wrap: break-word; word-wrap: break-word; }
+  .reg-col h5 { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8a7968; margin-bottom: 0.2rem; font-weight: 600; }
+  .reg-col p { color: #33302e; line-height: 1.4; }
+
+  .model-bar { margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid #f2dfce; display: flex; gap: 0.5rem; align-items: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.7rem; color: #8a7968; flex-wrap: wrap; }
+  .model-verdict { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.15rem 0.5rem; border-radius: 2px; font-size: 0.68rem; white-space: nowrap; }
+  .mv-high { background: #ffebee; color: #c62828; }
+  .mv-moderate { background: #fff3e0; color: #e65100; }
+  .mv-routine { background: #e8f5e9; color: #2e7d32; }
+  .mv-unknown { background: #f5f5f5; color: #757575; }
+
+  .worst-case { background: #fff8f0; border-left: 2px solid #e65100; padding: 0.35rem 0.6rem; margin-top: 0.5rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.75rem; color: #bf360c; }
+  .worst-case strong { font-weight: 700; }
+
+  .domains-bar { margin-top: 0.4rem; display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  .domain-tag { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.62rem; padding: 0.1rem 0.4rem; background: #f2dfce; border-radius: 2px; color: #6d5d4b; }
+
+  .section-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: #8a7968; margin: 1.5rem 0 0.5rem; padding-bottom: 0.3rem; border-bottom: 1px solid #e0cbb7; }
+
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin: 1.5rem 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.8rem; }
+  .page-btn { padding: 0.3rem 0.8rem; border: 1px solid #cbb9a5; border-radius: 3px; background: transparent; cursor: pointer; color: #6d5d4b; font-size: 0.78rem; font-family: inherit; }
+  .page-btn:hover { border-color: #33302e; color: #33302e; }
+  .page-btn:disabled { opacity: 0.4; cursor: default; }
+  .page-btn.current { background: #33302e; color: #fff1e5; border-color: #33302e; }
+  .page-info { color: #8a7968; font-size: 0.75rem; }
+
+  footer { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem 3rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.7rem; color: #8a7968; display: flex; justify-content: space-between; }
+
+  .simple-card-meta { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.75rem; color: #8a7968; margin-bottom: 0.3rem; }
+
+  .agreement-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 0.68rem; margin-left: 0.3rem; }
+  .agreement-unanimous { color: #2e7d32; font-weight: 600; }
+  .agreement-majority { color: #e65100; font-weight: 600; }
+  .agreement-split { color: #c62828; font-weight: 600; }
+
+  @media (max-width: 700px) {
+    header { padding: 1rem 1rem; }
+    .controls-bar { padding: 0.6rem 1rem; }
+    .controls-row { flex-direction: column; align-items: flex-start; }
+    .controls-left { flex-direction: column; width: 100%; }
+    .control-group { flex-wrap: wrap; width: 100%; }
+    .brief-grid { grid-template-columns: repeat(2, 1fr); }
+    .reg-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .reg-header { flex-direction: column; gap: 0.2rem; }
+    .reg-body { padding: 0.75rem 0.8rem; overflow: hidden; min-width: 0; }
+    .header-right { display: none; }
+    .search-box { width: 100%; }
+    main { padding: 0 0.75rem; }
+    .model-bar { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">EU Regulation <span>Radar</span></div>
+  <div class="header-right">
+    <span>890 EU regulations &middot; 4 models &middot; March 2026</span>
+    <span>Last scan: 17 Mar 2026</span>
+  </div>
+</header>
+
+<div class="ticker">
+  <div class="ticker-inner" id="ticker-content"></div>
+</div>
+
+<div class="controls-bar">
+  <div class="controls-row">
+    <div class="controls-left">
+      <a href="/notes/regulation-radar" class="back-link">&larr; Back to article</a>
+      <div class="control-group">
+        <span class="control-label">Impact</span>
+        <button class="f-btn active" data-impact="ALL" onclick="setImpactFilter('ALL', this)">All</button>
+        <button class="f-btn" data-impact="HIGH" onclick="setImpactFilter('HIGH', this)">High</button>
+        <button class="f-btn" data-impact="MODERATE" onclick="setImpactFilter('MODERATE', this)">Moderate</button>
+        <button class="f-btn" data-impact="ROUTINE" onclick="setImpactFilter('ROUTINE', this)">Routine</button>
+      </div>
+      <div class="control-group">
+        <span class="control-label">Type</span>
+        <button class="f-btn active" data-type="ALL" onclick="setTypeFilter('ALL', this)">All</button>
+        <button class="f-btn" data-type="Regulation" onclick="setTypeFilter('Regulation', this)">Regulations</button>
+        <button class="f-btn" data-type="Decision" onclick="setTypeFilter('Decision', this)">Decisions</button>
+        <button class="f-btn" data-type="Directive" onclick="setTypeFilter('Directive', this)">Directives</button>
+      </div>
+      <div class="control-group">
+        <span class="control-label">Models</span>
+        <button class="model-btn active" data-model="saul7b" onclick="toggleModel('saul7b', this)">SaulLM-7B</button>
+        <button class="model-btn active" data-model="eurollm22b" onclick="toggleModel('eurollm22b', this)">EuroLLM-22B</button>
+        <button class="model-btn active" data-model="saul141b" onclick="toggleModel('saul141b', this)">SaulLM-141B</button>
+        <button class="model-btn active" data-model="deepseek70b" onclick="toggleModel('deepseek70b', this)">DeepSeek-R1-70B</button>
+      </div>
+    </div>
+    <input type="text" class="search-box" id="search-input" placeholder="Search regulations..." oninput="onSearch()">
+  </div>
+</div>
+
+<main>
+  <div class="brief-grid" id="stats-grid">
+    <div class="brief-cell">
+      <div class="brief-num" id="stat-total">-</div>
+      <div class="brief-label">Total shown</div>
+    </div>
+    <div class="brief-cell">
+      <div class="brief-num red" id="stat-high">-</div>
+      <div class="brief-label">High impact</div>
+    </div>
+    <div class="brief-cell">
+      <div class="brief-num amber" id="stat-moderate">-</div>
+      <div class="brief-label">Moderate</div>
+    </div>
+    <div class="brief-cell">
+      <div class="brief-num green" id="stat-agreement">-</div>
+      <div class="brief-label">Models agree</div>
+    </div>
+  </div>
+
+  <div id="cards-container">
+    <div class="loading">Loading 890 regulations...</div>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+</main>
+
+<footer>
+  <span>Data from RegulationRadar experiment &middot; EUR-Lex &rarr; SPARQL &rarr; CELLAR &rarr; LLM pipeline &middot; Not legal advice</span>
+  <span>March 2026</span>
+</footer>
+
+<script>
+const MODEL_NAMES = {
+  saul7b: 'SaulLM-7B',
+  eurollm22b: 'EuroLLM-22B',
+  saul141b: 'SaulLM-141B',
+  deepseek70b: 'DeepSeek-R1-70B'
+};
+
+const IMPACT_ORDER = { HIGH: 0, MODERATE: 1, ROUTINE: 2, UNKNOWN: 3 };
+const PAGE_SIZE = 50;
+
+let allData = [];
+let filteredData = [];
+let currentPage = 1;
+let impactFilter = 'ALL';
+let typeFilter = 'ALL';
+let activeModels = new Set(['saul7b', 'eurollm22b', 'saul141b', 'deepseek70b']);
+let searchQuery = '';
+
+// Fetch data and initialize
+fetch('/data/regulations.json')
+  .then(r => r.json())
+  .then(data => {
+    allData = data;
+    buildTicker();
+    applyFilters();
+  })
+  .catch(err => {
+    document.getElementById('cards-container').innerHTML =
+      '<div class="loading">Error loading data: ' + err.message + '</div>';
+  });
+
+function buildTicker() {
+  // Find top HIGH impact regulations with briefings for the ticker
+  const highWithBriefings = allData.filter(r => r.briefing && getConsensusImpact(r) === 'HIGH');
+  const modWithBriefings = allData.filter(r => r.briefing && getConsensusImpact(r) === 'MODERATE');
+
+  let items = [];
+  highWithBriefings.slice(0, 8).forEach(r => {
+    items.push('<span class="hot">\u25cf</span> ' + escHtml(r.briefing.headline || r.title));
+  });
+  modWithBriefings.slice(0, 5).forEach(r => {
+    items.push('<span class="warn">\u25cf</span> ' + escHtml(r.briefing.headline || r.title));
+  });
+
+  if (items.length === 0) {
+    items.push('<span class="ok">\u25cf</span> 890 EU regulations scanned across 4 LLM models');
+  }
+
+  const sep = '<span class="sep">\u2502</span>';
+  const content = items.join(sep);
+  document.getElementById('ticker-content').innerHTML = content + sep + content;
+}
+
+function getConsensusImpact(reg) {
+  const models = activeModels.size > 0 ? activeModels : new Set(Object.keys(MODEL_NAMES));
+  const impacts = {};
+  for (const mk of models) {
+    if (reg.models[mk]) {
+      const imp = reg.models[mk].impact;
+      impacts[imp] = (impacts[imp] || 0) + 1;
+    }
+  }
+  // Return the most common impact among selected models
+  let best = 'UNKNOWN', bestCount = 0;
+  for (const [imp, count] of Object.entries(impacts)) {
+    if (count > bestCount || (count === bestCount && IMPACT_ORDER[imp] < IMPACT_ORDER[best])) {
+      best = imp;
+      bestCount = count;
+    }
+  }
+  return best;
+}
+
+function getHighCount(reg) {
+  let count = 0;
+  for (const mk of activeModels) {
+    if (reg.models[mk] && reg.models[mk].impact === 'HIGH') count++;
+  }
+  return count;
+}
+
+function getAgreementInfo(reg) {
+  const impacts = {};
+  let total = 0;
+  for (const mk of activeModels) {
+    if (reg.models[mk]) {
+      const imp = reg.models[mk].impact;
+      impacts[imp] = (impacts[imp] || 0) + 1;
+      total++;
+    }
+  }
+  if (total === 0) return { unanimous: false, label: '', type: 'split' };
+  const maxCount = Math.max(...Object.values(impacts));
+  if (maxCount === total) return { unanimous: true, label: 'unanimous', type: 'unanimous' };
+  if (maxCount >= total * 0.5) return { unanimous: false, label: 'majority', type: 'majority' };
+  return { unanimous: false, label: 'split', type: 'split' };
+}
+
+function setImpactFilter(level, btn) {
+  impactFilter = level;
+  document.querySelectorAll('[data-impact]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = 1;
+  applyFilters();
+}
+
+function setTypeFilter(type, btn) {
+  typeFilter = type;
+  document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentPage = 1;
+  applyFilters();
+}
+
+function eurLexUrl(celex) {
+  return 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:' + encodeURIComponent(celex);
+}
+
+function toggleModel(key, btn) {
+  if (activeModels.has(key)) {
+    if (activeModels.size <= 1) return; // Keep at least one
+    activeModels.delete(key);
+    btn.classList.remove('active');
+  } else {
+    activeModels.add(key);
+    btn.classList.add('active');
+  }
+  currentPage = 1;
+  applyFilters();
+}
+
+function onSearch() {
+  searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+  currentPage = 1;
+  applyFilters();
+}
+
+function applyFilters() {
+  filteredData = allData.filter(reg => {
+    // Impact filter
+    if (impactFilter !== 'ALL') {
+      const consensus = getConsensusImpact(reg);
+      if (consensus !== impactFilter) return false;
+    }
+
+    // Type filter
+    if (typeFilter !== 'ALL') {
+      if (reg.type !== typeFilter) return false;
+    }
+
+    // Search
+    if (searchQuery) {
+      const haystack = (
+        reg.title + ' ' +
+        reg.celex + ' ' +
+        (reg.briefing ? reg.briefing.headline + ' ' + reg.briefing.oneliner : '') + ' ' +
+        getAllDomains(reg).join(' ')
+      ).toLowerCase();
+      if (!haystack.includes(searchQuery)) return false;
+    }
+
+    return true;
+  });
+
+  // Sort: HIGH first, then by number of models agreeing on HIGH, then by date desc
+  filteredData.sort((a, b) => {
+    const ia = IMPACT_ORDER[getConsensusImpact(a)] ?? 3;
+    const ib = IMPACT_ORDER[getConsensusImpact(b)] ?? 3;
+    if (ia !== ib) return ia - ib;
+    const ha = getHighCount(a);
+    const hb = getHighCount(b);
+    if (ha !== hb) return hb - ha;
+    // Briefings first within same impact
+    const ba = a.briefing ? 0 : 1;
+    const bb = b.briefing ? 0 : 1;
+    if (ba !== bb) return ba - bb;
+    return (b.date || '').localeCompare(a.date || '');
+  });
+
+  updateStats();
+  renderPage();
+  renderPagination();
+}
+
+function getAllDomains(reg) {
+  const domains = new Set();
+  for (const mk of activeModels) {
+    if (reg.models[mk] && reg.models[mk].domains) {
+      reg.models[mk].domains.forEach(d => domains.add(d));
+    }
+  }
+  return [...domains];
+}
+
+function updateStats() {
+  const total = filteredData.length;
+  let highCount = 0, modCount = 0, agreeCount = 0;
+
+  filteredData.forEach(reg => {
+    const ci = getConsensusImpact(reg);
+    if (ci === 'HIGH') highCount++;
+    else if (ci === 'MODERATE') modCount++;
+    const info = getAgreementInfo(reg);
+    if (info.type === 'unanimous') agreeCount++;
+  });
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-high').textContent = highCount;
+  document.getElementById('stat-moderate').textContent = modCount;
+  document.getElementById('stat-agreement').textContent = agreeCount;
+}
+
+function renderPage() {
+  const container = document.getElementById('cards-container');
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = filteredData.slice(start, start + PAGE_SIZE);
+
+  if (pageData.length === 0) {
+    container.innerHTML = '<div class="loading">No regulations match your filters.</div>';
+    return;
+  }
+
+  let html = '';
+  let lastSection = '';
+
+  pageData.forEach(reg => {
+    const consensus = getConsensusImpact(reg);
+    const sectionLabel = consensus === 'HIGH' ? 'High impact'
+      : consensus === 'MODERATE' ? 'Moderate impact'
+      : consensus === 'ROUTINE' ? 'Routine'
+      : 'Unknown impact';
+
+    // Section headers on first page only if not searching
+    if (sectionLabel !== lastSection && currentPage === 1 && !searchQuery) {
+      html += '<div class="section-label">' + escHtml(sectionLabel) + '</div>';
+      lastSection = sectionLabel;
+    }
+
+    if (reg.briefing) {
+      html += renderBriefedCard(reg, consensus);
+    } else {
+      html += renderSimpleCard(reg, consensus);
+    }
+  });
+
+  container.innerHTML = html;
+}
+
+function renderBriefedCard(reg, consensus) {
+  const b = reg.briefing;
+  const stripeClass = consensus.toLowerCase();
+
+  let html = '<div class="reg">';
+  html += '<div class="reg-stripe ' + stripeClass + '"></div>';
+  html += '<div class="reg-body">';
+
+  // Header
+  html += '<div class="reg-header">';
+  html += '<span class="reg-name"><a href="' + eurLexUrl(reg.celex) + '" target="_blank">' + escHtml(b.headline || reg.title) + '</a></span>';
+  html += '<span class="reg-tag">' + escHtml(reg.celex) + ' &middot; ' + escHtml(reg.type) + '</span>';
+  html += '</div>';
+
+  // Oneliner
+  if (b.oneliner) {
+    html += '<div class="reg-oneliner">' + escHtml(b.oneliner) + '</div>';
+  }
+
+  // 4-col grid
+  html += '<div class="reg-grid">';
+  html += '<div class="reg-col"><h5>What</h5><p>' + escHtml(b.what) + '</p></div>';
+  html += '<div class="reg-col"><h5>Who cares</h5><p>' + escHtml(b.who_cares) + '</p></div>';
+  html += '<div class="reg-col"><h5>Deadline</h5><p>' + escHtml(b.deadline) + '</p></div>';
+  html += '<div class="reg-col"><h5>Implications</h5><p>' + escHtml(b.implications) + '</p></div>';
+  html += '</div>';
+
+  // Worst case
+  if (b.worst_case) {
+    html += '<div class="worst-case"><strong>Worst case:</strong> ' + escHtml(b.worst_case) + '</div>';
+  }
+
+  // Model bar
+  html += renderModelBar(reg);
+
+  html += '</div></div>';
+  return html;
+}
+
+function renderSimpleCard(reg, consensus) {
+  const stripeClass = consensus.toLowerCase();
+
+  let html = '<div class="reg">';
+  html += '<div class="reg-stripe ' + stripeClass + '"></div>';
+  html += '<div class="reg-body">';
+
+  // Header
+  html += '<div class="reg-header">';
+  html += '<span class="reg-name" style="font-size:0.92rem"><a href="' + eurLexUrl(reg.celex) + '" target="_blank">' + escHtml(reg.title) + '</a></span>';
+  html += '<span class="reg-tag">' + escHtml(reg.celex) + '</span>';
+  html += '</div>';
+
+  // Meta
+  html += '<div class="simple-card-meta">' + escHtml(reg.date) + ' &middot; ' + escHtml(reg.type) + '</div>';
+
+  // Domains
+  const domains = getAllDomains(reg);
+  if (domains.length > 0) {
+    html += '<div class="domains-bar">';
+    domains.slice(0, 6).forEach(d => {
+      html += '<span class="domain-tag">' + escHtml(d) + '</span>';
+    });
+    if (domains.length > 6) {
+      html += '<span class="domain-tag">+' + (domains.length - 6) + ' more</span>';
+    }
+    html += '</div>';
+  }
+
+  // Model bar
+  html += renderModelBar(reg);
+
+  html += '</div></div>';
+  return html;
+}
+
+function renderModelBar(reg) {
+  const agreement = getAgreementInfo(reg);
+
+  let html = '<div class="model-bar">Models:';
+  for (const mk of activeModels) {
+    if (reg.models[mk]) {
+      const impact = reg.models[mk].impact;
+      const cls = 'mv-' + impact.toLowerCase();
+      html += ' <span class="model-verdict ' + cls + '">' + MODEL_NAMES[mk] + ': ' + impact + '</span>';
+    }
+  }
+
+  // Agreement label
+  if (agreement.type === 'unanimous') {
+    html += '<span class="agreement-label agreement-unanimous">&mdash; unanimous</span>';
+  } else if (agreement.type === 'majority') {
+    html += '<span class="agreement-label agreement-majority">&mdash; majority</span>';
+  } else {
+    html += '<span class="agreement-label agreement-split">&mdash; split</span>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function renderPagination() {
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+  const container = document.getElementById('pagination');
+
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = '';
+  html += '<button class="page-btn" onclick="goToPage(' + (currentPage - 1) + ')" ' + (currentPage <= 1 ? 'disabled' : '') + '>&laquo; Prev</button>';
+
+  // Show page numbers
+  const start = Math.max(1, currentPage - 3);
+  const end = Math.min(totalPages, currentPage + 3);
+
+  if (start > 1) {
+    html += '<button class="page-btn" onclick="goToPage(1)">1</button>';
+    if (start > 2) html += '<span class="page-info">&hellip;</span>';
+  }
+
+  for (let i = start; i <= end; i++) {
+    html += '<button class="page-btn' + (i === currentPage ? ' current' : '') + '" onclick="goToPage(' + i + ')">' + i + '</button>';
+  }
+
+  if (end < totalPages) {
+    if (end < totalPages - 1) html += '<span class="page-info">&hellip;</span>';
+    html += '<button class="page-btn" onclick="goToPage(' + totalPages + ')">' + totalPages + '</button>';
+  }
+
+  html += '<button class="page-btn" onclick="goToPage(' + (currentPage + 1) + ')" ' + (currentPage >= totalPages ? 'disabled' : '') + '>Next &raquo;</button>';
+  html += '<span class="page-info">(' + filteredData.length + ' regulations)</span>';
+
+  container.innerHTML = html;
+}
+
+function goToPage(page) {
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+  if (page < 1 || page > totalPages) return;
+  currentPage = page;
+  renderPage();
+  renderPagination();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>
