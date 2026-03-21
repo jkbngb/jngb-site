@@ -44,8 +44,26 @@ Before any model reads anything, the data needs to arrive. The pipeline works in
 
 **Stage 4: Route.** Regulations classified as **HIGH impact** get routed to a separate model for a detailed editorial briefing – what it does, who is affected, what the deadlines are, what the worst case looks like. Ideally, the full document goes in here, not just the preamble. This can run on the same infrastructure or a different machine entirely, depending on the model and the size of the legislation.
 
-![Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to briefing model, evaluate](/images/regulation-radar-pipeline.svg)
-*From SPARQL query to classified regulation. Swap the model, keep everything else.*
+<div class="pipeline-lightbox">
+<img src="/images/regulation-radar-pipeline.svg" alt="Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to briefing model, evaluate" style="width:100%;cursor:zoom-in;" onclick="this.parentElement.classList.toggle('expanded')" />
+<div class="pipeline-overlay" onclick="this.parentElement.classList.remove('expanded')"></div>
+</div>
+
+*From SPARQL query to classified regulation. Swap the model, keep everything else. Click to enlarge.*
+
+<style>
+.pipeline-lightbox { position: relative; }
+.pipeline-lightbox img { transition: none; }
+.pipeline-overlay { display: none; }
+.pipeline-lightbox.expanded .pipeline-overlay {
+  display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; cursor: zoom-out;
+}
+.pipeline-lightbox.expanded img {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  max-width: 92vw; max-height: 92vh; width: auto; z-index: 1000; cursor: zoom-out;
+  background: white; padding: 1.5rem; border-radius: 6px;
+}
+</style>
 
 In this experiment, the routing goes to **Claude Sonnet** via the Anthropic API. At this point we would typically publish the model and hardware specs with utmost transparency – unfortunately, Anthropic does not publish theirs. This is also the one step where data leaves the organisation's infrastructure, though it does not have to: the briefing model can run internally if the use case demands it.
 
@@ -125,7 +143,26 @@ All three GPU models finished in about half an hour each.
 
 **DeepSeek-R1-Distill-70B:** ~31 minutes, one parse error. Sixteen HIGH, 43% MODERATE, 56% ROUTINE – the most balanced distribution of the four.
 
+## The Impact Question
+
+EuroVoc does not tag regulations as "high-impact" or "routine". There is no ground truth for this question – we can only compare the models to each other. And they do not agree.
+
+<table>
+<thead><tr><th></th><th style="text-align:center;">SaulLM-7B</th><th style="text-align:center;">EuroLLM-22B</th><th style="text-align:center;">SaulLM-141B</th><th style="text-align:center;">DeepSeek-R1 70B</th></tr></thead>
+<tbody>
+<tr><td><strong>ROUTINE</strong><br><small>Administrative, technical</small></td><td style="text-align:center;">109<br><small>12.2%</small></td><td style="text-align:center;">702<br><small>78.9%</small></td><td style="text-align:center;">633<br><small>71.1%</small></td><td style="text-align:center;">496<br><small>55.7%</small></td></tr>
+<tr><td><strong>MODERATE</strong><br><small>Sector-specific requirements</small></td><td style="text-align:center;">735<br><small>82.6%</small></td><td style="text-align:center;">187<br><small>21.0%</small></td><td style="text-align:center;">211<br><small>23.7%</small></td><td style="text-align:center;">378<br><small>42.5%</small></td></tr>
+<tr><td><strong>HIGH</strong><br><small>Major obligations, multi-sector</small></td><td style="text-align:center;">30<br><small>3.4%</small></td><td style="text-align:center;">1<br><small>0.1%</small></td><td style="text-align:center;">15<br><small>1.7%</small></td><td style="text-align:center;">16<br><small>1.8%</small></td></tr>
+</tbody>
+</table>
+
+*Same 890 regulations, same prompt. One model flags 30 as high-impact. Another flags one.*
+
+SaulLM-7B sees danger everywhere. EuroLLM sees almost none. A regulatory monitoring system built on any single model's impact assessment would either **drown in false alarms or miss things that matter**, depending entirely on which model you picked. This is not a calibration problem you can tune away. The models have fundamentally different thresholds for what constitutes "significant."
+
 ## Checking the Answer Key
+
+Impact had no answer key. Domain classification does.
 
 Four models have now classified 890 regulations. They were fast, they were confident, and they all produced structured output. The question nobody has answered yet: **were any of them right?**
 
@@ -192,25 +229,6 @@ Which brings us to the finding the experiment was built to test: on the document
 
 In other words: multi-model agreement is a better predictor of correctness than any single model's confidence score. And when the models don't agree, that is exactly where you want a human looking at the document.
 
-## The Impact Question
-
-Everything above had an answer key – imperfect, derived, but real. The next question has none: **how do the models assess regulatory impact?**
-
-EuroVoc does not tag regulations as "high-impact" or "routine". There is no ground truth here. We can only compare the models to each other – and they do not agree.
-
-<table>
-<thead><tr><th></th><th style="text-align:center;">SaulLM-7B</th><th style="text-align:center;">EuroLLM-22B</th><th style="text-align:center;">SaulLM-141B</th><th style="text-align:center;">DeepSeek-R1 70B</th></tr></thead>
-<tbody>
-<tr><td><strong>ROUTINE</strong><br><small>Administrative, technical</small></td><td style="text-align:center;">109<br><small>12.2%</small></td><td style="text-align:center;">702<br><small>78.9%</small></td><td style="text-align:center;">633<br><small>71.1%</small></td><td style="text-align:center;">496<br><small>55.7%</small></td></tr>
-<tr><td><strong>MODERATE</strong><br><small>Sector-specific requirements</small></td><td style="text-align:center;">735<br><small>82.6%</small></td><td style="text-align:center;">187<br><small>21.0%</small></td><td style="text-align:center;">211<br><small>23.7%</small></td><td style="text-align:center;">378<br><small>42.5%</small></td></tr>
-<tr><td><strong>HIGH</strong><br><small>Major obligations, multi-sector</small></td><td style="text-align:center;">30<br><small>3.4%</small></td><td style="text-align:center;">1<br><small>0.1%</small></td><td style="text-align:center;">15<br><small>1.7%</small></td><td style="text-align:center;">16<br><small>1.8%</small></td></tr>
-</tbody>
-</table>
-
-*Same 890 regulations, same prompt. One model flags 30 as high-impact. Another flags one.*
-
-SaulLM-7B sees danger everywhere. EuroLLM sees almost none. A regulatory monitoring system built on any single model's impact assessment would either **drown in false alarms or miss things that matter**, depending entirely on which model you picked. This is not a calibration problem you can tune away. The models have fundamentally different thresholds for what constitutes "significant."
-
 ## What This Suggests
 
 **Reasoning beats size.** A 70B model with chain-of-thought outperformed a 141B legal specialist on every metric. The model that thinks before answering gives better answers. More parameters did not compensate for not thinking.
@@ -222,11 +240,6 @@ SaulLM-7B sees danger everywhere. EuroLLM sees almost none. A regulatory monitor
 **Local hardware is not ready.** A 7B model on a MacBook takes sixteen hours and produces the worst results by a wide margin. The trajectory suggests a consumer laptop before 2030 could do meaningfully better. Whether it will be fast enough for real-time use remains to be seen.
 
 **A human in the loop is not optional.** The best model overlapped with the human baseline just over half the time. Put differently: if you handed someone a stack of 890 domain classifications and said "the model did these", roughly 44% of them would not match what the professional librarians assigned. A system that presents a single model's output as authoritative will be wrong nearly as often as it is right – and confident about it every time.
-
-A note on the electricity: the MacBook ran at 30 watts for sixteen hours. The GPU cluster drew up to 3,400 watts – roughly a clothes dryer and an electric kettle running simultaneously – for about 95 minutes. Total GPU rental cost: ~€81. The cluster is 113x the power draw and roughly 675x the cost. It is also the only configuration that produces a result you could hand to someone with a straight face.
-
-![GPU telemetry over the full session](/images/regulation-radar-gpu-telemetry.png)
-*GPU telemetry. The brief spikes at 19:10 are the 671B model trying – and failing – to load. The sustained plateau is the 70B distill at full utilisation. Peak cluster draw: 4,482 watts.*
 
 ## So What
 
