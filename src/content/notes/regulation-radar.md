@@ -106,7 +106,7 @@ Three models, ran sequentially:
 
 <a href="https://huggingface.co/blog/eurollm-team/eurollm-22b" target="_blank">**EuroLLM-22B**</a> – yes, the EU funded the training of its own language model. Trained on all 24 official EU languages as part of the <a href="https://eurollm.io/" target="_blank">EuroLLM project</a>, a consortium of European research institutions. This is the institutional candidate: the EU's model reading the EU's regulations.
 
-<a href="https://huggingface.co/Equall/SaulLM-141B-Instruct" target="_blank">**SaulLM-141B**</a> – the big sibling of the laptop model. Same legal training data, twenty times the parameters. The expectation was straightforward: bigger model, same specialisation, better results.
+<a href="https://huggingface.co/Equall/SaulLM-141B-Instruct" target="_blank">**SaulLM-141B**</a> – the largest in the SaulLM family. The 7B ran on the laptop, the 54B ran in the <a href="/notes/better-call-saullm" target="_blank">previous experiment</a>, this one weighs in at 141 billion parameters. Same legal training data, twenty times the size of the MacBook model. The expectation was straightforward: bigger model, same specialisation, better results.
 
 And then there was <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1" target="_blank">**DeepSeek-R1**</a>.
 
@@ -137,45 +137,58 @@ All three GPU models finished in about half an hour each.
 
 *Eight H100s before and after being put to work.*
 
-**EuroLLM-22B:** 30.7 minutes, zero errors across 1,780 prompts. It classified 79% of regulations as ROUTINE and flagged exactly **one** as HIGH impact.
+**EuroLLM-22B:** 30.7 minutes, zero errors across 1,780 prompts. The EU's own model read 890 pieces of EU legislation and concluded that virtually nothing of consequence had happened – 79% ROUTINE, and exactly **one** regulation flagged as HIGH impact. A model of institutional composure, if nothing else.
 
-**SaulLM-141B:** ~34 minutes, **51 parse errors** – nearly 6% of documents where the model returned something other than valid JSON. This happens because large language models generate free text, not structured data. Even when the prompt says "respond in JSON format", a verbose model can wander off-format: returning explanatory paragraphs where a JSON object was expected, wrapping JSON in markdown code fences the parser does not anticipate, or mixing natural language into the middle of a structured response. The biggest model in the experiment had the worst discipline.
+**SaulLM-141B:** ~34 minutes, and **51 parse errors** – nearly 6% of documents where the model returned something other than valid JSON. This is one of the less charming features of large language models: even when the prompt says "respond in JSON format", a verbose model can wander off-format, returning explanatory paragraphs where a JSON object was expected, wrapping JSON in markdown code fences the parser does not anticipate, or simply deciding mid-response that a structured answer would benefit from a preamble. The biggest model in the experiment had the worst discipline.
 
-**DeepSeek-R1-Distill-70B:** ~31 minutes, one parse error. Sixteen HIGH, 43% MODERATE, 56% ROUTINE – the most balanced distribution of the four.
+**DeepSeek-R1-Distill-70B:** ~31 minutes, one parse error. Sixteen HIGH, 43% MODERATE, 56% ROUTINE – the most balanced distribution of the four, and the only model that looked like it had actually thought about the question before answering. Which, given that it is a reasoning model, is presumably the point.
+
+Those impact numbers – one model flagging 30 regulations as HIGH, another flagging one – deserve a closer look.
 
 ## The Impact Question
 
 EuroVoc does not tag regulations as "high-impact" or "routine". There is no ground truth for this question – we can only compare the models to each other. And they do not agree.
 
-<table>
-<thead><tr><th></th><th style="text-align:center;">SaulLM-7B</th><th style="text-align:center;">EuroLLM-22B</th><th style="text-align:center;">SaulLM-141B</th><th style="text-align:center;">DeepSeek-R1 70B</th></tr></thead>
+<table style="font-size:0.85rem;max-width:580px;">
+<thead><tr><th style="text-align:left;">Model</th><th style="text-align:right;">Routine</th><th style="text-align:right;">Moderate</th><th style="text-align:right;">High</th></tr></thead>
 <tbody>
-<tr><td><strong>ROUTINE</strong><br><small>Administrative, technical</small></td><td style="text-align:center;">109<br><small>12.2%</small></td><td style="text-align:center;">702<br><small>78.9%</small></td><td style="text-align:center;">633<br><small>71.1%</small></td><td style="text-align:center;">496<br><small>55.7%</small></td></tr>
-<tr><td><strong>MODERATE</strong><br><small>Sector-specific requirements</small></td><td style="text-align:center;">735<br><small>82.6%</small></td><td style="text-align:center;">187<br><small>21.0%</small></td><td style="text-align:center;">211<br><small>23.7%</small></td><td style="text-align:center;">378<br><small>42.5%</small></td></tr>
-<tr><td><strong>HIGH</strong><br><small>Major obligations, multi-sector</small></td><td style="text-align:center;">30<br><small>3.4%</small></td><td style="text-align:center;">1<br><small>0.1%</small></td><td style="text-align:center;">15<br><small>1.7%</small></td><td style="text-align:center;">16<br><small>1.8%</small></td></tr>
+<tr><td>SaulLM-7B</td><td style="text-align:right;">109 <small style="color:#888;">(12%)</small></td><td style="text-align:right;">735 <small style="color:#888;">(83%)</small></td><td style="text-align:right;">30 <small style="color:#888;">(3%)</small></td></tr>
+<tr><td>EuroLLM-22B</td><td style="text-align:right;">702 <small style="color:#888;">(79%)</small></td><td style="text-align:right;">187 <small style="color:#888;">(21%)</small></td><td style="text-align:right;">1 <small style="color:#888;">(0.1%)</small></td></tr>
+<tr><td>SaulLM-141B</td><td style="text-align:right;">633 <small style="color:#888;">(71%)</small></td><td style="text-align:right;">211 <small style="color:#888;">(24%)</small></td><td style="text-align:right;">15 <small style="color:#888;">(2%)</small></td></tr>
+<tr><td>DeepSeek-R1 70B</td><td style="text-align:right;">496 <small style="color:#888;">(56%)</small></td><td style="text-align:right;">378 <small style="color:#888;">(43%)</small></td><td style="text-align:right;">16 <small style="color:#888;">(2%)</small></td></tr>
+<tr><td colspan="4" style="border-top:1px solid #ddd;padding-top:0.3rem;"><small style="color:#888;">Rows not summing to 100% reflect parse errors – regulations where the model failed to return valid output.</small></td></tr>
 </tbody>
 </table>
 
 *Same 890 regulations, same prompt. One model flags 30 as high-impact. Another flags one.*
 
-SaulLM-7B sees danger everywhere. EuroLLM sees almost none. A regulatory monitoring system built on any single model's impact assessment would either **drown in false alarms or miss things that matter**, depending entirely on which model you picked. This is not a calibration problem you can tune away. The models have fundamentally different thresholds for what constitutes "significant."
+SaulLM-7B sees danger everywhere. EuroLLM sees almost none. A regulatory monitoring system built on any single model's impact assessment would **either drown in false alarms or miss things that matter**, depending entirely on which model you picked.
+
+What does this look like in practice? A compliance team using SaulLM-7B as their regulatory radar would receive 30 high-priority alerts from six months of legislation – roughly one per week. The same team using EuroLLM would receive one. Total. In six months. Both systems would report high confidence in every single assessment. Neither would mention that the other one exists.
+
+There is an irony here worth savouring: the smallest model in the experiment – the one that performed worst on every other metric, as we will see shortly – is also the most alarmed. The model that understands EU regulation least is the one most convinced it is all terribly important.
+
+But none of this tells us which regulations are *actually* high-impact. It tells us that pointing a language model at a document and asking "does this matter?" produces an answer that says more about the model than about the document. Which raises a more fundamental question: **are these models actually any good at reading regulation in the first place?**
 
 ## Checking the Answer Key
 
-Impact had no answer key. Domain classification does.
+There is no official ranking of which EU regulations matter most, so the impact question cannot be graded directly. But there is a reasonable proxy: if a model cannot correctly identify what a regulation is *about*, it probably should not be trusted to tell you how important it is.
 
-Four models have now classified 890 regulations. They were fast, they were confident, and they all produced structured output. The question nobody has answered yet: **were any of them right?**
+And for domain classification, we do have an answer key – the librarians at the Publications Office have been tagging these regulations for thirty years. Their domain assignments are the closest thing to a ground truth we have – not perfect, since they tag at the granular level and we map to the 21 top-level domains, but structured, consistent, and considerably better than guessing.
 
-The librarians at the Publications Office have been tagging these regulations for thirty years. Their domain assignments are the closest thing to a ground truth we have – not perfect, since they tag at the granular level and we map to the 21 top-level domains, but structured, consistent, and considerably better than guessing. The overlap between a model's assignments and the librarians' gives us a score: 1.0 would mean perfect agreement. 0.0 would mean the model might as well have picked domains at random.
+The overlap between a model's assignments and the librarians' gives us a score: 1.0 would mean perfect agreement. 0.0 would mean the model might as well have picked domains at random.
 
-| Model | Params | Hardware | Runtime | Overlap with humans |
-|:---:|:---:|:---:|:---:|:---:|
-| SaulLM-7B | 7B | MacBook Air M3 | 940 min | 0.33 |
-| EuroLLM-22B | 22B | H100 x8 | 30.7 min | 0.47 |
-| SaulLM-141B | 141B | H100 x8 | ~34 min | 0.50 |
-| **DeepSeek-R1-70B** | **70B** | **H100 x8** | **~31 min** | **0.56** |
+<table style="font-size:0.88rem;">
+<thead><tr><th style="text-align:left;min-width:130px;">Model</th><th style="text-align:center;">Params</th><th style="text-align:center;">Hardware</th><th style="text-align:center;">Runtime</th><th style="text-align:center;">Overlap</th></tr></thead>
+<tbody>
+<tr><td>SaulLM-7B</td><td style="text-align:center;">7B</td><td style="text-align:center;">MacBook Air M3</td><td style="text-align:center;">940 min</td><td style="text-align:center;">0.33</td></tr>
+<tr><td>EuroLLM-22B</td><td style="text-align:center;">22B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">31 min</td><td style="text-align:center;">0.47</td></tr>
+<tr><td>SaulLM-141B</td><td style="text-align:center;">141B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">~34 min</td><td style="text-align:center;">0.50</td></tr>
+<tr style="font-weight:600;"><td>DeepSeek-R1-70B</td><td style="text-align:center;">70B</td><td style="text-align:center;">H100 ×8</td><td style="text-align:center;">~31 min</td><td style="text-align:center;">0.56</td></tr>
+</tbody>
+</table>
 
-*Overlap with humans: how closely each model's domain assignments match the librarians' classifications. 1.0 = perfect match, 0.0 = no overlap. DeepSeek is bold because it won.*
+*Overlap with thirty years of librarian classifications. 1.0 = perfect match. Nobody got close. DeepSeek won with half the parameters and no legal training data.*
 
 **The reasoning model wins.** What does that mean concretely? When DeepSeek assigns domains to a regulation, those domains overlap with the human librarians' assignments **56% of the time.** SaulLM-141B – twice the size, trained specifically on legal text – manages 50%. The model that pauses and thinks before answering beats the model with more parameters and more legal training data.
 
@@ -229,24 +242,106 @@ Which brings us to the finding the experiment was built to test: on the document
 
 In other words: multi-model agreement is a better predictor of correctness than any single model's confidence score. And when the models don't agree, that is exactly where you want a human looking at the document.
 
+Which brings us back to impact classification – the question with no answer key. If agreement predicts accuracy on domains, it stands to reason it does the same for impact. **A regulation that all four models independently flag as HIGH is worth reading.** A regulation where SaulLM-7B says HIGH and the other three say ROUTINE is probably SaulLM-7B being SaulLM-7B. Not proof – but considerably better than trusting whichever model you happened to install.
+
 ## What This Suggests
+
+**No single model is worth listening to alone.** But when all four converge, accuracy against the human baseline jumps by 29%. Wisdom of crowds, applied to language models – independent errors cancel out, shared signal reinforces.
 
 **Reasoning beats size.** A 70B model with chain-of-thought outperformed a 141B legal specialist on every metric. The model that thinks before answering gives better answers. More parameters did not compensate for not thinking.
 
-**Confidence is decorative.** All four models reported confidence above 0.85 on virtually every classification – including the wrong ones, and including the ones where they flatly contradicted each other. On tasks of this complexity, self-reported confidence measures rhetorical commitment, not correctness. The <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> found the same thing: every model reported 90–100% confidence, including on the cases where they disagreed with each other.
-
-**Agreement is rare but structured.** Zero exact-match agreement, but 57% convergence on core domains. When models converge, accuracy goes up. Multi-model agreement is a better signal than any single model's confidence score.
-
-**Local hardware is not ready.** A 7B model on a MacBook takes sixteen hours and produces the worst results by a wide margin. The trajectory suggests a consumer laptop before 2030 could do meaningfully better. Whether it will be fast enough for real-time use remains to be seen.
+**Confidence is decorative.** All four models reported confidence above 0.85 on virtually every classification – including the wrong ones. Self-reported confidence measures rhetorical commitment, not correctness. The <a href="/notes/better-call-saullm" target="_blank">previous experiment</a> found the same thing.
 
 **A human in the loop is not optional.** The best model overlapped with the human baseline just over half the time. Put differently: if you handed someone a stack of 890 domain classifications and said "the model did these", roughly 44% of them would not match what the professional librarians assigned. A system that presents a single model's output as authoritative will be wrong nearly as often as it is right – and confident about it every time.
+
+**Local hardware is not ready.** A 7B model on a MacBook takes sixteen hours and produces the worst results by a wide margin. The trajectory suggests a consumer laptop before 2030 could do meaningfully better. Whether it will be fast enough for real-time use remains to be seen.
 
 ## So What
 
 EU regulation is an almost unreasonably good test case for language model classification. Clean documents, public ground truth, stable taxonomy, high volume. If LLMs are going to work anywhere in regulatory monitoring, they should work here. Under those near-ideal conditions, the best model agreed with the human baseline just over half the time.
 
-Replacement is the wrong frame. The more useful question is whether LLM output, aggregated across multiple models, can tell you *where to look.* A regulation that all four models agree on probably does not need a human to review. A regulation where they split 2–2 probably does.
+Replacement is the wrong frame. The more useful question is whether LLM output, aggregated across multiple models, can tell you ***where to look.*** A regulation that all four models agree on probably does not need a human to review. A regulation where they split 2–2 probably does.
 
 Four models processed five million words of regulation – the three on rented GPUs in under two hours, the one on a laptop overnight. Their disagreements are structured enough to be useful – if you build around them rather than ignoring them.
 
 Which, to be fair, is also true of most bureaucrats.
+
+<nav id="scroll-toc" aria-label="Article sections"></nav>
+
+<style>
+#scroll-toc {
+  position: fixed;
+  left: 1.2rem;
+  top: 2rem;
+  z-index: 90;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+#scroll-toc.visible { opacity: 0.4; }
+#scroll-toc.visible:hover { opacity: 1; }
+#scroll-toc a {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  color: #b5a393;
+  text-decoration: none;
+  padding: 0.2rem 0 0.2rem 0.7rem;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#scroll-toc a:hover { color: #6d5d4b; }
+#scroll-toc a.active {
+  color: #33302e;
+  border-left-color: #33302e;
+  font-weight: 600;
+}
+@media (max-width: 1280px) { #scroll-toc { display: none; } }
+</style>
+
+<script>
+(function() {
+  const toc = document.getElementById('scroll-toc');
+  if (!toc) return;
+  const headings = Array.from(document.querySelectorAll('article h2, .note-content h2, .prose h2'));
+  if (headings.length === 0) return;
+
+  headings.forEach(function(h) {
+    if (!h.id) h.id = h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    toc.appendChild(a);
+  });
+
+  var links = toc.querySelectorAll('a');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        links.forEach(function(l) { l.classList.remove('active'); });
+        var match = toc.querySelector('a[href="#' + entry.target.id + '"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  headings.forEach(function(h) { observer.observe(h); });
+
+  window.addEventListener('scroll', function() {
+    toc.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+})();
+</script>

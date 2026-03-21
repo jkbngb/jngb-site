@@ -458,7 +458,7 @@ function renderBriefedCard(reg, consensus) {
   // Header
   html += '<div class="reg-header">';
   html += '<span class="reg-name"><a href="' + eurLexUrl(reg.celex) + '" target="_blank">' + escHtml(b.headline || reg.title) + '</a></span>';
-  html += '<span class="reg-tag">' + escHtml(reg.celex) + ' &middot; ' + escHtml(reg.type) + '</span>';
+  html += '<span class="reg-tag">' + escHtml(reg.celex) + ' &middot; ' + escHtml(reg.date) + ' &middot; ' + escHtml(reg.type) + '</span>';
   html += '</div>';
 
   // Oneliner
@@ -496,11 +496,8 @@ function renderSimpleCard(reg, consensus) {
   // Header
   html += '<div class="reg-header">';
   html += '<span class="reg-name" style="font-size:0.92rem"><a href="' + eurLexUrl(reg.celex) + '" target="_blank">' + escHtml(reg.title) + '</a></span>';
-  html += '<span class="reg-tag">' + escHtml(reg.celex) + '</span>';
+  html += '<span class="reg-tag">' + escHtml(reg.celex) + ' &middot; ' + escHtml(reg.date) + ' &middot; ' + escHtml(reg.type) + '</span>';
   html += '</div>';
-
-  // Meta
-  html += '<div class="simple-card-meta">' + escHtml(reg.date) + ' &middot; ' + escHtml(reg.type) + '</div>';
 
   // Domains
   const domains = getAllDomains(reg);

@@ -104,3 +104,83 @@ The more interesting problem is the disagreement. When the task is unambiguous, 
 In practice, a production system would need to be hybrid: **local models for triage, stronger models in a controlled environment for the hard cases.** And when even the stronger models disagree, perhaps an actual lawyer.
 
 Which raises the obvious next question: if you give the stronger models the same ambiguous document, do they agree? Or do they just disagree more eloquently?
+
+<nav id="scroll-toc" aria-label="Article sections"></nav>
+
+<style>
+#scroll-toc {
+  position: fixed;
+  left: 1.2rem;
+  top: 2rem;
+  z-index: 90;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+#scroll-toc.visible { opacity: 0.4; }
+#scroll-toc.visible:hover { opacity: 1; }
+#scroll-toc a {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  color: #b5a393;
+  text-decoration: none;
+  padding: 0.2rem 0 0.2rem 0.7rem;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#scroll-toc a:hover { color: #6d5d4b; }
+#scroll-toc a.active {
+  color: #33302e;
+  border-left-color: #33302e;
+  font-weight: 600;
+}
+@media (max-width: 1280px) { #scroll-toc { display: none; } }
+</style>
+
+<script>
+(function() {
+  const toc = document.getElementById('scroll-toc');
+  if (!toc) return;
+  const headings = Array.from(document.querySelectorAll('article h2, .note-content h2, .prose h2'));
+  if (headings.length === 0) return;
+
+  headings.forEach(function(h) {
+    if (!h.id) h.id = h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    toc.appendChild(a);
+  });
+
+  var links = toc.querySelectorAll('a');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        links.forEach(function(l) { l.classList.remove('active'); });
+        var match = toc.querySelector('a[href="#' + entry.target.id + '"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  headings.forEach(function(h) { observer.observe(h); });
+
+  window.addEventListener('scroll', function() {
+    toc.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+})();
+</script>
