@@ -5,6 +5,22 @@ import { getCollection } from 'astro:content';
 const notes = (await getCollection('notes')).sort(
   (a, b) => new Date(b.data.published ?? b.data.date).valueOf() - new Date(a.data.published ?? a.data.date).valueOf()
 );
+
+// Compute per-year article numbers (earliest = #1)
+const byYear: Record<number, typeof notes> = {};
+for (const note of notes) {
+  const year = new Date(note.data.published ?? note.data.date).getFullYear();
+  (byYear[year] ??= []).push(note);
+}
+const articleNumber = new Map<string, string>();
+for (const [year, yearNotes] of Object.entries(byYear)) {
+  const sorted = [...yearNotes].sort(
+    (a, b) => new Date(a.data.published ?? a.data.date).valueOf() - new Date(b.data.published ?? b.data.date).valueOf()
+  );
+  sorted.forEach((note, i) => {
+    articleNumber.set(note.slug, `#${i + 1}`);
+  });
+}
 ---
 
 <BaseLayout
@@ -27,7 +43,7 @@ const notes = (await getCollection('notes')).sort(
           <h2 class="note-title" style="margin-top: 0;">
             <a href={`/notes/${note.slug}`}>{note.data.title}</a>
           </h2>
-          <p class="note-date">{note.data.date}</p>
+          <p class="note-date">{note.data.date} · {articleNumber.get(note.slug)}</p>
           <p class="note-summary" set:html={note.data.summary} />
           <a href={`/notes/${note.slug}`} class="note-read-more">&rarr; Read full note</a>
           {note.data.stack && (
