@@ -5,8 +5,8 @@ import json
 import sys
 from pathlib import Path
 
-DATA_DIR = Path("/Users/jakob/Documents/Projects/RegulationRadar/data/processed")
-OUT_PATH = Path("/Users/jakob/Documents/Projects/AgentStuff/PRStuff/site/public/data/regulations.json")
+DATA_DIR = Path("/Users/jakob/Documents/Projects/experiments/RegulationRadar/data/processed")
+OUT_PATH = Path(__file__).resolve().parent.parent / "public" / "data" / "regulations.json"
 
 CLASSIFICATION_FILES = {
     "saul7b": DATA_DIR / "classifications_hf.co-mobeetle-Saul-7B-Instruct-v1-Q4_K_M-GGUF-latest_20260317_192032.json",
