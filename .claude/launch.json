@@ -6,7 +6,7 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 4321,
-      "cwd": "/Users/jakob/Documents/Projects/AgentStuff/PRStuff/site"
+      "cwd": "/Users/jakob/Documents/Projects/jngb-site"
     }
   ]
 }

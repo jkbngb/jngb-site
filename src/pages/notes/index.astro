@@ -2,9 +2,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-const notes = (await getCollection('notes')).sort(
-  (a, b) => new Date(b.data.published ?? b.data.date).valueOf() - new Date(a.data.published ?? a.data.date).valueOf()
-);
+const now = new Date();
+const notes = (await getCollection('notes'))
+  .filter((n) => {
+    const pub = new Date(n.data.published ?? n.data.date);
+    return pub.getFullYear() <= now.getFullYear() + 1 && pub <= now;
+  })
+  .sort(
+    (a, b) => new Date(b.data.published ?? b.data.date).valueOf() - new Date(a.data.published ?? a.data.date).valueOf()
+  );
 
 // Compute per-year article numbers (earliest = #1)
 const byYear: Record<number, typeof notes> = {};
@@ -18,7 +24,7 @@ for (const [year, yearNotes] of Object.entries(byYear)) {
     (a, b) => new Date(a.data.published ?? a.data.date).valueOf() - new Date(b.data.published ?? b.data.date).valueOf()
   );
   sorted.forEach((note, i) => {
-    articleNumber.set(note.slug, `#${i + 1}`);
+    articleNumber.set(note.slug, `#${String(i + 1).padStart(2, '0')}`);
   });
 }
 ---
