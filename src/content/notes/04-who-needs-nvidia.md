@@ -15,7 +15,9 @@ stack: ["TF-IDF", "LogisticRegression", "FastText"]
 
 ## Context
 
-Famously, every problem looks like a nail if you have a hammer. And the hammer of the moment is the large language model – an extremely large hammer. The hammer itself is often free: open-source models like DeepSeek and Llama can be <a href="https://huggingface.co/" target="_blank">downloaded by anyone</a>. What costs money is the workbench you need to swing it. A single Nvidia H100 GPU costs about as much as a mid-range car, and the <a href="/notes/03-regulation-radar" target="_blank">previous experiment</a> needed eight of them.
+Famously, every problem looks like a nail if you have a hammer. And the hammer of the moment is the large language model – an extremely large hammer.
+
+The hammer itself is often free: open-source models like DeepSeek and Llama can be <a href="https://huggingface.co/" target="_blank">downloaded by anyone</a>. What costs money is the workbench you need to swing it. A single Nvidia H100 GPU costs about as much as a mid-range car, and the <a href="/notes/03-regulation-radar" target="_blank">previous experiment</a> needed eight of them.
 
 Four of those hammers, pointed at 890 EU regulations, produced underwhelming results. The best model – <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1" target="_blank">DeepSeek-R1</a> with 70 billion parameters – agreed with the human librarians roughly half the time. The others did worse. At €23 per hour in GPU rental, the cost-per-correct-answer was starting to look like a bad trade.
 

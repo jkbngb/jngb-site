@@ -3,4 +3,7 @@ dist/
 .astro/
 .DS_Store
 
-.envpublic/images/headshot.jpg
+.env
+public/images/headshot.jpg
+public/images/headshot_original.jpg
+_drafts/

@@ -1,10 +1,10 @@
 ---
-title: "Pimp My LM: A Fine-Tuning Tale of Bling and Basic"
-summary: "Three language models were fine-tuned on 64,000 EU regulations to classify legislation into 21 thematic domains. Two BERT-based models ran on a free GPU. One Llama 8B ran on eight Nvidia H100s.<br><br>All three scored essentially the same &ndash; the best results in the series so far. The difference was the bill: <strong>less than &euro;10 for the two small ones, &euro;83 for the large one.</strong> An order of magnitude more expensive for the same result.<br><br>The European Parliament&rsquo;s official classifier for EU regulations does not work. We built three that do."
+title: "Pimp My Language Model: A Fine-Tuning Tale of Bling and Basic"
+summary: "Three language models were fine-tuned on 64,000 EU regulations to classify legislation into 21 thematic domains. Two BERT models ran on a free GPU. One Llama 8B ran on eight Nvidia H100s.<br><br>All three scored essentially the same &ndash; the best results in the series so far. <strong>The difference was the bill: less than &euro;10 for the small ones, &euro;83 for the large one.</strong> An order of magnitude more expensive for the same result.<br><br>Also, the European Parliament&rsquo;s official classifier for EU regulations does not work. We built three that do."
 date: "April 2026"
 published: 2026-04-05
-tags: ["fine-tuning", "BERT", "QLoRA", "multi-label-classification", "benchmark"]
-stack: ["BERT", "EUBERT", "Llama-3.1-8B", "QLoRA", "HuggingFace Accelerate"]
+tags: ["fine-tuning", "BERT", "QLoRA", "multi-label-classification", "EuroVoc"]
+stack: ["BERT", "EUBERT", "Llama-3.1-8B", "QLoRA", "Accelerate"]
 ---
 
 ## Quick Brief
@@ -15,7 +15,7 @@ stack: ["BERT", "EUBERT", "Llama-3.1-8B", "QLoRA", "HuggingFace Accelerate"]
 
 ## Context
 
-Give a language model a task and it will guess. Give it examples and it will learn.
+Give a model a task and it will guess. Give it examples and it will learn.
 
 In previous experiments, we tried both. <a href="/notes/03-regulation-radar" target="_blank">Four language models on high-end GPUs</a> classified EU regulations into thematic domains without a single example &ndash; they scored around 0.50. Then a <a href="/notes/04-who-needs-nvidia" target="_blank">word counter on a MacBook Air</a>, trained on 64,000 labelled regulations, scored 0.80 in five minutes and outperformed them all.
 
@@ -51,11 +51,11 @@ Further digging led to the <a href="https://huggingface.co/EuropeanParliament/Eu
 ![HuggingFace community thread discussing the broken EP model](/images/exp5_huggingface_ep_model_broken_thread.png)
 *The community noticed. The Parliament noticed too, and decided to move on.*
 
-We were download number 38, and we were left with nothing that worked. The mission was back on.
+We were download number 38, and we were left with nothing that worked. The defeated spirit of Scott, arriving second to a broken flag, gave way to something closer to Amundsen &ndash; who, when he found no path, made one. The mission was back on.
 
 The obvious next step: **redo the fine-tuning from scratch**, properly this time. Take EUBERT &ndash; the Parliament&rsquo;s own foundation &ndash; and build a classifier that actually works. Cost it what it may, as long as the costs are not too high.
 
-And why stop at one? For good measure, a second candidate: **bert-base**, Google's original 2018 BERT. Trained on Wikipedia and novels, has never seen a regulation in its life, would not recognise a tariff quota if one landed on its desk. Build our own classifiers, publish them, maybe collect 30 downloads of our own someday. One can dream.
+And why stop at one? For good measure, a second candidate: <a href="https://huggingface.co/google-bert/bert-base-uncased" target="_blank"><strong>bert-base</strong></a>, Google's original 2018 BERT. Trained on Wikipedia and novels, has never seen a regulation in its life, would not recognise a tariff quota if one landed on its desk. Build our own classifiers, publish them, maybe collect 30 downloads of our own someday. One can dream.
 
 ## Jupyter, but in the Cloud
 
@@ -105,23 +105,22 @@ If this were a sponsored blog, this would be the moment to welcome back our recu
 
 The first attempt ran on a single H100 &ndash; one GPU, one machine, how hard can it be. At 1.3 documents per second, a single pass over 64,000 documents would take about 14 hours. Three epochs meant roughly 42 hours: two full days at &euro;2.73 per hour, for a training run whose outcome was not guaranteed. BERT had finished in an afternoon for free.
 
-Common logic suggests eight GPUs should deliver eight times the speed for eight times the price. In practice, the maths were kinder. A language model is not the only thing you can pimp.
+Common logic suggests eight GPUs should deliver eight times the speed for more than eight times the price. In practice, the maths were kinder. A language model is not the only thing you can pimp.
 
 <img src="/images/exp5_h100_sxm_8gpu_tray.jpg" alt="Eight Nvidia H100 SXM GPUs in a server tray" style="display: block; width: 100%; padding: 1.5rem 15%; box-sizing: border-box; background: white;">
+<em>&ldquo;Yo dawg, I heard you like GPUs that don&rsquo;t actually render graphics, so I put eight of them in a tray and connected them with a bus that&rsquo;s faster than your internet.&rdquo; &ndash; Jensen &ldquo;The Jacket&rdquo; Huang (presumably)</em>
 
-*&ldquo;Yo dawg, I heard you like GPUs that don&rsquo;t actually render graphics, so I put eight of them in a tray and connected them with a bus that&rsquo;s faster than your internet.&rdquo; &ndash; Jensen &ldquo;The Jacket&rdquo; Huang*
-
-The stock model &ndash; the one from the first attempt &ndash; was a standard PCIe card. Same physical format as any desktop graphics card, slotted into a regular server. The entry-level ride. What Scaleway offered instead was the full upgrade: eight H100 SXM modules, each plugged into Nvidia&rsquo;s proprietary socket and wired to the other seven via **NVLink** &ndash; Nvidia&rsquo;s dedicated GPU-to-GPU interconnect running at 900&nbsp;GB/s. That is fourteen times faster than the PCIe bus the stock card relied on. The SXM variant also reads its own memory 67% faster. Eight individual GPUs, turned into one 640&nbsp;GB machine.
+The stock model &ndash; the one from the first attempt &ndash; was a standard PCIe card. Same physical format as any desktop graphics card, slotted into a regular server. The entry-level ride. What Scaleway offered instead was the full upgrade: eight H100 SXM modules, each plugged into Nvidia&rsquo;s proprietary socket and wired to the other seven via **NVLink** &ndash; Nvidia&rsquo;s dedicated GPU-to-GPU interconnect running at 900&nbsp;GB/s. That is fourteen times faster than the PCIe bus the stock card relied on. The SXM variant also reads its own memory 67% faster. **Eight individual GPUs, turned into one 640&nbsp;GB machine.**
 
 The result: eight cards synchronising thousands of times per second with almost no overhead. Without NVLink, each GPU would spend more time waiting for the others than doing useful work. With it, the maths get interesting.
 
-The code itself barely changed &ndash; HuggingFace&rsquo;s <a href="https://huggingface.co/docs/accelerate" target="_blank">Accelerate</a> library handles the distribution automatically, splitting data across GPUs and synchronising gradients without touching the training logic. One launch command, eight GPUs, 1.3 documents per second turned into **14.8** &ndash; not eight times faster, but 11.4 times. The estimated forty-two hours collapsed to three and a half. The run started at seven in the morning. By quarter to eleven, it was done.
+The code itself barely changed &ndash; HuggingFace&rsquo;s <a href="https://huggingface.co/docs/accelerate" target="_blank">Accelerate</a> library handles the distribution automatically, splitting data across GPUs and synchronising gradients without touching the training logic. One launch command, eight GPUs, 1.3 documents per second turned into 14.8 &ndash; not eight times faster, but 11.4 times. The estimated forty-two hours collapsed to three and a half. The run started at seven in the morning. By quarter to eleven, it was done.
 
 The bill: &euro;83. The F1 score: **0.892.**
 
-So this is what state-of-the-art architecture, eight of the most powerful GPUs on the market, and three and a half hours of training get you: a score that bert-base had already achieved for free. bert-base: 0.900. Llama: 0.892. Seventy times larger, eight times the hardware, eight times the price &ndash; and the needle barely moved.
+So this is what state-of-the-art architecture, eight of the most powerful GPUs on the market, and three and a half hours of training get you: a score that bert-base had already achieved for free. bert-base: 0.900. Llama: 0.892. Seventy times larger, eight times the hardware, more than eight times the price &ndash; and the needle barely moved.
 
-The &euro;83 bought speed. It did not buy accuracy. That was already taken &ndash; by the free model.
+**The &euro;83 did not buy accuracy. It bought speed.**
 
 ## The Full Scoreboard
 
@@ -195,7 +194,7 @@ The &euro;83 bought speed. It did not buy accuracy. That was already taken &ndas
 </tbody>
 </table>
 
-*Five articles, ten methods, one test set. All scored against the same 890 regulations classified by human librarians.*
+*Five articles and ten methods later, this is the full picture. Same 890 regulations, same human librarians as ground truth, same task &ndash; very different bills.*
 
 Read the table bottom to top and it tells you everything. The zero-shot models &ndash; the ones that were never shown what correct looks like &ndash; are at the bottom, struggling to clear 0.50 on a 21-label task. Above them, two classical methods that were actually trained: a word counter and FastText, both free, both around 0.80. And at the top, three fine-tuned models that cost between nothing and &euro;83, clustered so tightly together that the difference barely registers.
 
@@ -207,7 +206,7 @@ The jump from classical methods to fine-tuning was worth ten percentage points. 
 
 **Fine-tuning is where the real jump happens.** A word counter on a laptop scored 0.80, a fine-tuned language model scored 0.90 &ndash; but an unfine-tuned one scored 0.50. That forty-point gap between guessing and learning is the single largest effect in the entire series. The difference is not the architecture. It is whether the model has seen what correct looks like.
 
-**More parameters do not mean better results.** Llama is seventy times the size of BERT, capable of holding conversations and writing code &ndash; and it landed at essentially the same score, for eight times the price. When the task is sorting documents into drawers, the model needs to recognise patterns, and a small model does that just as well as a large one.
+**More parameters do not mean better results.** Llama is seventy times the size of BERT, capable of holding conversations and writing code &ndash; and it landed at essentially the same score, for more than eight times the price. When the task is sorting documents into drawers, the model needs to recognise patterns, and a small model does that just as well as a large one.
 
 **Throwing hardware at the problem makes it faster, not better.** Eight GPUs delivered 11.4 times the speed of one &ndash; better than linear, thanks to NVLink &ndash; and compressed a two-day training run into a single morning. Magnificent engineering, but the final score did not care. The infrastructure turned days into hours without moving the needle by a single point. If time is the constraint, it is money well spent. If it is not, it is &euro;83 worth of discovering that the ceiling can be reached for free.
 
@@ -219,6 +218,6 @@ Classification is solved. But summarising what a regulation actually says? That 
 
 **The skill is knowing which step you are on before reaching for the hardware.**
 
-Speaking of which: the European Parliament&rsquo;s official classifier for EU regulations still does not work as advertised. In the spirit of transparency and for the benefit of all humanity, we built three that do and <a href="https://huggingface.co/" target="_blank">published them on HuggingFace</a> under Apache&nbsp;2.0, free to use.
+Speaking of which: the European Parliament&rsquo;s official classifier for EU regulations still does not work as advertised. In the spirit of transparency and for the benefit of all humanity, we built three that do and <a href="https://huggingface.co/jngb-labs" target="_blank">published them on HuggingFace</a> under Apache&nbsp;2.0, free to use.
 
 Proudly published, occasionally downloaded, quietly ignored, and inevitably forgotten. But at least they load.
