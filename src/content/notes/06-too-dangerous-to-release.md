@@ -11,7 +11,7 @@ stack: ["Llama-3.1:8B", "Qwen3:8B", "Gemma-4:31B", "QwQ:32B", "Llama-3.3:70B"]
 <ul>
 <li><strong>Experiment:</strong> Five open-weight language models were tested on two hundred synthetic invoices with cent-perfect ground truth. Forty invoices contained deliberate arithmetic errors. Real-world error rates are lower &ndash; but nobody stress-tests their accountant by only sending them correct invoices.</li>
 <li><strong>Why it matters:</strong> Invoice processing is the use case every AI pitch deck opens with. If a language model and a prompt can replace a &euro;300-per-seat SaaS subscription, the business case writes itself. The numbers are either right or wrong, and the distance between right and wrong can be measured to the cent.</li>
-<li><strong>Key finding:</strong> Building it yourself gets you 80% of the way there. The last 20% is what the enterprise software licence actually pays for &ndash; and it is not your core business. The best model (Gemma 31B) read the stated total correctly on 95% of invoices. On the 40 invoices containing deliberate errors, it caught 18%. Combined accuracy: 83%.</li>
+<li><strong>Key finding:</strong> Building it yourself gets you 80% of the way there. The last 20% is what the enterprise software licence actually pays for &ndash; and it is not your core business. The best model (Gemma 31B) read the stated total correctly on 95% of invoices. On the 40 invoices containing deliberate errors, it caught 18% &ndash; bringing combined accuracy to 83%.</li>
 </ul>
 
 <h2>Context</h2>
@@ -129,7 +129,7 @@ stack: ["Llama-3.1:8B", "Qwen3:8B", "Gemma-4:31B", "QwQ:32B", "Llama-3.3:70B"]
 
 <p>At closer look, however, a quieter realisation. The autopilot test was rigged in the model&rsquo;s favour &ndash; the invoice states its total in plain text, at the bottom, in bold. The model could simply read it and report it back. An open-book exam with the answer on every page.</p>
 
-<p>And that is exactly what it did. On the 160 invoices where the stated total was correct, Llama read it back with 86% accuracy. On the 40 where the total was deliberately wrong, it read the wrong number back with equal confidence. It did not check the arithmetic. It copied what it saw.</p>
+<p>And that is exactly what it did. On the 160 invoices where the stated total was correct, Llama read it back with 86% accuracy. On the 40 where the total was deliberately wrong, it read the wrong number back just as reliably &ndash; 82%. It did not check the arithmetic. It copied what it saw.</p>
 
 <p>The hybrid pipeline, where the model extracts ten individual fields and hands them to code, collapsed to 43%. One misread unit price, one wrong discount, and the script computes a confidently wrong total. <strong>Good maths on bad inputs.</strong> Of forty deliberately broken invoices, the model flagged seven &ndash; worse than a coin flip.</p>
 
@@ -300,7 +300,9 @@ stack: ["Llama-3.1:8B", "Qwen3:8B", "Gemma-4:31B", "QwQ:32B", "Llama-3.3:70B"]
 </table>
 <em>* Of the 57% where Qwen produced an answer.</em>
 
-<p>Eighty-three per cent. No catastrophic errors &ndash; the worst was 3% off, compared to Llama&rsquo;s 99.9%. It read the stated total correctly on 95% of invoices. On broken invoices, it flagged 82% as inconsistent &ndash; but only corrected 18%. It could tell something was wrong. It could not tell you what was right. The boring model that just works, except when the invoice does not. The jump from 69% to 83% had taken a four-times-larger model on a rented GPU. The next seventeen percentage points were beginning to look expensive. Phase III was no longer approaching. It was here.</p>
+<p>Eighty-three per cent. No catastrophic errors &ndash; the worst was 3% off, compared to Llama&rsquo;s 99.9%. It read the stated total correctly on 95% of invoices. On broken invoices, it flagged 82% as inconsistent &ndash; but only corrected 18%. It could tell something was wrong. It could not tell you what was right. The boring model that just works, except when the invoice does not.</p>
+
+<p>The jump from 69% to 83% had taken a four-times-larger model on a rented GPU. The next seventeen percentage points were beginning to look expensive. Phase III was no longer approaching. It was here.</p>
 
 
 <h2>Phase III, Continued &ndash; Surely, Both Help</h2>
