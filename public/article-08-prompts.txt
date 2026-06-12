@@ -1,0 +1,4 @@
+Moved. The prompts now live in two files:
+
+  System prompt:  /article-08-system-prompt.txt
+  Missions:       /article-08-missions.txt

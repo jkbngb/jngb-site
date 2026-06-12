@@ -1,0 +1,61 @@
+<svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8C6239"/>
+    </marker>
+  </defs>
+
+  <!-- the loop label (kept clear of the arc) -->
+  <text x="140" y="38" text-anchor="middle" font-size="12" font-weight="600" fill="#1C1C1C">the loop</text>
+  <text x="140" y="55" text-anchor="middle" font-size="11" fill="#5A5A5A">Every answer becomes the next input,</text>
+  <text x="140" y="70" text-anchor="middle" font-size="11" fill="#5A5A5A">until the model declares the job done</text>
+  <path d="M 100 118 a 35 26 0 1 1 80 0" fill="none" stroke="#8C6239" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <!-- Agent (model) -->
+  <rect x="40" y="124" width="200" height="126" rx="8" fill="#F0EDE6" stroke="#8C6239" stroke-width="1.5"/>
+  <text x="140" y="152" text-anchor="middle" font-size="15" font-weight="600" fill="#1C1C1C">The agent</text>
+  <text x="140" y="172" text-anchor="middle" font-size="12" fill="#5A5A5A">A language model, in a loop</text>
+  <text x="140" y="196" text-anchor="middle" font-size="11" fill="#5A5A5A">Carries: system prompt (the rules),</text>
+  <text x="140" y="212" text-anchor="middle" font-size="11" fill="#5A5A5A">user prompt (the question),</text>
+  <text x="140" y="228" text-anchor="middle" font-size="11" fill="#5A5A5A">and the ability to call tools</text>
+
+  <!-- MCP server (the star) -->
+  <rect x="330" y="110" width="190" height="150" rx="8" fill="#EDE4D8" stroke="#8C6239" stroke-width="2.5"/>
+  <text x="425" y="140" text-anchor="middle" font-size="15" font-weight="600" fill="#1C1C1C">MCP server</text>
+  <text x="425" y="160" text-anchor="middle" font-size="12" font-style="italic" fill="#5A5A5A">the interpreter</text>
+  <text x="425" y="186" text-anchor="middle" font-size="11" fill="#5A5A5A">Models speak only text,</text>
+  <text x="425" y="202" text-anchor="middle" font-size="11" fill="#5A5A5A">databases speak only queries.</text>
+  <text x="425" y="218" text-anchor="middle" font-size="11" fill="#5A5A5A">Somebody has to translate,</text>
+  <text x="425" y="234" text-anchor="middle" font-size="11" fill="#5A5A5A">in both directions</text>
+
+  <!-- Database -->
+  <g>
+    <ellipse cx="650" cy="150" rx="70" ry="14" fill="#F0EDE6" stroke="#8C6239" stroke-width="1.5"/>
+    <path d="M 580 150 v 60 a 70 14 0 0 0 140 0 v -60" fill="#F0EDE6" stroke="#8C6239" stroke-width="1.5"/>
+    <ellipse cx="650" cy="150" rx="70" ry="14" fill="#F0EDE6" stroke="#8C6239" stroke-width="1.5"/>
+    <text x="650" y="185" text-anchor="middle" font-size="13" font-weight="600" fill="#1C1C1C">the registry</text>
+    <text x="650" y="202" text-anchor="middle" font-size="11" fill="#5A5A5A">33,282 companies,</text>
+    <text x="650" y="217" text-anchor="middle" font-size="11" fill="#5A5A5A">fresh from Firmenbuch</text>
+  </g>
+
+  <!-- arrows agent <-> mcp -->
+  <path d="M 244 158 L 325 158" fill="none" stroke="#8C6239" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="285" y="147" text-anchor="middle" font-size="11" fill="#5A5A5A">"call this tool"</text>
+  <path d="M 325 222 L 244 222" fill="none" stroke="#8C6239" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="285" y="243" text-anchor="middle" font-size="11" fill="#5A5A5A">rows, as text</text>
+
+  <!-- arrows mcp <-> db -->
+  <path d="M 524 162 L 576 162" fill="none" stroke="#8C6239" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="550" y="151" text-anchor="middle" font-size="11" fill="#5A5A5A">query</text>
+  <path d="M 576 212 L 524 212" fill="none" stroke="#8C6239" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="550" y="233" text-anchor="middle" font-size="11" fill="#5A5A5A">rows</text>
+
+  <!-- exit arrow: final answer -->
+  <path d="M 140 254 L 140 318" fill="none" stroke="#8C6239" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="152" y="292" font-size="11" fill="#5A5A5A">Job declared done:</text>
+  <rect x="60" y="326" width="160" height="40" rx="6" fill="none" stroke="#8C6239" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="140" y="350" text-anchor="middle" font-size="12" fill="#1C1C1C">final answer, as JSON</text>
+
+  <!-- safety note -->
+  <text x="425" y="350" text-anchor="middle" font-size="11" fill="#888888">Hard stop: ten turns maximum</text>
+</svg>
