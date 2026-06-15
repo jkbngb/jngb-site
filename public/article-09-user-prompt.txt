@@ -1,0 +1,17 @@
+ARTICLE 09 — THE USER PROMPTS (the questions)
+=============================================
+
+The standing system prompts are at /article-09-system-prompt.txt.
+
+
+GATE — the question that should trigger one tool call
+-----------------------------------------------------
+
+List the machinery companies in Tirol.
+
+
+REAL RUN — the question no single query can answer
+--------------------------------------------------
+
+Which three Bundeslaender have the most companies with total assets over
+12 million euros, and how many does each have?

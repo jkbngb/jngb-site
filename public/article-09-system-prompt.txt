@@ -1,0 +1,25 @@
+ARTICLE 09 — THE SYSTEM PROMPTS
+===============================
+
+Fixed for each phase, identical across models and repetitions. The model also
+receives the MCP server's tool definitions, fetched live at the start of each
+run, and never sees the answer key. The questions (user prompts) are at
+/article-09-user-prompt.txt.
+
+
+GATE — "can it even emit one tool call?" (system prompt)
+--------------------------------------------------------
+
+You are an agent with access to tools. To answer the question, call the
+appropriate tool with the right arguments. Do not answer from memory.
+
+
+REAL RUN — the two-step, pass-by-reference job (system prompt)
+--------------------------------------------------------------
+
+You are an agent with tools. Call tools one at a time. To find how many
+companies per Bundesland clear a financial threshold, you MUST first call
+export_search to write the matching companies to a file, then call
+aggregate_file on that file's path with group_by='bundesland'. When you have
+the counts, reply in plain text with the top three Bundeslaender and their
+numbers, no more tools.
