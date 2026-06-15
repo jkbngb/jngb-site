@@ -1,6 +1,6 @@
 ---
 title: "Moneyball AI: Running Agents on a Raspberry Pi"
-summary: "Nvidia &ndash; which sells the big chips &ndash; says agents mostly need small ones, and last time we came away half-convinced. The open question was how small you can actually go. So we drafted a bench of sub-billion-parameter models, wired them to the Austrian company registry through an MCP server, and set the cheapest loose on a Raspberry Pi.<br><br>A half-billion-parameter model ran the whole pipeline &ndash; picked the tools, chained them, produced the right file, counts identical to a control script &ndash; and broke at exactly one step: <strong>writing the answer down</strong>.<br><br>Everything worked but the confirmation message."
+summary: "Nvidia &ndash; which sells the big chips &ndash; says agents mostly need small ones, and last time we came away half-convinced. The open question was how small you can actually go. So we drafted a bench of sub-billion-parameter models, wired them to the Austrian company registry through an MCP server, and set the cheapest loose on a Raspberry Pi.<br><br>A half-billion-parameter model <strong>ran the whole pipeline</strong> &ndash; picked the tools, chained them, produced the right file, counts identical to a control script &ndash; and broke at exactly one step: writing the answer down.<br><br>Everything worked but the confirmation message."
 date: "July 2026"
 published: 2026-07-15
 tags: ["agents", "mcp", "small-language-models", "nvidia", "firmenbuch", "raspberry-pi"]
