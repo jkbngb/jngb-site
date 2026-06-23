@@ -256,8 +256,8 @@ small {
 }
 
 .home-headshot-img {
-  width: 140px;
-  height: 140px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
   object-fit: cover;
   object-position: 57% center;
