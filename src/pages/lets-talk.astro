@@ -27,6 +27,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <h2>Selected Projects</h2>
 
   <div class="system">
+    <h3 class="system-name">Agentic Firmenbuch</h3>
+    <p>
+      A live data product that makes <strong>Austria's entire company register queryable by AI agents in plain language</strong>. Official master data, annual accounts, and key ratios for every firm in the country (~200k+ entities) – served over a <strong>multi-tenant MCP server</strong>, so any MCP client (Claude, Claude Code, Microsoft Copilot) answers on real, official numbers instead of hallucinating them.
+    </p>
+    <p>
+      Behind it sits a <strong>deterministic Azure pipeline</strong> built on the free EU High Value Datasets. It ingests every <em>Jahresabschluss</em> for the whole company universe, consolidates per company, and computes ratios, growth, and trends across a numbered raw → parsed → consolidated → derived → presentation flow. The raw layer is kept forever as an <strong>immutable source of truth</strong>; everything downstream is re-derivable. <strong>Version 1 is facts and clean derivations only</strong> – no scoring, no AI summaries – with the full chain verified end to end on live data.
+    </p>
+    <div class="note-tags" style="margin-top: var(--spacing-sm);">
+      <span class="note-tag">Python</span>
+      <span class="note-tag">MCP</span>
+      <span class="note-tag">Azure</span>
+      <span class="note-tag">Cosmos DB</span>
+      <span class="note-tag">HVD / Firmenbuch</span>
+      <span class="note-tag">Event-Driven</span>
+    </div>
+  </div>
+
+  <div class="system">
     <h3 class="system-name">Contract Analysis Engine</h3>
     <p>
       A system that takes a legal contract as a PDF and returns structured data – parties, clauses, obligations, risks. The interesting part is not what it extracts but <strong>where it runs</strong>: the same pipeline works with an 8B model on a MacBook Air and with a 54B legal-domain model on a high-end cloud GPU.
