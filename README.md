@@ -1,47 +1,51 @@
 # jngb.online
 
-The personal site of Jakob Neugebauer — independent builder of AI systems and data
-infrastructure, based in Vienna.
+Personal website of Jakob Neugebauer. A static site built with Astro.
 
-**Live:** [jngb.online](https://jngb.online)
+Live at https://jngb.online
 
-The interesting part is the [Notes](https://jngb.online/notes): first-person write-ups of
-real experiments — a MacBook Air against rented H100s, with the exact bills, runtimes, and
-failures left in. No tutorials, no hot takes. Real numbers or it didn't happen.
+## What it is
+
+A small personal site. Pages:
+
+- Home: short profile and intro.
+- Notes: write-ups of personal AI and LLM experiments, each with the setup, results, and costs.
+- Let's Talk: services and selected projects.
+- Impressum and Privacy: Austrian legal pages.
 
 ## Stack
 
-A deliberately small static site. One dependency.
-
-- [Astro 4](https://astro.build) — static output, Markdown content collections, no UI framework
-- Plain CSS, a few lines of vanilla JS (a scroll-to-top handler and a table-of-contents builder)
-- TypeScript in strict mode
+- Astro 4 (static output, Markdown content collections)
+- Plain CSS, with a small amount of vanilla JavaScript
+- TypeScript (strict mode)
+- One runtime dependency: astro
 
 ## Structure
 
 ```
 src/
-├── pages/
-│   ├── index.astro            # Home — profile and intro
-│   ├── notes/
-│   │   ├── index.astro        # Notes listing (newest first)
-│   │   └── [...slug].astro     # A page per Markdown note
-│   ├── lets-talk.astro        # Services and featured work
-│   ├── impressum.astro        # Legal notice (Austrian ECG / Mediengesetz)
-│   └── privacy.astro          # Datenschutzerklärung
-├── layouts/BaseLayout.astro   # Shared HTML shell
-├── components/                # Header, Footer
-├── content/
-│   ├── config.ts              # Zod schema for the notes collection
-│   └── notes/                 # The articles, as 01-…, 02-…, Markdown
-└── styles/global.css          # The entire design system
+  pages/
+    index.astro          Home
+    notes/
+      index.astro        Notes listing
+      [...slug].astro    One page per note
+    lets-talk.astro      Services and projects
+    impressum.astro      Legal notice
+    privacy.astro        Privacy policy
+  layouts/BaseLayout.astro
+  components/            Header, Footer
+  content/
+    config.ts            Schema for the notes collection
+    notes/               The articles, as Markdown (01-..., 02-..., ...)
+  styles/global.css      Styles for the whole site
 
-public/                        # Static assets served as-is
-├── images/articles/<nn-slug>/ # Screenshots and diagrams, one folder per note
-├── images/site/               # Site chrome (headshot, etc.)
-├── reg-radar/                 # Standalone interactive demo (Regulation Radar)
-├── data/                      # Datasets backing the demos
-└── *.txt                      # The exact prompts used in the experiments
+public/
+  images/articles/<nn-slug>/   Images per note
+  images/site/                 Site images (headshot, etc.)
+  reg-radar/                   Standalone interactive demo
+  data/                        Datasets for the demos
+  *.txt                        Prompts used in the experiments
+  favicon.svg, robots.txt
 ```
 
 ## Development
@@ -53,28 +57,27 @@ npm run build      # static build to dist/
 npm run preview    # serve the build locally
 ```
 
+## Hosting and deployment
+
+Hosted on Azure Static Web Apps, with the custom domain jngb.online.
+`npm run build` produces a static `dist/`, which is deployed manually. There is no CI pipeline.
+
 ## Adding a note
 
-Drop a Markdown file into `src/content/notes/` (named `NN-slug.md`). The frontmatter:
+Add a Markdown file to `src/content/notes/` named `NN-slug.md`. Frontmatter:
 
 ```yaml
 ---
-title: "Hook: Plain descriptive subtitle"
+title: "Title"
 summary: "Teaser shown on the listing page. HTML allowed."
 date: "March 2026"
-tags: ["local-llm", "privacy"]        # optional
-stack: ["Astro", "Llama:8B", "vLLM"]  # optional, rendered as tags
+tags: ["tag1", "tag2"]          # optional
+stack: ["Astro", "vLLM"]        # optional, shown as tags
 ---
 ```
 
-Astro's content collection picks it up automatically; the slug is the filename.
-
-## Deployment
-
-`npm run build` produces a fully static `dist/`, deployed to Azure Static Web Apps behind the
-custom domain. No CI pipeline — deploys are manual.
+The slug is the filename. Astro's content collection picks the file up automatically.
 
 ## License
 
-Code is MIT (see [LICENSE](LICENSE)). The article text and images are © Jakob Neugebauer,
-all rights reserved.
+Code is MIT (see LICENSE). The article text and images are copyright Jakob Neugebauer, all rights reserved.
