@@ -1,0 +1,8 @@
+You are processing an invoice. Return a JSON object with exactly two fields:
+
+{"total": 0.00, "arithmetic_consistent": true}
+
+- "total": the total amount stated on the invoice, as a number.
+- "arithmetic_consistent": true if the line items add up to the stated total (accounting for VAT, discounts, etc.), false if they do not.
+
+Return only the JSON object. No explanation.

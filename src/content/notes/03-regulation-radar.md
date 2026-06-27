@@ -4,7 +4,7 @@ summary: "The EU published 890 pieces of binding legislation in six months – o
 date: "March 2026"
 published: 2026-03-20
 tags: ["eu-regulation", "cloud-gpu", "document-classification", "model-disagreement", "reasoning-models"]
-stack: ["EUR-Lex", "Anthropic API", "EuroLLM:22B", "SaulLM:141B", "DeepSeek-R1:671B"]
+stack: ["EuroLLM:22B", "SaulLM:141B", "DeepSeek-R1:671B", "Anthropic API", "EUR-Lex"]
 ---
 
 ## Quick Brief
@@ -23,7 +23,7 @@ Somebody has to read all of that.
 
 All EU legislation is publicly available through <a href="https://eur-lex.europa.eu/content/welcome/about.html" target="_blank">EUR-Lex</a> – well-known to EU legal practitioners and arguably invisible to everyone else. A <a href="https://publications.europa.eu/webapi/rdf/sparql" target="_blank">SPARQL endpoint</a> lets you query legislation like a database. A bulk download API called <a href="https://op.europa.eu/en/web/cellar" target="_blank">CELLAR</a> delivers full texts programmatically, in all 24 official EU languages, with structured metadata attached. A very well-organised government filing cabinet with an API.
 
-![The EU's SPARQL endpoint – a query interface for legislation](/images/regulation-radar-sparql.png)
+![The EU's SPARQL endpoint – a query interface for legislation](/images/articles/03-regulation-radar/sparql.png)
 *The filing cabinet. With an API.*
 
 But a filing cabinet is only useful if you know what is in it. Therefore, the EU doesn't just publish legislation – it **tags** it. Every regulation gets classified using <a href="https://op.europa.eu/en/web/eu-vocabularies/concept-scheme/-/resource?uri=http://eurovoc.europa.eu/100141" target="_blank">EuroVoc</a>, a controlled vocabulary of roughly 7,000 terms organised into **21 top-level thematic domains** – "Agriculture", "Trade", "Finance", "Energy", and so on. The tagging is done by professional librarians at the Publications Office, and has been running since 1995.
@@ -45,7 +45,7 @@ Before any model reads anything, the data needs to arrive. The pipeline works in
 **Stage 4: Route.** Regulations classified as **HIGH impact** get routed to a separate model for a detailed editorial briefing – what it does, who is affected, what the deadlines are, what the worst case looks like. Ideally, the full document goes in here, not just the preamble. This can run on the same infrastructure or a different machine entirely, depending on the model and the size of the legislation.
 
 <div class="pipeline-lightbox">
-<img src="/images/regulation-radar-pipeline.svg" alt="Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to briefing model, evaluate" style="width:100%;cursor:zoom-in;" onclick="this.parentElement.classList.toggle('expanded')" />
+<img src="/images/articles/03-regulation-radar/pipeline.svg" alt="Pipeline: fetch, download, extract, classify domain, classify impact, route HIGH to briefing model, evaluate" style="width:100%;cursor:zoom-in;" onclick="this.parentElement.classList.toggle('expanded')" />
 <div class="pipeline-overlay" onclick="this.parentElement.classList.remove('expanded')"></div>
 </div>
 
@@ -81,7 +81,7 @@ That requires a model that actually fits on a laptop. An Apple MacBook Air with 
 
 Since we are dealing with legal text, the choice fell on an old acquaintance: <a href="https://huggingface.co/papers/2403.03883" target="_blank">**SaulLM-7B**</a>, a legal-domain model fine-tuned on court rulings and legislative text. It is the smaller sibling of the 54B model from the <a href="/notes/02-better-call-saullm" target="_blank">previous experiment</a> – the one that needed an H100 to run. This one fits on a laptop. <a href="https://ollama.com/" target="_blank">**Ollama**</a> serves the model as a local API, using the M3's integrated GPU via Metal for inference.
 
-![890 regulations downloaded and ready for classification](/images/regulation-radar-corpus.png)
+![890 regulations downloaded and ready for classification](/images/articles/03-regulation-radar/corpus.png)
 *890 regulations, downloaded and waiting. Each one gets two prompts – domain and impact.*
 
 890 regulations, two prompts each, fed through a 7B model on a laptop. It took **15 hours and 41 minutes** to get through all 1,780 prompts – roughly one minute per regulation to read the preamble, classify by domain, assess impact, and return a structured JSON response. You start it before bed, and by morning the laptop has opinions about 890 pieces of EU legislation.
@@ -125,9 +125,9 @@ Why include a reasoning model at all? Most classification tasks do not require c
 All three GPU models finished in about half an hour each.
 
 <div class="gpu-slider" style="position:relative;max-width:100%;overflow:hidden;border:1px solid #ddd;border-radius:4px;user-select:none;">
-<img src="/images/regulation-radar-gpu-loaded.png" alt="After: 8 H100 GPUs at full load – 75 GB VRAM each" style="width:100%;display:block;" />
+<img src="/images/articles/03-regulation-radar/gpu-loaded.png" alt="After: 8 H100 GPUs at full load – 75 GB VRAM each" style="width:100%;display:block;" />
 <div class="gpu-slider-overlay" style="position:absolute;top:0;left:0;width:50%;height:100%;overflow:hidden;pointer-events:none;">
-<img src="/images/regulation-radar-gpu-idle.png" alt="Before: 8 H100 GPUs idle – 0 MiB VRAM" style="display:block;min-width:100%;width:100%;height:100%;object-fit:cover;" />
+<img src="/images/articles/03-regulation-radar/gpu-idle.png" alt="Before: 8 H100 GPUs idle – 0 MiB VRAM" style="display:block;min-width:100%;width:100%;height:100%;object-fit:cover;" />
 </div>
 <div style="position:absolute;top:0;bottom:0;left:50%;width:3px;background:#8C6239;pointer-events:none;z-index:5;" class="gpu-slider-line"></div>
 <input type="range" min="0" max="100" value="50" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:ew-resize;z-index:10;margin:0;" />

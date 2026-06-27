@@ -1,0 +1,27 @@
+ARTICLE 08 — THE MISSIONS (USER PROMPTS)
+========================================
+
+The user prompt is the question — one sentence, no examples, no hints.
+The system prompt (identical for every run) is at /article-08-system-prompt.txt.
+Answer keys and all 14 run results: /article-08-runs.json.
+
+
+MISSION 1 — the list round
+--------------------------
+
+List the 50 companies with the oldest Geschäftsführer in the database.
+
+(Grading note: several 88-year-olds tie at the bottom of the true list, so
+the grader does not demand one exact set — it requires all 39 companies
+whose GF is 89+, verifies every remaining seat holds a genuine 88-year-old,
+and checks the count is 50.)
+
+
+MISSION 2 — the laundromat proxy
+--------------------------------
+
+Which machinery companies in Oberösterreich have a Geschäftsführer aged 70
+or older?
+
+(Grading note: exact match against the answer key — five companies,
+computed in advance by direct database query.)

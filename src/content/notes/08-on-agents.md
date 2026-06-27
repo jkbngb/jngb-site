@@ -1,17 +1,17 @@
 ---
 title: "On Agents: Sufficiently Powerful, Necessarily Economical, Occasionally Correct"
-summary: "Nvidia says small language models are the future of agentic AI. It is a position paper: arguments, references, no experiment.<br><br>So we ran one. A frontier model and an 8-billion-parameter laptop model drove the same agent loop against the Austrian company registry &ndash; and <strong>the small model failed the simplest mission imaginable, five times, no two failures alike</strong>, before acing a harder one.<br><br>Nothing failed at thinking. Everything failed in the plumbing."
-date: "June 2026"
-published: 2026-06-12
+summary: "Nvidia, vendor of the very large chips that run very large models, has declared that AI agents mostly need small ones. The declaration is a position paper: arguments, references, no experiment.<br><br>So we ran one. A frontier model and an 8-billion-parameter laptop model drove the same agent loop against the Austrian company registry. The flagship: flawless, at a price. The featherweight: free, willing, and able to understand every task &ndash; yet <strong>defeated by the simplest mission we could write, before acing a harder one</strong>.<br><br>Nothing failed at thinking. Everything failed in the plumbing."
+date: "July 2026"
+published: 2026-07-01
 tags: ["agents", "mcp", "small-language-models", "nvidia", "firmenbuch"]
-stack: ["Fable-5", "Qwen3:8B", "MCP", "Ollama"]
+stack: ["Qwen3:8B", "Fable-5", "MCP", "Ollama"]
 ---
 
 <h2>Quick Brief</h2>
 <ul>
 <li><strong>Experiment:</strong> Nvidia claims small language models are the future of agentic AI &ndash; in a position paper, without an experiment. So we ran one: a cloud LLM and a local SLM drove the same agent loop against the Austrian company registry, on missions for which a script had already computed the answers.</li>
-<li><strong>Why it matters:</strong> Everyone building agents has to pick a model size. Nvidia's pitch says small is enough &ndash; but nobody says where too small begins.</li>
-<li><strong>Key finding:</strong> The big model did everything right, every time, at $0.35 a run or less. The small model understood every task &ndash; and still botched the simplest one: writing out a fifty-entry list. Given a five-entry answer, it was flawless. Small models fail not at understanding but at mechanics &ndash; they can do the work, but only with more architecture and a more precise workflow wrapped around them.</li>
+<li><strong>Why it matters:</strong> Anyone building an agent has to pick a model, and the smaller ones are cheaper. The question that matters is whether anything breaks when you rely on them.</li>
+<li><strong>Key finding:</strong> The big model did everything right, every time. The small one understood every task just as well, and stumbled only on the mechanical part: getting the answer out. Small models can do the work, but only with more architecture and a tighter workflow wrapped around them.</li>
 </ul>
 
 <h2>Context</h2>
@@ -64,11 +64,11 @@ stack: ["Fable-5", "Qwen3:8B", "MCP", "Ollama"]
 
 <p>First assignment, deliberately the simplest we could write: <strong>name the 50 oldest Gesch&auml;ftsf&uuml;hrer in the database.</strong> No filters, no ratios, one sort &ndash; the registry records each signer's birth year, the script orders by it and takes the top 50. Done, in 0.69 seconds.</p>
 
-<p>A few data points from <a href="/article-08-runs.json" target="_blank">the list</a>. The ages run from 88 to 100, median 90.5; at the top, born 1926 and still the registered signatory, FN 065005x. (Companies appear here by Firmenbuch number only. Whether the DSGVO requires this, we do not know &ndash; we obey in advance.) One wrinkle for the grading: a crowd of 88-year-olds ties at the bottom of the list, so the grader does not demand one exact set of FN numbers &ndash; it checks that all 39 aged 89-plus are present, that every remaining seat holds a genuine 88-year-old, and that the count is 50.</p>
+<p>A few data points from <a href="/article-08-runs.json" target="_blank">the list</a>. The ages run from 88 to 100, median 90.5; at the top, born 1926 and still the registered signatory, FN 065005x. (Companies appear here by Firmenbuch number only. Whether GDPR requires this, we do not know &ndash; we obey in advance.) One wrinkle for the grading: a crowd of 88-year-olds ties at the bottom of the list, so the grader does not demand one exact set of FN numbers &ndash; it checks that all 39 aged 89-plus are present, that every remaining seat holds a genuine 88-year-old, and that the count is 50.</p>
 
-<p>Now the other side. An agent needs three things. A <a href="/article-08-system-prompt.txt" target="_blank">system prompt</a>, fixing its behaviour: answer only from the data, companies by number only, admit what you could not verify. A <a href="/article-08-missions.txt" target="_blank">user prompt</a>: the question. And the ability to call tools &ndash; which, in our case, means one thing: <a href="https://www.youtube.com/watch?v=HyzlYwjoXOQ" target="_blank">an MCP server</a>.</p>
+<p>Now the other side. An agent needs three things. A <a href="/article-08-system-prompt.txt" target="_blank">system prompt</a>, fixing its behaviour: answer only from the data, companies by number only, admit what you could not verify. A <a href="/article-08-missions.txt" target="_blank">user prompt</a>: the question. And the ability to call tools &ndash; which, in our case, means one thing: an <a href="https://www.youtube.com/watch?v=HyzlYwjoXOQ" target="_blank">MCP server</a>.</p>
 
-<p>In short: <strong>an MCP server is an interpreter between two parties that cannot talk to each other.</strong> Models speak only text; databases speak only queries. MCP turns the model's worded request into a real query, and the rows back into text the model can read. That is the whole job &ndash; and the whole point: build the interpreter once, and anything that writes text can use the database. Flagship or featherweight. We are about to send both.</p>
+<p>An MCP server is really just an <strong>interpreter between two parties that cannot talk to each other.</strong> Models speak only text; databases speak only queries. MCP turns the model's worded request into a real query, and the rows back into text the model can read. That is the whole job &ndash; and the whole point: build the interpreter once, and anything that writes text can use the database. Flagship or featherweight. We are about to send both.</p>
 <img src="/images/articles/08-on-agents/architecture.svg" alt="The agent loop: model, MCP server as interpreter, registry behind" style="max-width:680px;display:block;margin:1.5rem auto;">
 <p style="text-align:center;font-size:0.88rem;color:#5a5a5a;"><em>The whole trick, drawn, slightly simplified. The model thinks, the MCP translates, the loop repeats &ndash; and the bill grows at every arrow.</em></p>
 
@@ -77,8 +77,9 @@ stack: ["Fable-5", "Qwen3:8B", "MCP", "Ollama"]
 <h2>First Engagement</h2>
 
 <p>The flagship goes first: <a href="https://www.anthropic.com/news/claude-fable-5-mythos-5" target="_blank">Claude Fable 5</a> &ndash; the dumbed-down but publicly available edition of the model deemed too dangerous to be released.</p>
+<p><em>(Update: yes, we really did run this in the seventy-two hours Fable 5 was public.)</em></p>
 
-<p>It did not fumble once. One tool call per run &ndash; search by GF age, descending, limit 50: exactly the query an analyst would have written &ndash; then the answer. We asked three times; all 39 of the 89-plus club present every time, every remaining seat a genuine 88-year-old, and the three lists identical, company for company. It even attached footnotes nobody asked for, flagging the silently excluded companies without a recorded age and the tie at the bottom of the list. <strong>The simplest task of all, passed with flying colours</strong> &ndash; in 19 seconds and at $0.35 per run.</p>
+<p>It did not fumble once. One tool call per run &ndash; search by GF age, descending, limit 50: exactly the query an analyst would have written &ndash; then the answer. We asked three times; all 39 of the 89-plus club present every time, every remaining seat a genuine 88-year-old, and the three lists identical, company for company. The brief asked every model for caveats; the flagship actually filled the box, flagging the silently excluded companies without a recorded age and the tie at the bottom of the list. <strong>The simplest task of all, passed with flying colours</strong> &ndash; in 19 seconds and at $0.35 per run.</p>
 
 <p style="margin-top:1.5rem;">That, however, was never Nvidia's claim. Their claim concerns the featherweights. So the same mission went to <a href="https://ollama.com/library/qwen3" target="_blank">Qwen3:8B</a>, an 8-billion-parameter open-weight model, running locally on the MacBook Air &ndash; the consumer-device deployment Nvidia's paper has in mind.</p>
 
@@ -88,7 +89,7 @@ stack: ["Fable-5", "Qwen3:8B", "MCP", "Ollama"]
 
 <p>The tool call was identical. The data was identical. The culprit was a default. <a href="https://ollama.com" target="_blank">Ollama</a>, the program serving local models, rations a model's working memory, and the 13,000-token delivery flushed the rules and the question clean out of it. The model, left holding data with no brief, confidently delivered something anyway.</p>
 
-<p>First lesson of the campaign: out-of-the-box gear is not field-ready. One setting later the problem was gone &ndash; though fifty slim rows had just filled a third of this model's head, and real databases serve heavier meals. Nvidia's prospectus is silent on portion control. We have an idea or two on the matter &ndash; they can wait for the verdict.</p>
+<p>First lesson of the campaign: out-of-the-box gear is not field-ready. One setting later the problem was gone &ndash; though fifty slim rows had just filled a third of this model's head, and real databases serve heavier meals. Nvidia's prospectus is silent on portion control. We have a thought or two on it &ndash; more on that later.</p>
 
 <p>First, the rematch. This time the data fit. The database had done all the sorting, the MCP had handed over the final, correct list &ndash; the model's entire job was reading it back, line by line. Which went fine for ten lines. Then the needle stuck:</p>
 
@@ -102,13 +103,13 @@ stack: ["Fable-5", "Qwen3:8B", "MCP", "Ollama"]
 
 <p>Before anyone nominates us for a Turing Award: the stutter has been in the books since 2019, as <a href="https://arxiv.org/abs/1904.09751" target="_blank">neural text degeneration</a>. The obvious workaround &ndash; <strong>let the server write the list into a file and have the model merely hand over the link</strong> &ndash; is a change to the tools, not to the model.</p>
 
-<p>The first mission's books: the flagship answered three times &ndash; correctly and identically each time, in 19 seconds, at $0.35 a run. The featherweight answered five times in all &ndash; once on factory settings, four times with the memory fixed &ndash; never correctly, never the same way twice; every run after the fix started right and derailed at a different line. Free of charge, mind, at up to 27 minutes a run. Necessarily more economical, as promised. Sufficiently powerful is another matter.</p>
+<p>The first mission's books: the flagship answered three times &ndash; correctly and identically each time, in 19 seconds, at $0.35 a run. The featherweight answered five times in all &ndash; once on factory settings, four times with the memory fixed &ndash; never correctly, never the same way twice; every run after the fix started right and derailed at a different line. Free of charge, admittedly &ndash; but at up to 27 minutes a run. Necessarily more economical, as promised. Sufficiently powerful is another matter.</p>
 
 <p>Lesson learned, workaround filed &ndash; and one question left open: what does the featherweight do when the writing is within its powers? Mission two was designed to find out.</p>
 
 <h2>Second Engagement</h2>
 
-<p>The laundromat has acquired almost mythical status on finance social media, displacing the Goldman internship as the be-all and end-all of financial ambition. The appeal rests on recurring cash, minimal inventory, little labour, and customers who not only do the work themselves but pay for the privilege.</p>
+<p>The laundromat has acquired almost mythical status in finance-bro folklore, displacing the Goldman internship as the be-all and end-all of financial ambition. The appeal of the asset class of choice rests on recurring cash, minimal inventory, little labour, and customers who not only do the work themselves but pay for the privilege.</p>
 
 <p>Regrettably, the Austrian company registry has no category for laundromats. So we went for the next best thing: a machinery builder in the industrial heartland, run by a Gesch&auml;ftsf&uuml;hrer of advanced years. Mission two, then: <em>"Which machinery companies in Ober&ouml;sterreich have a Gesch&auml;ftsf&uuml;hrer aged 70 or older?"</em></p>
 <img src="/images/articles/08-on-agents/laundromat-meme.jpg" alt="Is this a pigeon meme: finance bro mistakes a database query for a laundromat" style="max-width:480px;display:block;margin:1.5rem auto;">
@@ -116,31 +117,31 @@ stack: ["Fable-5", "Qwen3:8B", "MCP", "Ollama"]
 
 <p>For the experiment, the question is convenient twice over: three filters to compose instead of one sort &ndash; and an answer short enough that the featherweight's pen should survive it.</p>
 
-<p>The flagship went first. It asked, the MCP answered, and there was the list: five companies, the same five sitting on our answer key &ndash; three runs, three identical answers, thirteen seconds and $0.17 apiece. No surprises expected; none granted. The five directors carry 373 years between them, and one of their companies turns &euro;34m of revenue into an EBIT margin of 0.96 per cent. The laundromat dream, Austrian edition.</p>
+<p>The flagship went first. It asked, the MCP answered, and there was the list: five companies, the same five sitting on our answer key &ndash; three runs, three identical answers, thirteen seconds and $0.17 apiece. No surprises expected; none granted. The five directors carry 373 years between them, and one of their companies turns &euro;34m of revenue into a &euro;77,000 loss. So much for the laundromat dream.</p>
 
 <p>Then the chosen one &ndash; the weight class Nvidia's paper nominates for exactly this work. It took its time, four minutes of thinking out loud per run, at the usual price of nothing &ndash; but this time it finished: five codes is a list an 8B can write down. Its five matched the answer key exactly, and matched them again on the second run, and on the third. Given a question its pen survives, the featherweight is reliable.</p>
 
-<p>So, for once, both analysts agreed. The difference sat in the small print underneath. The flagship attached, unprompted, the two ways the answer could still be quietly wrong &ndash; among them the 11,841 companies sitting in "unknown", invisible to any sector search. The featherweight attached nothing of the kind. <strong>One analyst does what you asked; the other tells you what you should have asked.</strong> The $0.17 buys the second.</p>
+<p>So, for once, both analysts agreed. The difference sat in the small print underneath. Both had been asked for caveats &ndash; the brief demands them. The flagship's box held the two ways the answer could still be quietly wrong, among them the 11,841 companies sitting in "unknown", invisible to any sector search. The featherweight's box was empty. <strong>One analyst does what you asked; the other tells you what you should have asked.</strong> The $0.17 buys the second.</p>
 
 <p>Two missions completed, out of the infinitely many we could have flown. Time for the after-action review.</p>
 
 <h2>What This Suggests</h2>
 
-<p><strong>"Sufficiently powerful" survives &ndash; provided the answer is short.</strong> Across all 14 runs &ndash; the flagship's three and the featherweight's five on the list, then three each on the machinery question &ndash; both models chose the right tool with the right parameters at the first attempt, every time. The featherweight botched the fifty-entry list every time it tried &ndash; and delivered the five-entry answer perfectly, three times out of three. Small models do not fail at thinking. They fail at writing it down.</p>
+<p><strong>"Sufficiently powerful" survives &ndash; provided the answer is short.</strong> In our total of 14 runs, both models chose the right tool with the right parameters at the first attempt, every time. The featherweight failed the long list on every attempt, and got the short answer right every time. Same task, different length &ndash; and length made the whole difference. Small models do not fail at thinking. They fail at writing it down.</p>
 
-<p><strong>"Inherently more suitable" holds only if the tools suit the model.</strong> The featherweight's memory failure was pure configuration: the runtime's default working memory was simply too small for the data, and nothing announced it. The stutter has known countermeasures too &ndash; a repetition guard we left untested, and the simpler cure of not making a model photocopy at all: keep results short, and for long lists have the server save a file and let the model return just the link. Small models need tools that carry the heavy text for them.</p>
+<p><strong>"Inherently more suitable" holds only if the tools suit the model.</strong> The featherweight's memory failure was pure configuration: the runtime's default working memory was simply too small for the data, and it failed silently &ndash; no error, no warning. The stutter has known countermeasures too &ndash; a repetition guard we left untested, and the simpler cure of not making a model photocopy at all: keep results short, and for long lists have the server save a file and let the model return just the link. Small models need tools that carry the heavy text for them.</p>
 
-<p><strong>"Necessarily more economical" depends on how busy the agent is.</strong> Per token, the small model wins by arithmetic &ndash; ours ran on electricity. But the savings carry a fixed cost: someone sizes the memory, catches the silent failures, stays on call. That pays off for an agent answering a hundred simple questions an hour. For one answering a hard question a day, $0.35 is a bargain. Either way the rule holds: every agent is an employee &ndash; you pay in tokens or in supervision.</p>
+<p><strong>"Necessarily more economical" depends on how much you run it.</strong> The small model costs almost nothing per answer &ndash; ours ran on already-sunk costs. But someone has to build the workflow around it, size the memory, and notice when it fails silently. That human time is the real bill: run the agent a hundred times an hour and it vanishes into the volume; run it once a day and you've paid an engineer to save thirty-five cents. The cheap model isn't free &ndash; it just moves the cost from the invoice to the payroll.</p>
 
-<p><strong>The triad is missing its fourth line: the expensive model ships an audit trail.</strong> Wherever both models answered, the answers were identical. Only the flagship documented, unprompted and every run, where its answer could mislead &ndash; the missing ages, the 11,841 unclassified companies &ndash; caveats that read like an auditor's working notes. If correctness is becoming a commodity, the audit trail is the premium tier.</p>
+<p><strong>The triad is missing its fourth line: the expensive model ships an audit trail.</strong> Both models got the answer right, every time. Only the flagship also told you where it might be wrong &ndash; the missing ages, the 11,841 unclassified companies &ndash; caveats that read like an auditor's working notes. When the right answer is cheap, that warning is what you're actually paying for.</p>
 
 <h2>So What?</h2>
 
 <p>The models, it turns out, were the least interesting part. Both of them &ndash; the large one and the small &ndash; translated plain-language questions into correct database queries fourteen times out of fourteen; the intelligence was a given. <strong>What separated success from failure was the workflow around the model</strong> &ndash; how much data flows in, how long the answer must be, which default somebody forgot to change.</p>
 
-<p>Which is why, having set out to test it, we end up with nothing that challenges the general path Nvidia's paper outlines. Small models may well be the future of agentic AI &ndash; <strong>provided their tools stay simple, their portions stay small, and the architecture around them does the heavy lifting</strong>. Those are engineering details, not objections. The future, as so often, ships with some assembly required.</p>
+<p>Which is why, having set out to test it, we end up with nothing that challenges the general path Nvidia's paper outlines. Small models may well be the future of agentic AI &ndash; <strong>provided their tools stay simple, their inputs stay small, and the architecture around them does the heavy lifting</strong>. Those are engineering details, not objections. The future, as so often, ships with some assembly required.</p>
 
-<p>One caveat the paper would appreciate: everything we tested had a provably right answer. That is precisely the work agents will take over first &ndash; the lookups, the filters, the lists. Whether they can do the work that has no answer key, this correspondence cannot say. The closest we came was the small print: those unprompted caveats had no answer key either &ndash; and they were the one place the two models parted company.</p>
+<p>One thing worth noting: everything we tested had a provably right answer. That is precisely the work agents will take over first &ndash; the lookups, the filters, the lists. Whether they can do the work that has no answer key, this correspondence cannot say. The nearest we came was the caveats themselves: we asked each model where its own answer might mislead &ndash; the one question with no right answer &ndash; and the flagship had plenty to say while the featherweight had nothing.</p>
 
 <p>As for everyone whose working day is lookups, filters and lists: time to finally buy that laundromat.</p>
 

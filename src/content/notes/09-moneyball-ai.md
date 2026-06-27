@@ -45,7 +45,7 @@ stack: ["Hammer-2.1:0.5B", "Danube-3:500M", "SmolLM-2:360M", "llama.cpp", "MCP"]
 
 <h2>The Draft</h2>
 
-<p>Everyone is buying big &ndash; the frontier models, the multimodal ones, the do-everything ones. That is where the hype is, and the money with it. We have neither, so we go the other way and shop for the players no one else wants: the ones who do not dazzle, but get on base.</p>
+<p>Everyone is buying big &ndash; the frontier models, the multimodal ones, the do-everything ones. That is where the hype is, and the money with it. We have neither, so we go the other way and shop for the players no one else wants: the ones who do not dazzle, but <a href="https://www.youtube.com/watch?v=Bnvvn0xrV24" target="_blank">get on base</a>.</p>
 
 <p>The bench, then. <a href="https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct" target="_blank">SmolLM2-360M</a>, a plain generalist; <a href="https://huggingface.co/MadeAgents/Hammer2.1-0.5b" target="_blank">Hammer-0.5B</a>, built for one job &ndash; calling tools; and <a href="https://huggingface.co/h2oai/h2o-danube3-500m-chat" target="_blank">H2O-Danube3-500M</a>, another generalist but from another lab. None above a billion parameters. The only thing we need from any of them is that it can make the call.</p>
 
@@ -94,7 +94,7 @@ stack: ["Hammer-2.1:0.5B", "Danube-3:500M", "SmolLM-2:360M", "llama.cpp", "MCP"]
 <img src="/images/articles/09-moneyball-ai/moneyball-whiteboard.jpg" alt="Moneyball whiteboard scene: Peter Brand presenting a data-heavy case to a reclined, sceptical Billy Beane" style="max-width:520px;display:block;margin:1.5rem auto;">
 <p style="text-align:center;font-size:0.88rem;color:#5a5a5a;"><em>&ldquo;Billy, this is Hammer &ndash; a half-billion-parameter model that runs on a Raspberry Pi. Flawless at picking and calling tools, even from long, convoluted prompts. Its only defect is basically everything else you'd need it for.&rdquo;</em></p>
 
-<p><strong>Mission: accomplished&rsquo;ish.</strong> The server had written the right companies to a file and the counts came back identical to our control script's &ndash; the pipeline was sound to the last row. What the model could not do was tell us what the file held; the final step, reading nine numbers and naming three. We had to do it by hand, like cavemen.</p>
+<p><strong>Mission Accomplished-ish.</strong> The server had written the right companies to a file and the counts came back identical to our control script's &ndash; the pipeline was sound to the last row. What the model could not do was tell us what the file held; the final step, reading nine numbers and naming three. We had to do it by hand, like cavemen.</p>
 
 <p>As for the answer key we had to dig out ourselves: Ober&ouml;sterreich (127), Steiermark (88), and a dead heat between Lower Austria and Tirol on 67.</p>
 

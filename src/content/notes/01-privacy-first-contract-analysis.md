@@ -4,7 +4,7 @@ summary: "The nice thing about document classification is that it sounds simple.
 date: "February 2026"
 published: 2026-02-15
 tags: ["local-llm", "privacy", "document-processing", "pipeline-architecture"]
-stack: ["Python", "Ollama", "Llama-3.1:8B", "Mistral-NeMo:12B", "Qwen2.5:14B"]
+stack: ["Llama-3.1:8B", "Mistral-NeMo:12B", "Qwen2.5:14B", "Ollama", "Python"]
 ---
 
 ## Quick Brief
@@ -27,7 +27,7 @@ The experiment was deliberately simple: upload a document, **decide whether it i
 
 Under the hood, the system is mostly a pipeline. The model itself only appears halfway through the process.
 
-![Pipeline: from PDF upload to structured output](/images/pipeline-diagram.svg)
+![Pipeline: from PDF upload to structured output](/images/articles/01-contract-analysis/pipeline.svg)
 *Most of the steps have nothing to do with AI.*
 
 The document passes through text extraction, normalization (stripping repeated headers, collapsing whitespace, marking page boundaries), and chunking before the model sees a single character. The first LLM call is step four of eight.
@@ -69,7 +69,7 @@ A second test used a generic NDA without identifying names. Here again, the mode
 
 So far, the models appeared to have a fairly clear idea of what a contract looks like.
 
-![Contract Engine: Model disagreement on GNU GPL v3 classification](/images/contract-engine-jobs.png)
+![Contract Engine: Model disagreement on GNU GPL v3 classification](/images/articles/01-contract-analysis/jobs.png)
 *Apparently the problem "contract / not contract" is slightly harder than <a href="https://www.youtube.com/watch?v=tWwCK95X6go" target="_blank">"hotdog / not hotdog"</a>.*
 
 The divergence appeared once the document category became legally ambiguous. A [GNU General Public License v3](https://en.wikipedia.org/wiki/GNU_General_Public_License) was used as the next test document.
@@ -80,7 +80,7 @@ At this point the models behaved a bit like lawyers: they disagreed.
 - **Qwen** reached the same conclusion and stopped further processing. Its reasoning: *"The text is a license agreement, specifically the GNU General Public License version 3, which outlines permissions and conditions for software distribution but does not contain named parties or specific legal obligations typical of a contract."*
 - **Llama 3.1** reached the opposite conclusion. It classified the document as a contract and continued with full information extraction. Once it did, the system produced structured output: **33 clauses, 24 obligations, and 3 identified risks**. Among the extracted risks were a termination trigger rated as high risk (*"automatically terminate your rights under this License…"*) and an unlimited liability clause.
 
-![Contract Engine: Llama 3.1 structured extraction from the GNU GPL v3](/images/contract-engine-analysis.png)
+![Contract Engine: Llama 3.1 structured extraction from the GNU GPL v3](/images/articles/01-contract-analysis/analysis.png)
 *Once the model decides the document is a contract, the analysis proceeds with confidence.*
 
 This suggests that model behavior remains relatively stable for clearly defined document types, but becomes less reliable once categories are legally or semantically ambiguous. Which, conveniently, remains a fairly common situation in law.

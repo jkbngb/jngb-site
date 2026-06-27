@@ -1,9 +1,36 @@
-node_modules/
+# Build output
 dist/
 .astro/
+
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
 .DS_Store
 
-.env
-public/images/headshot.jpg
-public/images/headshot_original.jpg
+# Editor & local tooling
+.vscode/
+.idea/
+.claude/settings.local.json
+
+# Large local artifacts
+*.gguf
+*-app.zip
+
+# Local-only assets (kept off the public repo)
+public/images/site/headshot-original.jpg
+src/content/notes/_style-spec.md
+
+# Working drafts (never published)
 _drafts/
+drafts/
+linkedin-assets/

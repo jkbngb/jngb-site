@@ -1,10 +1,10 @@
 ---
-title: "Pimp My Language Model: A Fine-Tuning Tale of Bling and Basic"
+title: "Pimp My LM: A Fine-Tuning Tale of Bling and Basic"
 summary: "Three language models were fine-tuned on 64,000 EU regulations to classify legislation into 21 thematic domains. Two BERT models ran on a free GPU. One Llama 8B ran on eight Nvidia H100s.<br><br>All three scored essentially the same &ndash; the best results in the series so far. <strong>The difference was the bill: less than &euro;10 for the small ones, &euro;83 for the large one.</strong> An order of magnitude more expensive for the same result.<br><br>Also, the European Parliament&rsquo;s official classifier for EU regulations does not work. We built three that do."
 date: "April 2026"
 published: 2026-04-05
 tags: ["fine-tuning", "BERT", "QLoRA", "multi-label-classification", "EuroVoc"]
-stack: ["BERT", "EUBERT", "Llama-3.1-8B", "QLoRA", "Accelerate"]
+stack: ["BERT", "EUBERT", "Llama-3.1:8B", "QLoRA", "Accelerate"]
 ---
 
 ## Quick Brief
@@ -27,9 +27,9 @@ But first, a detour. It turns out the European Parliament has not only been writ
 
 ## 37 Downloads
 
-<a href="https://huggingface.co/" target="_blank">HuggingFace</a> is where machine learning models go to be proudly published, occasionally downloaded, quietly ignored, and inevitably forgotten. The <a href="https://huggingface.co/EuropeanParliament" target="_blank">European Parliament&rsquo;s account</a> fits this arc almost perfectly: three models and one dataset, with download counters in the double digits &ndash; a language model at 55 downloads, a classifier at 37, a translation model at 60. All as of April 2026. Not exactly trending.
+<a href="https://huggingface.co/" target="_blank">HuggingFace</a> is where machine learning models go to be proudly published, occasionally downloaded, quietly ignored, and inevitably forgotten. The <a href="https://huggingface.co/EuropeanParliament" target="_blank">European Parliament&rsquo;s account</a> fits this arc almost perfectly: three models and one dataset, with download counters in the double digits &ndash; a language model at 69 downloads, a classifier at 37, a translation model at 60. All as of April 2026. Not exactly trending.
 
-![European Parliament's HuggingFace account showing three models with double-digit download counts](/images/exp5_huggingface_ep_account.png)
+![European Parliament's HuggingFace account showing three models with double-digit download counts](/images/articles/05-pimp-my-lm/hf-ep-account.png)
 *&ldquo;Great God! This is an awful place and terrible enough for us to have laboured to it without the reward of priority.&rdquo; &ndash; Robert Falcon Scott*
 
 The language model is called <a href="https://huggingface.co/EuropeanParliament/EUBERT" target="_blank">EUBERT</a> &ndash; same architecture as <a href="https://en.wikipedia.org/wiki/BERT_(language_model)" target="_blank">BERT</a>, Google&rsquo;s 2018 model, but trained from scratch on EU texts instead of Wikipedia and novels. 110 million parameters. Not a classifier in itself, but the foundation for one.
@@ -38,17 +38,19 @@ The classifier &ndash; named <a href="https://huggingface.co/EuropeanParliament/
 
 The download counter was pushed to 38, and the investigation began. The classifier was downloaded, the environment set up, the dependencies installed.
 
-Run. Crash.
+Run. Nothing.
+
+The model loaded without protest, accepted a regulation as input, and returned two labels: &ldquo;LABEL_0&rdquo; and &ldquo;LABEL_1.&rdquo; Not &ldquo;trade.&rdquo; Not &ldquo;agriculture.&rdquo; Not any of the 7,000 EuroVoc categories it was supposedly trained on. Two meaningless placeholders and a confidence score &ndash; the machine learning equivalent of a shrug.
 
 Surely the mistake was on our end. This is the institutional model published by the European Parliament itself. Presumably reviewed, tested, and approved by the appropriate number of committees and sub-committees. After all, according to the model card, this was the **official classifier &ldquo;used in a production environment.&rdquo;** So the configuration was checked, the code was checked, and it was run once more.
 
-Crash again. Anger set in. Then confusion. It was decided to actually read the error message.
+Same result. Frustration set in. Then suspicion. It was decided to actually read the warnings.
 
-The short version: the model ships with components that do not fit together &ndash; the vocabulary expects 50,000 entries while the model weights expect 30,000. It is not a configuration problem or an installation error. **The official published artefact is simply broken.**
+The short version: the model ships with parts that do not fit together &ndash; the configuration declares a RoBERTa architecture while the weights inside are from a BERT model. Every trained parameter is silently discarded on load and replaced with random numbers. It is not a configuration problem or an installation error. **The official published artefact is simply broken.**
 
 Further digging led to the <a href="https://huggingface.co/EuropeanParliament/EuroVoc/discussions/1" target="_blank">comment section</a> of said repository &ndash; where, despite only 37 downloads, someone had found the time to report that the model&rsquo;s outputs bore no resemblance to what the documentation promised. In 2024. The Parliament responded, acknowledged the discrepancy, and then&hellip; did nothing. No fix, no update, no follow-up. **The model &ldquo;used in a production environment&rdquo; does not, in fact, work as advertised.**
 
-![HuggingFace community thread discussing the broken EP model](/images/exp5_huggingface_ep_model_broken_thread.png)
+![HuggingFace community thread discussing the broken EP model](/images/articles/05-pimp-my-lm/hf-ep-broken-thread.png)
 *The community noticed. The Parliament noticed too, and decided to move on.*
 
 We were download number 38, and we were left with nothing that worked. The defeated spirit of Scott, arriving second to a broken flag, gave way to something closer to Amundsen &ndash; who, when he found no path, made one. The mission was back on.
@@ -69,7 +71,7 @@ One notebook, two models, one after the other. Both pointed at the 64,000 traini
 
 ## The BERTs Go to Work
 
-![Google Colab showing EUBERT fine-tuning in progress](/images/exp5_colab_eubert_finetuning.png)
+![Google Colab showing EUBERT fine-tuning in progress](/images/articles/05-pimp-my-lm/colab-eubert.png)
 *Two and a half hours, zero euros, one regulation at a time. The glamour of machine learning.*
 
 EUBERT went first. Within the first epoch, the intermediate metrics already looked promising &ndash; well above anything the zero-shot models had managed. The temptation was to stop early and celebrate, but the script had two more epochs to go and bert-base still queued behind it. Let it finish.
@@ -78,7 +80,7 @@ EUBERT went first. Within the first epoch, the intermediate metrics already look
 
 Free infrastructure works until it does not, and when it does not, you are on your own. Google giveth, Google taketh away. The free GPU was gone, the EUBERT results were saved, but bert-base had nothing to show for itself. The solution: &euro;10 in paid compute units, the full script rerun from the top, and five hours later both models were done.
 
-The results were worth the wait. EUBERT: **0.891.** bert-base: **0.900.** Both well above <a href="/notes/04-who-needs-nvidia" target="_blank">TF-IDF at 0.80</a>, every <a href="/notes/03-regulation-radar" target="_blank">zero-shot LLM</a> a distant memory. And essentially identical to each other &ndash; the model trained from scratch on EU law and the one that had never seen a regulation in its life landed within a percentage point. With 64,000 examples to learn from, whatever the model knew beforehand simply did not matter.
+The results were worth the wait. **EUBERT: 0.891. bert-base: 0.900.** Both well above <a href="/notes/04-who-needs-nvidia" target="_blank">TF-IDF at 0.80</a>, every <a href="/notes/03-regulation-radar" target="_blank">zero-shot LLM</a> a distant memory. And essentially identical to each other &ndash; the model trained from scratch on EU law and the one that had never seen a regulation in its life landed within a percentage point. With 64,000 examples to learn from, whatever the model knew beforehand simply did not matter.
 
 **Total bill for two fine-tuned classifiers that beat every method in the series: &euro;10, with credits left.** Combined training time: one afternoon.
 
@@ -88,7 +90,7 @@ This would have been a reasonable place to stop. Two classifiers that actually w
 
 Enter: <a href="https://huggingface.co/meta-llama/Llama-3.1-8B" target="_blank">Llama 3.1 8B</a> &ndash; Meta&rsquo;s open-weight language model, eight billion parameters, seventy times the size of BERT. &ldquo;Open-weight,&rdquo; however, does not mean &ldquo;help yourself.&rdquo; Meta requires an access request, and the request was sent and access granted less than an hour later.
 
-![HuggingFace email confirming Llama model access](/images/exp5_llama_access_request.png)
+![HuggingFace email confirming Llama model access](/images/articles/05-pimp-my-lm/llama-access.png)
 *Applied for the 8B, got the 70B on top apparently. We are not going to ask questions.*
 
 Model downloaded, time to put it to work. A technique called **QLoRA** makes fine-tuning feasible by freezing the base model and training only a thin adapter on top. The downside: all eight billion parameters still pass through the GPU for every computation.
@@ -99,30 +101,32 @@ Time to switch to state-of-the-art machinery. Which comes at &euro;2.73 per hour
 
 One might find it outrageous to pay that when Google hands out GPUs for free. But the free GPU is an Nvidia T4 from 2018 &ndash; far too slow and too small for this job. The H100 retails for around &euro;30,000, and at &euro;2.73 per hour it would take fifteen months of non-stop rental before buying one breaks even &ndash; before electricity, cooling, and maintenance enter the picture. So, basically a bargain.
 
-If this were a sponsored blog, this would be the moment to welcome back our recurring sponsor. It is not sponsored, but we are happy to welcome back <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a> &ndash; the European cloud provider whose GPU instances (and invoice confirmations in the inbox) have appeared in previous experiments. (Again: not a sponsored arrangement, though at this point a volume discount would not go unappreciated.)
+If this were a sponsored blog, this would be the moment to welcome back our recurring sponsor. It is not sponsored, but we are happy to welcome back <a href="https://www.scaleway.com/en/" target="_blank">Scaleway</a> &ndash; the European cloud provider whose GPU instances have featured in previous experiments, along with their invoices. (Again: not a sponsored arrangement, though at this point a volume discount would not go unappreciated.)
 
-## The Meter
+## Pimp My Rig
 
 The first attempt ran on a single H100 &ndash; one GPU, one machine, how hard can it be. At 1.3 documents per second, a single pass over 64,000 documents would take about 14 hours. Three epochs meant roughly 42 hours: two full days at &euro;2.73 per hour, for a training run whose outcome was not guaranteed. BERT had finished in an afternoon for free.
 
-Common logic suggests eight GPUs should deliver eight times the speed for more than eight times the price. In practice, the maths were kinder. A language model is not the only thing you can pimp.
+Common logic suggests eight GPUs should deliver eight times the speed for more than eight times the price. In practice, the maths were kinder. As it happens, a language model is not the only thing you can pimp.
 
-<img src="/images/exp5_h100_sxm_8gpu_tray.jpg" alt="Eight Nvidia H100 SXM GPUs in a server tray" style="display: block; width: 100%; padding: 1.5rem 15%; box-sizing: border-box; background: white;">
+<img src="/images/articles/05-pimp-my-lm/h100-sxm-8gpu.jpg" alt="Eight Nvidia H100 SXM GPUs in a server tray" style="display: block; width: 100%; padding: 1.5rem 15%; box-sizing: border-box; background: white;">
 <em>&ldquo;Yo dawg, I heard you like GPUs that don&rsquo;t actually render graphics, so I put eight of them in a tray and connected them with a bus that&rsquo;s faster than your internet.&rdquo; &ndash; Jensen &ldquo;The Jacket&rdquo; Huang (presumably)</em>
 
-The stock model &ndash; the one from the first attempt &ndash; was a standard PCIe card. Same physical format as any desktop graphics card, slotted into a regular server. The entry-level ride. What Scaleway offered instead was the full upgrade: eight H100 SXM modules, each plugged into Nvidia&rsquo;s proprietary socket and wired to the other seven via **NVLink** &ndash; Nvidia&rsquo;s dedicated GPU-to-GPU interconnect running at 900&nbsp;GB/s. That is fourteen times faster than the PCIe bus the stock card relied on. The SXM variant also reads its own memory 67% faster. **Eight individual GPUs, turned into one 640&nbsp;GB machine.**
+The stock model &ndash; the one from the first attempt &ndash; used a standard PCIe slot. Same physical format as any desktop graphics card, slotted into a regular server. The entry-level ride. What Scaleway offered instead was the full upgrade: eight H100 SXM modules, each plugged into Nvidia&rsquo;s proprietary socket and wired to the other seven via **NVLink** &ndash; Nvidia&rsquo;s dedicated GPU-to-GPU interconnect running at 900&nbsp;GB/s. That is fourteen times faster than the PCIe bus the stock card relied on. The SXM variant also reads its own memory 67% faster.
 
-The result: eight cards synchronising thousands of times per second with almost no overhead. Without NVLink, each GPU would spend more time waiting for the others than doing useful work. With it, the maths get interesting.
+On a PCIe card, multi-GPU training is a conference call where everyone talks over each other. The SXM setup &ndash; proprietary socket, NVLink at 900&nbsp;GB/s, 67% faster memory &ndash; turns it into a single conversation. **Eight GPUs with 640&nbsp;GB of memory between them, acting as one.**
 
-The code itself barely changed &ndash; HuggingFace&rsquo;s <a href="https://huggingface.co/docs/accelerate" target="_blank">Accelerate</a> library handles the distribution automatically, splitting data across GPUs and synchronising gradients without touching the training logic. One launch command, eight GPUs, 1.3 documents per second turned into 14.8 &ndash; not eight times faster, but 11.4 times. The estimated forty-two hours collapsed to three and a half. The run started at seven in the morning. By quarter to eleven, it was done.
+The code itself barely changed &ndash; HuggingFace&rsquo;s <a href="https://huggingface.co/docs/accelerate" target="_blank">Accelerate</a> library handles the distribution automatically, splitting data across GPUs and synchronising gradients without touching the training logic.
 
-The bill: &euro;83. The F1 score: **0.892.**
+One launch command, eight GPUs, 1.3 documents per second turned into 14.8 &ndash; not eight times faster, but 11.4 times. The estimated forty-two hours collapsed to three and a half. The run started at seven in the morning. By quarter to eleven, it was done.
+
+The bill: &euro;83. **The F1 score: 0.892.**
 
 So this is what state-of-the-art architecture, eight of the most powerful GPUs on the market, and three and a half hours of training get you: a score that bert-base had already achieved for free. bert-base: 0.900. Llama: 0.892. Seventy times larger, eight times the hardware, more than eight times the price &ndash; and the needle barely moved.
 
 **The &euro;83 did not buy accuracy. It bought speed.**
 
-## The Full Scoreboard
+## So, Who Won?
 
 <table>
 <thead>
@@ -221,3 +225,97 @@ Classification is solved. But summarising what a regulation actually says? That 
 Speaking of which: the European Parliament&rsquo;s official classifier for EU regulations still does not work as advertised. In the spirit of transparency and for the benefit of all humanity, we built three that do and <a href="https://huggingface.co/jngb-labs" target="_blank">published them on HuggingFace</a> under Apache&nbsp;2.0, free to use.
 
 Proudly published, occasionally downloaded, quietly ignored, and inevitably forgotten. But at least they load.
+
+<div id="img-lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999;cursor:zoom-out;justify-content:center;align-items:center;" onclick="this.style.display='none'">
+<img style="max-width:92vw;max-height:92vh;width:auto;border-radius:6px;" />
+</div>
+
+<nav id="scroll-toc" aria-label="Article sections"></nav>
+
+<style>
+#scroll-toc {
+  position: fixed;
+  left: 1.2rem;
+  top: 2rem;
+  z-index: 90;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+#scroll-toc.visible { opacity: 0.4; }
+#scroll-toc.visible:hover { opacity: 1; }
+#scroll-toc a {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  color: #b5a393;
+  text-decoration: none;
+  padding: 0.2rem 0 0.2rem 0.7rem;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#scroll-toc a:hover { color: #6d5d4b; }
+#scroll-toc a.active {
+  color: #33302e;
+  border-left-color: #33302e;
+  font-weight: 600;
+}
+@media (max-width: 1280px) { #scroll-toc { display: none; } }
+</style>
+
+<script>
+(function() {
+  var toc = document.getElementById('scroll-toc');
+  if (!toc) return;
+  var headings = Array.from(document.querySelectorAll('article h2, .note-content h2, .prose h2'));
+  if (headings.length === 0) return;
+
+  headings.forEach(function(h) {
+    if (!h.id) h.id = h.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    toc.appendChild(a);
+  });
+
+  var links = toc.querySelectorAll('a');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        links.forEach(function(l) { l.classList.remove('active'); });
+        var match = toc.querySelector('a[href="#' + entry.target.id + '"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  headings.forEach(function(h) { observer.observe(h); });
+
+  window.addEventListener('scroll', function() {
+    toc.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  var lightbox = document.getElementById('img-lightbox');
+  var lbImg = lightbox.querySelector('img');
+  document.querySelectorAll('.note-content img').forEach(function(img) {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', function() {
+      lbImg.src = img.src;
+      lightbox.style.display = 'flex';
+    });
+  });
+})();
+</script>

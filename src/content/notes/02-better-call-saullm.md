@@ -4,7 +4,7 @@ summary: "Six open-source LLMs were asked to classify four ambiguous legal docum
 date: "March 2026"
 published: 2026-03-05
 tags: ["local-llm", "cloud-gpu", "document-processing", "model-disagreement"]
-stack: ["Scaleway", "vLLM", "SaulLM:54B", "Llama-3.1:70B", "Qwen2.5:72B"]
+stack: ["SaulLM:54B", "Llama-3.1:70B", "Qwen2.5:72B", "vLLM", "Scaleway"]
 ---
 
 ## Quick Brief
@@ -68,7 +68,7 @@ Temperature 0.1 is supposed to reduce randomness to a negligible level. But on a
 
 That finding matters more than it first seems. If a classification gate can switch sides on the same input without any substantive change in setup, **the relevant property is not "accuracy." It is stability.**
 
-![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/llama-gpl-flip.png)
+![Llama classifying the GPL as CONTRACT while the previous run shows NOT CONTRACT](/images/articles/02-saullm/llama-gpl-flip.png)
 *A useful feature of near-determinism is that it occasionally is not. On an earlier run, the same document (GPL) came back NOT CONTRACT. Minutes later, with the same setup, Llama decided otherwise.*
 
 The remaining local runs were more stable. Mistral and Qwen both confirmed their earlier GPL classifications without visible drama. With that settled, all three models were given the remaining three ambiguous documents.
@@ -130,7 +130,7 @@ A proper appeal needs proper hardware. The compute runs on <a href="https://www.
 
 Once the hardware was running, <a href="https://docs.vllm.ai/" target="_blank">vLLM</a> was installed as the inference server.
 
-![H100 server specs](/images/h100-neofetch.png)
+![H100 server specs](/images/articles/02-saullm/h100-neofetch.png)
 *AMD EPYC, 240 GB system memory, Nvidia H100 PCIe with 80 GB VRAM. The bench is ready.*
 
 Three larger models were downloaded from Hugging Face and took the stand. Same documents. Same prompt. Same temperature:
@@ -145,7 +145,7 @@ SaulLM was the most interesting model in the set, because it tested a different 
 
 So the first model to take the bench was the specialist: <a href="https://huggingface.co/Equall/SaulLM-54B-Instruct" target="_blank">SaulLM:54B</a>, a legal-domain LLM fine-tuned on court rulings, legislative documents, and legal texts from both sides of the Atlantic. The kind of model you bring in when the generalists can't agree. (A larger 141-billion parameter version also exists, but it didn't fit on the hardware. Even the H100's 80 GB of VRAM has limits.)
 
-![SaulLM appearing in the model dropdown alongside local models](/images/saullm-enters-courtroom.png)
+![SaulLM appearing in the model dropdown alongside local models](/images/articles/02-saullm/courtroom.png)
 *The honourable chief justice. SaulLM 54B, presiding.*
 
 SaulLM looked at the four documents and delivered its opinion with the quiet confidence of a model that has read a lot of case law. And it was fast. 820 to 1,400 tokens per second on the three documents it rejected – under two seconds to a verdict. This is what happens when an H100 meets a model that doesn't waste compute.

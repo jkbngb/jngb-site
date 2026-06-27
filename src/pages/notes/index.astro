@@ -3,10 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const now = new Date();
+const horizon = new Date(now);
+horizon.setDate(horizon.getDate() + 45); // list posts dated up to 45 days ahead
 const notes = (await getCollection('notes'))
   .filter((n) => {
     const pub = new Date(n.data.published ?? n.data.date);
-    return pub.getFullYear() <= now.getFullYear() + 1 && pub <= now;
+    return pub <= horizon;
   })
   .sort(
     (a, b) => new Date(b.data.published ?? b.data.date).valueOf() - new Date(a.data.published ?? a.data.date).valueOf()
