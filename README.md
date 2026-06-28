@@ -78,6 +78,11 @@ stack: ["Astro", "vLLM"]        # optional, shown as tags
 
 The slug is the filename. Astro's content collection picks the file up automatically.
 
-## License
+## Reading and reuse
 
-Code is MIT (see LICENSE). The article text and images are copyright Jakob Neugebauer, all rights reserved.
+Code is MIT (see LICENSE).
+
+The writing is licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Quote it, excerpt it, argue with it –
+that is what it is for. The single condition is attribution: name the author
+and link to the original. Reproducing a piece wholesale, or running the text
+out under someone else's byline, is not covered.

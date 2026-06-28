@@ -566,6 +566,20 @@ small {
   font-size: 0.85rem;
 }
 
+.note-license {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+}
+
+.note-back-bottom {
+  margin-top: var(--spacing-md);
+  padding-top: 0;
+  border-top: none;
+}
+
 
 /* ========================================
    Contact
